@@ -92,6 +92,9 @@
 /* Brackets */
 [{}()\[\]]                   {return yytext[0];}
 
+/* Print */
+"print"                     {return PRINT;}
+
 /* Comments */
     /* Single Line Comments */
 "//"[^\n]                    {;}

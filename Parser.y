@@ -46,6 +46,9 @@
     /* Comparison */
 %token EQ NEQ GT LT GTE LTE
 
+/* Print */
+%token PRINT
+
 // Associativity
 %left EQ NEQ GT LT GTE LTE
 %left ADD SUB 
