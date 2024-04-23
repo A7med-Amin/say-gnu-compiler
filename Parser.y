@@ -68,7 +68,7 @@
 /* Part 2: Patterns and Action Rules */
 
 program:            {printf("========  PROGRAM START ***********\n");}
-        | codeStatement {}
+        | codeBlock {}
         ;
 
 
@@ -76,10 +76,10 @@ codeStatement: dataType IDENTIFIER ';'                                          
         | dataType IDENTIFIER ASSIGN expression ';'                                 {printf("========  VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\n");}
         | IDENTIFIER ASSIGN expression ';'                                          {printf("========  VARIABLE ASSIGNMENT ***********\n");}
         | CONST dataType IDENTIFIER ASSIGN constValue ';'                           {printf("========  CONSTANT VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\n");}
-        | WHILE '(' expression ')' codeBlock                                        {printf("========  WHILE LOOP ***********\n");}   
-        | codeBlock                                                                 {printf("========  BLOCK ***********\n");}  
-        | REPEAT codeBlock UNTIL '(' expression ')'                                 {printf("========  REPEAT UNTILL ***********\n");}  
-        | FOR '(' forLoopInitialization expression ';' expression ')' codeBlock     {printf("========  FOR LOOP ***********\n");} 
+        /* | WHILE '(' expression ')' codeBlock                                        {printf("========  WHILE LOOP ***********\n");}    */
+        /* | codeBlock                                                                 {printf("========  BLOCK ***********\n");}   */
+        /* | REPEAT codeBlock UNTIL '(' expression ')'                                 {printf("========  REPEAT UNTILL ***********\n");}   */
+        /* | FOR '(' forLoopInitialization expression ';' expression ')' codeBlock     {printf("========  FOR LOOP ***********\n");}  */
         | PRINT '(' printStatement ')' ';'                                          {printf("========  PRINT STATEMENT ***********\n");}
         | error   { yyerror("Unexpected statement."); }
         ;
@@ -115,9 +115,9 @@ constValue: simpleNonNumericalDataValue {}
         | simpleNumericalDataValue {}
         ;
 
-forLoopInitialization: dataType IDENTIFIER ASSIGN expression ';'
+/* forLoopInitialization: dataType IDENTIFIER ASSIGN expression ';'
         | IDENTIFIER ASSIGN expression ';'
-        ;
+        ; */
         
 expression: expression ADD expression {printf("========  ADDITION OPERATION ***********\n");}
            | expression SUB expression {printf("========  SUBTRACTION OPERATION ***********\n");}
@@ -133,8 +133,7 @@ printStatement: expression ',' printStatement {}
         | expression {}
         ;   
 
-codeBlock: '{' codeStatement '}' {printf("========  CODE BLOCK ***********\n");}
-        | '{' '}' {printf("======== EMPTY CODE BLOCK ***********\n");}
+codeBlock: codeStatement {}
         |  codeBlock codeStatement {}
         ;
 
