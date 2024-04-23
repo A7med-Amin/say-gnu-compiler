@@ -72,8 +72,8 @@
 
     /* Variable Values  and Identifier*/
             /* Boolean Variable */
-true                         { yylval.bval = 1; return BOOLEAN; }
-false                        { yylval.bval = 0; return BOOLEAN; }
+"true"                         { yylval.bval = 1; return BOOLEAN; }
+"false"                        { yylval.bval = 0; return BOOLEAN; }
 
     /* Identifiers */
 [a-zA-Z_][a-zA-Z0-9_]*      {yylval.sval = yytext; return IDENTIFIER;}
