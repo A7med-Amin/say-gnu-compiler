@@ -60,15 +60,23 @@
 
 
 
-
 /* Part 1 End */
 
 %%
 
 /* Part 2: Patterns and Action Rules */
+Scope: '{' '}'
+    | '{' codeStatement '}'
 
-program:            {printf("========  PROGRAM START ***********\n");}
-        | codeBlock {}
+elseScope: '{' '}'
+    | '{' codeStatement '}'
+
+
+
+
+
+program:                                                                            {printf("========  PROGRAM START ***********\n");}
+        | codeBlock                                                                 {printf("========  codeBlock ***********\n");}
         ;
 
 
@@ -82,6 +90,7 @@ codeStatement: dataType IDENTIFIER ';'                                          
         /* | FOR '(' forLoopInitialization expression ';' expression ')' codeBlock     {printf("========  FOR LOOP ***********\n");}  */
         | PRINT '(' printStatement ')' ';'                                          {printf("========  PRINT STATEMENT ***********\n");}
         | error   { yyerror("Unexpected statement."); }
+        | IF '(' codeStatement ')' Scope ELSE elseScope {printf("🚀🚀✨✨ IF ELSE ✨✨🚀🚀\n");}
         ;
 
 dataType: INT {} 
@@ -91,14 +100,14 @@ dataType: INT {}
         | BOOL {}
         ;
 
-simpleNumericalDataValue: INTEGER {printf("========  INTEGER NUMBER ***********\n");}
-        | FLOATING {printf("========  FLOAT NUMBER ***********\n");}
+simpleNumericalDataValue: INTEGER                               {printf("========  INTEGER NUMBER %d ***********\n", $1);}
+        | FLOATING                                              {printf("========  FLOAT NUMBER %f ***********\n", $1);}
         ;
 
-simpleNonNumericalDataValue: CHARACTER {printf("========  CHAR ***********\n");}
-        | STRING_LITERAL {printf("========  STRING ***********\n");}
-        | BOOLEAN_TRUE {printf("========  TRUE BOOLEAN ***********\n");}
-        | BOOLEAN_FALSE {printf("========  FALSE BOOLEAN ***********\n");}
+simpleNonNumericalDataValue: CHARACTER                          {printf("========  CHAR ***********\n");}
+        | STRING_LITERAL                                        {printf("========  STRING ***********\n");}
+        | BOOLEAN_TRUE                                          {printf("========  TRUE BOOLEAN ***********\n");}
+        | BOOLEAN_FALSE                                         {printf("========  FALSE BOOLEAN ***********\n");}
         ;
 
 complexNumericalValue: simpleNumericalDataValue {}
@@ -117,8 +126,8 @@ dataValue: complexNumericalValue {}
         | simpleNonNumericalDataValue {}
         ;
 
-constValue: simpleNonNumericalDataValue {}
-        | simpleNumericalDataValue {}
+constValue: simpleNonNumericalDataValue                         {printf("========  const simpleNonNumericalDataValue ***********\n");}
+        | simpleNumericalDataValue                              {printf("========  const simpleNumericalDataValue ***********\n");}
         ;
 
 /* forLoopInitialization: dataType IDENTIFIER ASSIGN expression ';'
@@ -128,12 +137,12 @@ constValue: simpleNonNumericalDataValue {}
 expression: dataValue {}
         ;
 
-printStatement: expression ',' printStatement {}
-        | expression {}
+printStatement: expression ',' printStatement   {printf("========  expression ',' printStatement ***********\n");}
+        | expression                            {printf("========  expression ***********\n");}
         ;   
 
-codeBlock: codeStatement {}
-        |  codeBlock codeStatement {}
+codeBlock: codeStatement                        {printf("========  codeStatement ***********\n");}
+        |  codeBlock codeStatement              {printf("========  codeBlock codeStatement ***********\n");}
         ;
 
 /* Part 2 End */
