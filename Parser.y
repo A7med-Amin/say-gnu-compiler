@@ -76,12 +76,11 @@ codeStatement: dataType IDENTIFIER ';'                                          
         | IDENTIFIER ASSIGN expression ';'                                          {printf("\033[33m========  VARIABLE ASSIGNMENT ***********\033[0m\n");}
         | CONST dataType IDENTIFIER ASSIGN constValue ';'                           {printf("\033[33m========  CONSTANT VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\033[0m\n");}
         | WHILE '(' expression ')' scopeBlock                                               {printf("\033[32m========  WHILE LOOP ***********\033[0m\n");}   
-        | REPEAT scopeBlock UNTIL expression                                        {printf("========  REPEAT UNTILL ***********\n");}  
+        | REPEAT scopeBlock UNTIL '(' expression ')'                                        {printf("========  REPEAT UNTILL ***********\n");}  
         | FOR '(' forLoopInitialization expression ';' expression ')' scopeBlock    {printf("\033[32m========  FOR LOOP ***********\033[0m\n");} 
         | PRINT '(' printStatement ')' ';'                                          {printf("========  PRINT STATEMENT ***********\033[0m\n");}
         | IF '(' expression ')' scopeBlock                                          {printf("\033[35m========  IF STATEMENT ***********\033[0m\n");}
         | IF '(' expression ')' scopeBlock ELSE scopeBlock                                  {printf("\033[35m========  IF ELSE STATEMENT ***********\033[0m\n");}
-        /* | expression                                                                {printf("========  EXPRESSION ***********\n");} */
         | function                                                                 {printf("========  FUNCTION DECLARATION ***********\n");}
         | functionCall  ';'                                                        {printf("========  FUNCTION CALL ***********\n");}
         | dataType IDENTIFIER ASSIGN functionCall ';'                              {printf("========  DECLARE AND ASSIGNMENT WITH FUNCTION ***********\n");}
