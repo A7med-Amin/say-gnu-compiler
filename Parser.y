@@ -94,7 +94,42 @@
 /* Part 2: Patterns and Action Rules */
 
 program:                                                                                    {printf("========  PROGRAM START ***********\n");}
-        | codeBlock                                                                         {printf("========  codeBlock ***********\n");}
+        | codeBlock                                                                         {    
+                                                                                                printf("                 #_   _#\n");
+                                                                                                printf("                 |a` `a|\n");
+                                                                                                printf("                 |  u  |\n");
+                                                                                                printf("                 \\  =  /\n");
+                                                                                                printf("                 |\\___/|\n");
+                                                                                                printf("        ___ ____/:     :\\____ ___\n");
+                                                                                                printf("      .'   `.-===-\\   /-===-.`   '.\n");
+                                                                                                printf("     /      .-\"\"\"\"\"-.-\"\"\"\"\"-.      \\\n");
+                                                                                                printf("    /'             =:=             '\\\n");
+                                                                                                printf("  .'  ' .:    o   -=:=-   o    :. '  `.\n");
+                                                                                                printf("  (.'   /'. '-.....-'-.....-' .\\'   '.)\n");
+                                                                                                printf("  /' ._/   \".     --:--     .\"   \\_. '\\\n");
+                                                                                                printf(" |  .'|      \".  ---:---  .\"      |'.  |\n");
+                                                                                                printf(" |  : |       |  ---:---  |       | :  |\n");
+                                                                                                printf("  \\ : |       |_____._____|       | : /\n");
+                                                                                                printf("  /   (       |----|------|       )   \\\n");
+                                                                                                printf(" /... .|      |    |      |      |. ...\\\n");
+                                                                                                printf("|::::/'' jgs /     |       \\     ''\\::::|\n");
+                                                                                                printf("'\"\"\"\"       /'    .L_      `\\       \"\"\"\"'\n");
+                                                                                                printf("           /'-.,__/` `\\__..-'\\\n");
+                                                                                                printf("          ;      /     \\      ;\n");
+                                                                                                printf("          :     /       \\     |\n");
+                                                                                                printf("          |    /         \\.   |\n");
+                                                                                                printf("          |`../           |  ,/\n");
+                                                                                                printf("          ( _ )           |  _)\n");
+                                                                                                printf("          |   |           |   |\n");
+                                                                                                printf("          |___|           \\___|\n");
+                                                                                                printf("          :===|            |==|\n");
+                                                                                                printf("           \\  /            |__|\n");
+                                                                                                printf("           /\\/\\           /\"\"\"`8.__\n");
+                                                                                                printf("           |oo|           \\__.//___)\n");
+                                                                                                printf("           |==|\n");
+                                                                                                printf("           \\__/\n");
+                                                                                                printf("                       SALAMO ALEEKO! ")
+                                                                                            }
         ;
 
 
