@@ -23,6 +23,8 @@
 "char"                      {return CHAR;}
 "string"                    {return STRING;}
 "bool"                      {return BOOL;}
+
+    /* Keywords */
 "const"                     {return CONST;}
 "void"                      {return VOID;}
 
