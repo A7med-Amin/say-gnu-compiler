@@ -13,9 +13,9 @@
 
 %%
 
-/* Part 2: Regex and Action Rules */
+    /* Part 2: Regex and Action Rules */
 
-/* Data Types */
+    /* Data Types */
 "int"                       {return INT;}
 "float"                     {return FLOAT;}
 "char"                      {return CHAR;}
@@ -24,45 +24,46 @@
 "const"                     {return CONST;}
 "void"                      {return VOID;}
 
-/* Keywords */
-    /* Consitions */
+    /* Keywords */
+        /* Consitions */
 "if"                        {return IF;}
 "else"                      {return ELSE;}
 "switch"                    {return SWITCH;}
 "case"                      {return CASE;}
 "default"                   {return DEFAULT;}
-    /* Loops */
+        /* Loops */
 "while"                     {return WHILE;}
 "for"                       {return FOR;}
 "repeat"                    {return REPEAT;}
 "until"                     {return UNTIL;}
 "break"                     {return BREAK;}
 "continue"                  {return CONTINUE;}
-    /* General Keywords */
+        /* General Keywords */
 "return"                    {return RETURN;}
 "enum"                      {return ENUM;}
 
-/* Identifiers */
-[a-zA-Z_][a-zA-Z0-9_]*      {yylval.sval = yytext; return IDENTIFIER;}
+    /* Print */
+"print"                     {return PRINT;}
 
-/* Variable Values */
-    /* Boolean Variable */
-"true" | "false"            {yylval.bval = yytext; return BOOLEAN;}
+    /* Variable Values */
+            /* Boolean Variable */
+"true"                         { yylval.bval = 1; return BOOLEAN; }
+"false"                        { yylval.bval = 0; return BOOLEAN; }
 
-    /* Integer Variable */
+        /* Integer Variable */
 [-+]?[0-9]+                 {yylval.ival = atoi(yytext); return INTEGER;}
 
-    /* Float Variable */
+        /* Float Variable */
 [-+]?[0-9]+\.[0-9]+         {yylval.fval = atof(yytext); return FLOATING;}
 
-    /* Char Variable */
+        /* Char Variable */
 \'.?\'                      {yylval.cval = yytext[0]; return CHARACTER;}
 
-    /* String Variable */
+        /* String Variable */
 \".*\"                      {yylval.sval = yytext; return STRING_LITERAL;}
 
-/* Operators */
-    /* Arithmetic */
+    /* Operators */
+        /* Arithmetic */
 "+"                         {return ADD;}
 "-"                         {return SUB;}
 "*"                         {return MUL;}
@@ -73,12 +74,12 @@
 "**"                        {return POW;}
 "="                         {return ASSIGN;}
 
-    /* Logical */
+        /* Logical */
 "&&"                        {return AND;}
 "||"                        {return OR;}
 "!"                         {return NOT;}
 
-    /* Comparison */
+        /* Comparison */
 "=="                        {return EQ;}
 "!="                        {return NEQ;}
 "<"                         {return LT;}
@@ -86,29 +87,30 @@
 ">"                         {return GT;}
 ">="                        {return GTE;}
 
-/* Colon and Semicolon */
+    /* Identifiers */
+[a-zA-Z_][a-zA-Z0-9_]*      {yylval.sval = yytext; return IDENTIFIER;}
+
+
+    /* Colon and Semicolon */
 [:;,]                        {return yytext[0];}
 
-/* Brackets */
+    /* Brackets */
 [{}()\[\]]                   {return yytext[0];}
 
-/* Print */
-"print"                     {return PRINT;}
-
-/* Comments */
-    /* Single Line Comments */
+    /* Comments */
+        /* Single Line Comments */
 "//"[^\n]                    {;}
 
-    /* Multi Line Comments */
+        /* Multi Line Comments */
 "/*"([^*]|\*[^\/])*"*/"      {;}
 
-/* Whitespace */
+    /* Whitespace */
 [ \t\n]+                     {;}
 
-/* Error */
+    /* Error */
 .                            {yyerror("Token not found");}
 
-/* Part 2 End */
+    /* Part 2 End */
 
 %%
 
