@@ -58,12 +58,23 @@
 
 
 
-
 /* Part 1 End */
 
 %%
 
 /* Part 2: Patterns and Action Rules */
+type: INT | FLOAT | CHAR | STRING | BOOL | CONST | VOID
+Scope: '{' '}'
+    | '{' Statement '}'
+
+elseScope: '{' '}'
+    | '{' Statement '}'
+
+
+Statement: type IDENTIFIER ';'
+    | IF '(' Expression ')' Scope ELSE elseScope {printf("🚀🚀✨✨ IF ELSE ✨✨🚀🚀\n");}
+
+
 
 
 
