@@ -101,13 +101,19 @@ simpleNonNumericalDataValue: CHARACTER {printf("========  CHAR ***********\n");}
         | BOOLEAN_FALSE {printf("========  FALSE BOOLEAN ***********\n");}
         ;
 
-complexValue: simpleNumericalDataValue {}
+complexNumericalValue: simpleNumericalDataValue {}
         | IDENTIFIER {printf("========  IDENTIFIER ***********\n");}
-        | '(' complexValue ')' {printf("========  PARENTHESIS ***********\n");}
-        /* ADD more expresions like add and sub*/
+        | complexNumericalValue ADD complexNumericalValue {printf("========  ADDITION OPERATION ***********\n");}
+        | complexNumericalValue SUB complexNumericalValue {printf("========  SUBTRACTION OPERATION ***********\n");}
+        | complexNumericalValue MUL complexNumericalValue {printf("========  MULTIPLICATION OPERATION ***********\n");}
+        | complexNumericalValue DIV complexNumericalValue {printf("========  DIVISION OPERATION ***********\n");}
+        | complexNumericalValue MOD complexNumericalValue {printf("========  MODULUS OPERATION ***********\n");}
+        | IDENTIFIER INC             {printf("========  INCREMENT ***********\n");}
+        | IDENTIFIER DEC             {printf("========  DECREMENT ***********\n");}
+        | '(' complexNumericalValue ')' {printf("========  PARENTHESIS ***********\n");}
         ;
 
-dataValue: complexValue {}
+dataValue: complexNumericalValue {}
         | simpleNonNumericalDataValue {}
         ;
 
@@ -119,15 +125,8 @@ constValue: simpleNonNumericalDataValue {}
         | IDENTIFIER ASSIGN expression ';'
         ; */
         
-expression: expression ADD expression {printf("========  ADDITION OPERATION ***********\n");}
-           | expression SUB expression {printf("========  SUBTRACTION OPERATION ***********\n");}
-           | expression MUL expression {printf("========  MULTIPLICATION OPERATION ***********\n");}
-           | expression DIV expression {printf("========  DIVISION OPERATION ***********\n");}
-           | IDENTIFIER INC             {printf("========  INCREMENT ***********\n");}
-           | IDENTIFIER DEC             {printf("========  DECREMENT ***********\n");}
-           | '(' expression ')' {printf("========  PARENTHESIZED EXPRESSION ***********\n");}
-           | dataValue {}
-           ;
+expression: dataValue {}
+        ;
 
 printStatement: expression ',' printStatement {}
         | expression {}

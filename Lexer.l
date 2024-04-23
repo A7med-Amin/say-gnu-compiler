@@ -81,10 +81,10 @@
 [a-zA-Z_][a-zA-Z0-9_]*      {yylval.sval = yytext; return IDENTIFIER;}
 
         /* Integer Variable */
-[-+]?[0-9]+                 {yylval.ival = atoi(yytext); return INTEGER;}
+[0-9]+                      {yylval.ival = atoi(yytext); return INTEGER;}
 
         /* Float Variable */
-[-+]?[0-9]+\.[0-9]+         {yylval.fval = atof(yytext); return FLOATING;}
+[0-9]+\.[0-9]+              {yylval.fval = atof(yytext); return FLOATING;}
 
         /* Char Variable */
 \'.?\'                      {yylval.cval = yytext[0]; return CHARACTER;}
