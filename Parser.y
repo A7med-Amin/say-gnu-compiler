@@ -1,4 +1,4 @@
-/* Part 1: Defniitions */
+/* Part 1: Definitions */
 
 %{
     /* C libraries */
@@ -7,6 +7,7 @@
 
     void yyerror(char* s);
     int yylex(void);
+    extern FILE *yyin;
 %}
 
 %union{
@@ -14,7 +15,7 @@
     float fval;
     char cval;
     char* sval;
-    bool bval;
+    char* bval;
 }
 
 /* Data Types */
@@ -28,7 +29,8 @@
 
 /* Values */
     /* Boolean */
-%token <bval> BOOLEAN 
+%token <bval> BOOLEAN_TRUE 
+%token <bval> BOOLEAN_FALSE 
     /* Integer */
 %token <ival> INTEGER
     /* Float */
@@ -76,7 +78,75 @@ Statement: type IDENTIFIER ';'
 
 
 
+program:            {printf("========  PROGRAM START ***********\n");}
+        | codeBlock {}
+        ;
 
+
+codeStatement: dataType IDENTIFIER ';'                                              {printf("========  VARIABLE DECLARATION ***********\n");}
+        | dataType IDENTIFIER ASSIGN expression ';'                                 {printf("========  VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\n");}
+        | IDENTIFIER ASSIGN expression ';'                                          {printf("========  VARIABLE ASSIGNMENT ***********\n");}
+        | CONST dataType IDENTIFIER ASSIGN constValue ';'                           {printf("========  CONSTANT VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\n");}
+        /* | WHILE '(' expression ')' codeBlock                                        {printf("========  WHILE LOOP ***********\n");}    */
+        /* | codeBlock                                                                 {printf("========  BLOCK ***********\n");}   */
+        /* | REPEAT codeBlock UNTIL '(' expression ')'                                 {printf("========  REPEAT UNTILL ***********\n");}   */
+        /* | FOR '(' forLoopInitialization expression ';' expression ')' codeBlock     {printf("========  FOR LOOP ***********\n");}  */
+        | PRINT '(' printStatement ')' ';'                                          {printf("========  PRINT STATEMENT ***********\n");}
+        | error   { yyerror("Unexpected statement."); }
+        ;
+
+dataType: INT {} 
+        | FLOAT {} 
+        | CHAR {}
+        | STRING {}
+        | BOOL {}
+        ;
+
+simpleNumericalDataValue: INTEGER {printf("========  INTEGER NUMBER ***********\n");}
+        | FLOATING {printf("========  FLOAT NUMBER ***********\n");}
+        ;
+
+simpleNonNumericalDataValue: CHARACTER {printf("========  CHAR ***********\n");}
+        | STRING_LITERAL {printf("========  STRING ***********\n");}
+        | BOOLEAN_TRUE {printf("========  TRUE BOOLEAN ***********\n");}
+        | BOOLEAN_FALSE {printf("========  FALSE BOOLEAN ***********\n");}
+        ;
+
+complexValue: simpleNumericalDataValue {}
+        | IDENTIFIER {printf("========  IDENTIFIER ***********\n");}
+        | '(' complexValue ')' {printf("========  PARENTHESIS ***********\n");}
+        /* ADD more expresions like add and sub*/
+        ;
+
+dataValue: complexValue {}
+        | simpleNonNumericalDataValue {}
+        ;
+
+constValue: simpleNonNumericalDataValue {}
+        | simpleNumericalDataValue {}
+        ;
+
+/* forLoopInitialization: dataType IDENTIFIER ASSIGN expression ';'
+        | IDENTIFIER ASSIGN expression ';'
+        ; */
+        
+expression: expression ADD expression {printf("========  ADDITION OPERATION ***********\n");}
+           | expression SUB expression {printf("========  SUBTRACTION OPERATION ***********\n");}
+           | expression MUL expression {printf("========  MULTIPLICATION OPERATION ***********\n");}
+           | expression DIV expression {printf("========  DIVISION OPERATION ***********\n");}
+           | IDENTIFIER INC             {printf("========  INCREMENT ***********\n");}
+           | IDENTIFIER DEC             {printf("========  DECREMENT ***********\n");}
+           | '(' expression ')' {printf("========  PARENTHESIZED EXPRESSION ***********\n");}
+           | dataValue {}
+           ;
+
+printStatement: expression ',' printStatement {}
+        | expression {}
+        ;   
+
+codeBlock: codeStatement {}
+        |  codeBlock codeStatement {}
+        ;
 
 /* Part 2 End */
 
@@ -85,12 +155,36 @@ Statement: type IDENTIFIER ';'
 /* Part 3: Subroutines */
 
 void yyerror(char* s){
-    printf(stderr, "\nERROR MESS: %s\n", s);
-    exit(1);
+    fprintf(stderr, "\nERROR MESS: %s\n", s);
 }
 
-int main(){
+int main(int argc, char **argv) {
+    FILE *file;
+
+    // Check if a filename was provided
+    if (argc > 1) {
+        // File name provided, open the file for reading
+        file = fopen(argv[1], "r");
+        if (!file) {
+            perror(argv[1]);
+            return 1;
+        }
+        // Set Flex to read from it instead of standard input:
+        yyin = file;
+    } 
+    /* else {
+        // No filename provided, read from standard input
+        yyin = stdin;
+    } */
+
+    // Parse through the input:
     yyparse();
+
+    if (argc > 1) {
+        // Close the file if it was opened
+        fclose(file);
+    }
+
     return 0;
 }
 
