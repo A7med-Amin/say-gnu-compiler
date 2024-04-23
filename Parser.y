@@ -7,6 +7,7 @@
 
     void yyerror(char* s);
     int yylex(void);
+    extern FILE *yyin;
 %}
 
 %union{
@@ -123,8 +124,33 @@ void yyerror(char* s){
     fprintf(stderr, "\nERROR MESS: %s\n", s);
 }
 
-int main(){
+int main(int argc, char **argv) {
+    FILE *file;
+
+    // Check if a filename was provided
+    if (argc > 1) {
+        // File name provided, open the file for reading
+        file = fopen(argv[1], "r");
+        if (!file) {
+            perror(argv[1]);
+            return 1;
+        }
+        // Set Flex to read from it instead of standard input:
+        yyin = file;
+    } 
+    /* else {
+        // No filename provided, read from standard input
+        yyin = stdin;
+    } */
+
+    // Parse through the input:
     yyparse();
+
+    if (argc > 1) {
+        // Close the file if it was opened
+        fclose(file);
+    }
+
     return 0;
 }
 
