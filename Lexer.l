@@ -100,7 +100,7 @@
 
     /* Comments */
         /* Single Line Comments */
-"//"[^\n]                    {;}
+"//"[^\n]*                   {;}
 
         /* Multi Line Comments */
 "/*"([^*]|\*[^\/])*"*/"      {;}

@@ -67,6 +67,10 @@
 
 /* Part 2: Patterns and Action Rules */
 
+program:            {printf("🚀🚀🚀🚀  PROGRAM START ✨✨✨✨\n");}
+        | codeBlock {}
+        ;
+
 
 codeStatement: dataType IDENTIFIER ';'      {printf("🚀🚀🚀🚀  VARIABLE DECLARATION ✨✨✨✨\n");}
         | dataType IDENTIFIER ASSIGN expression ';' {printf("🚀🚀🚀🚀  VARIABLE DECLARATION WITH VALUE ASSIGNMENT ✨✨✨✨\n");}
@@ -112,7 +116,13 @@ expression: dataValue {}
 
 printStatement: expression ',' printStatement {}
         | expression {}
-        ;        
+        ;   
+
+codeBlock: 
+            codeStatement {}
+    
+    |       codeBlock codeStatement {}
+    ;
 
 /* Part 2 End */
 
