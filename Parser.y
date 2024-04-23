@@ -77,7 +77,7 @@ codeStatement: dataType IDENTIFIER ';'      {printf("🚀🚀🚀🚀  VARIABLE 
         | IDENTIFIER ASSIGN expression ';' {printf("🚀🚀🚀🚀  VARIABLE ASSIGNMENT ✨✨✨✨\n");}
         | CONST dataType IDENTIFIER ASSIGN constValue ';' {printf("🚀🚀🚀🚀  CONSTANT VARIABLE DECLARATION WITH VALUE ASSIGNMENT ✨✨✨✨\n");}
         | PRINT '(' printStatement ')' ';' {printf("🚀🚀🚀🚀  PRINT STATEMENT ✨✨✨✨\n");}
-        | error ';'  { yyerror("Unexpected statement."); }
+        | error   { yyerror("Unexpected statement."); }
         ;
 
 dataType: INT {} 
