@@ -118,11 +118,9 @@ printStatement: expression ',' printStatement {}
         | expression {}
         ;   
 
-codeBlock: 
-            codeStatement {}
-    
-    |       codeBlock codeStatement {}
-    ;
+codeBlock: codeStatement {}
+        |  codeBlock codeStatement {}
+        ;
 
 /* Part 2 End */
 
