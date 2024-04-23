@@ -75,12 +75,11 @@ codeStatement: dataType IDENTIFIER ';'                                          
         | dataType IDENTIFIER ASSIGN expression ';'                                 {printf("\033[33m========  VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\033[0m\n");}
         | IDENTIFIER ASSIGN expression ';'                                          {printf("\033[33m========  VARIABLE ASSIGNMENT ***********\033[0m\n");}
         | CONST dataType IDENTIFIER ASSIGN constValue ';'                           {printf("\033[33m========  CONSTANT VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\033[0m\n");}
-        | WHILE expression scopeBlock                                               {printf("\033[32m========  WHILE LOOP ***********\033[0m\n");}   
-        /* | codeBlock                                                                 {printf("========  BLOCK ***********\n");}   */
+        | WHILE '(' expression ')' scopeBlock                                               {printf("\033[32m========  WHILE LOOP ***********\033[0m\n");}   
         | REPEAT scopeBlock UNTIL expression                                        {printf("========  REPEAT UNTILL ***********\n");}  
         | FOR '(' forLoopInitialization expression ';' expression ')' scopeBlock    {printf("\033[32m========  FOR LOOP ***********\033[0m\n");} 
         | PRINT '(' printStatement ')' ';'                                          {printf("========  PRINT STATEMENT ***********\033[0m\n");}
-        | IF expression scopeBlock                                                  {printf("\033[35m========  IF STATEMENT ***********\033[0m\n");}
+        | IF '(' expression ')' scopeBlock                                          {printf("\033[35m========  IF STATEMENT ***********\033[0m\n");}
         /* | expression                                                                {printf("========  EXPRESSION ***********\n");} */
         | IF expression scopeBlock ELSE scopeBlock                                  {printf("\033[35m========  IF ELSE STATEMENT ***********\033[0m\n");}
         | error   { yyerror("Unexpected statement."); }
@@ -113,23 +112,24 @@ complexNumericalValue: simpleNumericalDataValue                 {printf("\033[90
         | complexNumericalValue POW complexNumericalValue       {printf("========  POWER OPERATION ***********\n");}
         | IDENTIFIER INC                                        {printf("========  INCREMENT ***********\n");}
         | IDENTIFIER DEC                                        {printf("========  DECREMENT ***********\n");}
-        | '(' complexNumericalValue ')'                         {printf("========  PARENTHESIS ***********\n");}
+        /* | '(' complexNumericalValue ')'                         {printf("========  PARENTHESIS ***********\n");} */
         ;
 
-LogicalOperation: expression AND expression
-        | expression OR expression {printf("========  OR OPERATION ***********\n");}
-        | dataValue EQ dataValue   {printf("========  EQUAL OPERATION ***********\n");}
-        | dataValue NEQ dataValue  {printf("========  NOT EQUAL OPERATION ***********\n");}
-        | expression GT expression {printf("========  GREATER THAN OPERATION ***********\n");}
-        | expression LT expression {printf("========  LESS THAN OPERATION ***********\n");}
-        | expression GTE expression {printf("========  GREATER THAN OR EQUAL OPERATION ***********\n");}
-        | expression LTE expression {printf("========  LESS THAN OR EQUAL OPERATION ***********\n");}
-        | NOT expression         {printf("========  NOT OPERATION ***********\n");}
+LogicalOperation: expression AND expression                     {printf("========  AND OPERATION ***********\n");}
+        | expression OR expression                              {printf("========  OR OPERATION ***********\n");}
+        | expression EQ expression                                {printf("========  EQUAL OPERATION ***********\n");}
+        | expression NEQ expression                               {printf("========  NOT EQUAL OPERATION ***********\n");}
+        | expression GT expression                              {printf("========  GREATER THAN OPERATION ***********\n");}
+        | expression LT expression                              {printf("========  LESS THAN OPERATION ***********\n");}
+        | expression GTE expression                             {printf("========  GREATER THAN OR EQUAL OPERATION ***********\n");}
+        | expression LTE expression                             {printf("========  LESS THAN OR EQUAL OPERATION ***********\n");}
+        /* | '(' LogicalOperation ')'                              {printf("========  PARENTHESIS ***********\n");} */
+        | NOT expression                                        {printf("========  NOT OPERATION ***********\n");}
         ;
 
 
 
-dataValue: complexNumericalValue                                {printf("\033[90m========  complexNumericalValue ***********\033[0m\n");}
+expression: complexNumericalValue                                {printf("\033[90m========  complexNumericalValue ***********\033[0m\n");}
         | simpleNonNumericalDataValue                           {printf("\033[90m========  simpleNonNumericalDataValue ***********\033[0m\n");}
         | LogicalOperation                                      {printf("\033[90m========  LogicalOperation ***********\033[0m\n");}
         ;
@@ -142,8 +142,8 @@ forLoopInitialization: dataType IDENTIFIER ASSIGN expression ';'
         | IDENTIFIER ASSIGN expression ';'
         ;
         
-expression: dataValue                           {printf("\033[90m========  dataValue ***********\033[0m\n");}
-        ;
+/* expression: dataValue                           {printf("\033[90m========  dataValue ***********\033[0m\n");}
+        ; */
 
 printStatement: expression ',' printStatement   {printf("========  expression ',' printStatement ***********\n");}
         | expression                            {printf("========  expression ***********\n");}
