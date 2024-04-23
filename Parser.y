@@ -164,7 +164,11 @@ LogicalOperation: expression AND expression                     {printGreen("===
 
 expression: complexNumericalValue                                
         | simpleNonNumericalDataValue                           
-        | LogicalOperation                                      
+        | LogicalOperation
+        | '(' complexNumericalValue ')'
+        | '(' simpleNonNumericalDataValue ')'                                       
+        | '(' LogicalOperation ')'                                       
+                                       
         ;
 
 constValue: simpleNonNumericalDataValue                         
