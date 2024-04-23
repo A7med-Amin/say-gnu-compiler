@@ -71,21 +71,20 @@ program:                                                                        
         ;
 
 
-codeStatement: dataType IDENTIFIER ';'                                              {printf("========  VARIABLE DECLARATION ***********\n");}
-        | dataType IDENTIFIER ASSIGN expression ';'                                 {printf("========  VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\n");}
-        | IDENTIFIER ASSIGN expression ';'                                          {printf("========  VARIABLE ASSIGNMENT ***********\n");}
-        | CONST dataType IDENTIFIER ASSIGN constValue ';'                           {printf("========  CONSTANT VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\n");}
-        /* | WHILE '(' expression ')' codeBlock                                        {printf("========  WHILE LOOP ***********\n");}    */
-        /* | codeBlock                                                                 {printf("========  BLOCK ***********\n");}   */
-        /* | REPEAT codeBlock UNTIL '(' expression ')'                                 {printf("========  REPEAT UNTILL ***********\n");}   */
-        /* | FOR '(' forLoopInitialization expression ';' expression ')' codeBlock     {printf("========  FOR LOOP ***********\n");}  */
-        | PRINT '(' printStatement ')' ';'                                         {printf("========  PRINT STATEMENT ***********\n");}
-        | IF expression scopeBlock                                                 {printf("========  IF STATEMENT ***********\n");}
-        | IF expression scopeBlock ELSE scopeBlock                                 {printf("========  IF ELSE STATEMENT ***********\n");}
+codeStatement: dataType IDENTIFIER ';'                                              {printf("\033[33m========  VARIABLE DECLARATION ***********\033[0m\n");}
+        | dataType IDENTIFIER ASSIGN expression ';'                                 {printf("\033[33m========  VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\033[0m\n");}
+        | IDENTIFIER ASSIGN expression ';'                                          {printf("\033[33m========  VARIABLE ASSIGNMENT ***********\033[0m\n");}
+        | CONST dataType IDENTIFIER ASSIGN constValue ';'                           {printf("\033[33m========  CONSTANT VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\033[0m\n");}
+        | WHILE '(' expression ')' scopeBlock                                               {printf("\033[32m========  WHILE LOOP ***********\033[0m\n");}   
+        | REPEAT scopeBlock UNTIL expression                                        {printf("========  REPEAT UNTILL ***********\n");}  
+        | FOR '(' forLoopInitialization expression ';' expression ')' scopeBlock    {printf("\033[32m========  FOR LOOP ***********\033[0m\n");} 
+        | PRINT '(' printStatement ')' ';'                                          {printf("========  PRINT STATEMENT ***********\033[0m\n");}
+        | IF '(' expression ')' scopeBlock                                          {printf("\033[35m========  IF STATEMENT ***********\033[0m\n");}
+        /* | expression                                                                {printf("========  EXPRESSION ***********\n");} */
         | function                                                                 {printf("========  FUNCTION DECLARATION ***********\n");}
         | functionCall  ';'                                                        {printf("========  FUNCTION CALL ***********\n");}
         | dataType IDENTIFIER ASSIGN functionCall ';'                              {printf("========  DECLARE AND ASSIGNMENT WITH FUNCTION ***********\n");}
-        | IDENTIFIER ASSIGN functionCall ';'                                       {printf("========  ASSIGNMENT WITH FUNCTION ***********\n");}
+        | IDENTIFIER ASSIGN functionCall ';'   
         | error   { yyerror("Unexpected statement."); }
         ;
 
@@ -96,7 +95,7 @@ dataType: INT {}
         | BOOL {}
         ;
 
-simpleNumericalDataValue: INTEGER                               {printf("========  INTEGER NUMBER %d ***********\n", $1);}
+simpleNumericalDataValue: INTEGER                               {printf("\033[36m========  INTEGER NUMBER %d ***********\033[0m\n", $1);}
         | FLOATING                                              {printf("========  FLOAT NUMBER %f ***********\n", $1);}
         ;
 
@@ -106,32 +105,48 @@ simpleNonNumericalDataValue: CHARACTER                          {printf("=======
         | BOOLEAN_FALSE                                         {printf("========  FALSE BOOLEAN ***********\n");}
         ;
 
-complexNumericalValue: simpleNumericalDataValue {}
-        | IDENTIFIER {printf("========  IDENTIFIER ***********\n");}
-        | complexNumericalValue ADD complexNumericalValue {printf("========  ADDITION OPERATION ***********\n");}
-        | complexNumericalValue SUB complexNumericalValue {printf("========  SUBTRACTION OPERATION ***********\n");}
-        | complexNumericalValue MUL complexNumericalValue {printf("========  MULTIPLICATION OPERATION ***********\n");}
-        | complexNumericalValue DIV complexNumericalValue {printf("========  DIVISION OPERATION ***********\n");}
-        | complexNumericalValue MOD complexNumericalValue {printf("========  MODULUS OPERATION ***********\n");}
-        | IDENTIFIER INC             {printf("========  INCREMENT ***********\n");}
-        | IDENTIFIER DEC             {printf("========  DECREMENT ***********\n");}
-        | '(' complexNumericalValue ')' {printf("========  PARENTHESIS ***********\n");}
+complexNumericalValue: simpleNumericalDataValue                 {printf("\033[90m========  simpleNumericalDataValue ***********\033[0m\n");}
+        | IDENTIFIER                                            {printf("========  IDENTIFIER ***********\n");}
+        | complexNumericalValue ADD complexNumericalValue       {printf("========  ADDITION OPERATION ***********\n");}
+        | complexNumericalValue SUB complexNumericalValue       {printf("========  SUBTRACTION OPERATION ***********\n");}
+        | complexNumericalValue MUL complexNumericalValue       {printf("========  MULTIPLICATION OPERATION ***********\n");}
+        | complexNumericalValue DIV complexNumericalValue       {printf("========  DIVISION OPERATION ***********\n");}
+        | complexNumericalValue MOD complexNumericalValue       {printf("========  MODULUS OPERATION ***********\n");}
+        | complexNumericalValue POW complexNumericalValue       {printf("========  POWER OPERATION ***********\n");}
+        | IDENTIFIER INC                                        {printf("========  INCREMENT ***********\n");}
+        | IDENTIFIER DEC                                        {printf("========  DECREMENT ***********\n");}
+        /* | '(' complexNumericalValue ')'                         {printf("========  PARENTHESIS ***********\n");} */
         ;
 
-dataValue: complexNumericalValue {}
-        | simpleNonNumericalDataValue {}
+LogicalOperation: expression AND expression                     {printf("========  AND OPERATION ***********\n");}
+        | expression OR expression                              {printf("========  OR OPERATION ***********\n");}
+        | expression EQ expression                                {printf("========  EQUAL OPERATION ***********\n");}
+        | expression NEQ expression                               {printf("========  NOT EQUAL OPERATION ***********\n");}
+        | expression GT expression                              {printf("========  GREATER THAN OPERATION ***********\n");}
+        | expression LT expression                              {printf("========  LESS THAN OPERATION ***********\n");}
+        | expression GTE expression                             {printf("========  GREATER THAN OR EQUAL OPERATION ***********\n");}
+        | expression LTE expression                             {printf("========  LESS THAN OR EQUAL OPERATION ***********\n");}
+        /* | '(' LogicalOperation ')'                              {printf("========  PARENTHESIS ***********\n");} */
+        | NOT expression                                        {printf("========  NOT OPERATION ***********\n");}
+        ;
+
+
+
+expression: complexNumericalValue                                {printf("\033[90m========  complexNumericalValue ***********\033[0m\n");}
+        | simpleNonNumericalDataValue                           {printf("\033[90m========  simpleNonNumericalDataValue ***********\033[0m\n");}
+        | LogicalOperation                                      {printf("\033[90m========  LogicalOperation ***********\033[0m\n");}
         ;
 
 constValue: simpleNonNumericalDataValue                         {printf("========  const simpleNonNumericalDataValue ***********\n");}
         | simpleNumericalDataValue                              {printf("========  const simpleNumericalDataValue ***********\n");}
         ;
 
-/* forLoopInitialization: dataType IDENTIFIER ASSIGN expression ';'
+forLoopInitialization: dataType IDENTIFIER ASSIGN expression ';'
         | IDENTIFIER ASSIGN expression ';'
-        ; */
-        
-expression: dataValue {}
         ;
+        
+/* expression: dataValue                           {printf("\033[90m========  dataValue ***********\033[0m\n");}
+        ; */
 
 printStatement: expression ',' printStatement   {printf("========  expression ',' printStatement ***********\n");}
         | expression                            {printf("========  expression ***********\n");}
@@ -141,8 +156,8 @@ codeBlock: codeStatement                        {printf("========  codeStatement
         |  codeBlock codeStatement              {printf("========  codeBlock codeStatement ***********\n");}
         ;
 
-scopeBlock: '{' '}'
-        | '{' codeStatement '}'
+scopeBlock: '{' '}'                             {printf("========  EMPTY SCOPE ***********\n");}
+    | '{' codeStatement '}'                     {printf("========  SCOPE ***********\n");}
 
 function :  dataType IDENTIFIER '(' argList ')' '{' codeStatement RETURN  expression ';' '}'    {printf("========  FUNCTION ***********\n");}
         |   VOID IDENTIFIER '(' argList ')' '{' codeStatement returnCase '}'                    {printf("========  VOID FUNCTION ***********\n");}
