@@ -14,7 +14,7 @@
     float fval;
     char cval;
     char* sval;
-    bool bval;
+    char* bval;
 }
 
 /* Data Types */
@@ -28,7 +28,8 @@
 
 /* Values */
     /* Boolean */
-%token <bval> BOOLEAN 
+%token <bval> BOOLEAN_TRUE 
+%token <bval> BOOLEAN_FALSE 
     /* Integer */
 %token <ival> INTEGER
     /* Float */
@@ -66,6 +67,50 @@
 /* Part 2: Patterns and Action Rules */
 
 
+codeStatement: dataType IDENTIFIER ';'      {printf("🚀🚀🚀🚀  VARIABLE DECLARATION ✨✨✨✨\n");}
+        | dataType IDENTIFIER ASSIGN expression ';' {printf("🚀🚀🚀🚀  VARIABLE DECLARATION WITH VALUE ASSIGNMENT ✨✨✨✨\n");}
+        | IDENTIFIER ASSIGN expression ';' {printf("🚀🚀🚀🚀  VARIABLE ASSIGNMENT ✨✨✨✨\n");}
+        | CONST dataType IDENTIFIER ASSIGN constValue ';' {printf("🚀🚀🚀🚀  CONSTANT VARIABLE DECLARATION WITH VALUE ASSIGNMENT ✨✨✨✨\n");}
+        | PRINT '(' printStatement ')' ';' {printf("🚀🚀🚀🚀  PRINT STATEMENT ✨✨✨✨\n");}
+        ;
+
+dataType: INT {} 
+        | FLOAT {} 
+        | CHAR {}
+        | STRING {}
+        | BOOL {}
+        ;
+
+simpleNumericalDataValue: INTEGER {printf("🚀🚀🚀🚀  INTEGER NUMBER ✨✨✨✨\n");}
+        | FLOATING {printf("🚀🚀🚀🚀  FLOAT NUMBER ✨✨✨✨\n");}
+        ;
+
+simpleNonNumericalDataValue: CHARACTER {printf("🚀🚀🚀🚀  CHAR ✨✨✨✨\n");}
+        | STRING_LITERAL {printf("🚀🚀🚀🚀  STRING ✨✨✨✨\n");}
+        | BOOLEAN_TRUE {printf("🚀🚀🚀🚀  TRUE BOOLEAN ✨✨✨✨\n");}
+        | BOOLEAN_FALSE {printf("🚀🚀🚀🚀  FALSE BOOLEAN ✨✨✨✨\n");}
+        ;
+
+complexValue: simpleNumericalDataValue
+        | IDENTIFIER {printf("🚀🚀🚀🚀  IDENTIFIER ✨✨✨✨\n");}
+        | '(' complexValue ')' {printf("🚀🚀🚀🚀  PARENTHESIS ✨✨✨✨\n");}
+        /* ADD more expresions like add and sub*/
+        ;
+
+dataValue: complexValue {}
+        | simpleNonNumericalDataValue
+        ;
+
+constValue: simpleNonNumericalDataValue
+        | simpleNumericalDataValue
+        ;
+
+expression: dataValue {}
+        ;
+
+printStatement: expression ',' printStatement
+        | expression
+        ;        
 
 /* Part 2 End */
 
@@ -74,7 +119,7 @@
 /* Part 3: Subroutines */
 
 void yyerror(char* s){
-    printf(stderr, "\nERROR MESS: %s\n", s);
+    fprintf(stderr, "\nERROR MESS: %s\n", s);
     exit(1);
 }
 

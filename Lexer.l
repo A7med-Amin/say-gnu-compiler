@@ -7,6 +7,7 @@
 
     /* communications with yacc */
     #include "Parser.tab.h"
+
 %}
 
 /* Part 1 End */
@@ -72,8 +73,8 @@
 
     /* Variable Values  and Identifier*/
             /* Boolean Variable */
-"true"                         { yylval.bval = 1; return BOOLEAN; }
-"false"                        { yylval.bval = 0; return BOOLEAN; }
+"true"                         { yylval.bval = "true"; return BOOLEAN_TRUE; }
+"false"                        { yylval.bval = "false"; return BOOLEAN_FALSE; }
 
     /* Identifiers */
 [a-zA-Z_][a-zA-Z0-9_]*      {yylval.sval = yytext; return IDENTIFIER;}
