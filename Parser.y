@@ -67,8 +67,8 @@
 
 /* Part 2: Patterns and Action Rules */
 
-program:            {printf("========  PROGRAM START ***********\n");}
-        | codeBlock {}
+program:                                                                            {printf("========  PROGRAM START ***********\n");}
+        | codeBlock                                                                 {printf("========  codeBlock ***********\n");}
         ;
 
 
@@ -91,50 +91,50 @@ dataType: INT {}
         | BOOL {}
         ;
 
-simpleNumericalDataValue: INTEGER {printf("========  INTEGER NUMBER ***********\n");}
-        | FLOATING {printf("========  FLOAT NUMBER ***********\n");}
+simpleNumericalDataValue: INTEGER                               {printf("========  INTEGER NUMBER %d ***********\n", $1);}
+        | FLOATING                                              {printf("========  FLOAT NUMBER %f ***********\n", $1);}
         ;
 
-simpleNonNumericalDataValue: CHARACTER {printf("========  CHAR ***********\n");}
-        | STRING_LITERAL {printf("========  STRING ***********\n");}
-        | BOOLEAN_TRUE {printf("========  TRUE BOOLEAN ***********\n");}
-        | BOOLEAN_FALSE {printf("========  FALSE BOOLEAN ***********\n");}
+simpleNonNumericalDataValue: CHARACTER                          {printf("========  CHAR ***********\n");}
+        | STRING_LITERAL                                        {printf("========  STRING ***********\n");}
+        | BOOLEAN_TRUE                                          {printf("========  TRUE BOOLEAN ***********\n");}
+        | BOOLEAN_FALSE                                         {printf("========  FALSE BOOLEAN ***********\n");}
         ;
 
-complexValue: simpleNumericalDataValue {}
-        | IDENTIFIER {printf("========  IDENTIFIER ***********\n");}
-        | '(' complexValue ')' {printf("========  PARENTHESIS ***********\n");}
+complexValue: simpleNumericalDataValue                          {printf("========  simpleNumericalDataValue ***********\n");}
+        | IDENTIFIER                                            {printf("========  IDENTIFIER ***********\n");}
+        | '(' complexValue ')'                                  {printf("========  PARENTHESIS ***********\n");}
         /* ADD more expresions like add and sub*/
         ;
 
-dataValue: complexValue {}
-        | simpleNonNumericalDataValue {}
+dataValue: complexValue                                         {printf("========  complexValue ***********\n");}
+        | simpleNonNumericalDataValue                           {printf("========  simpleNonNumericalDataValue ***********\n");}
         ;
 
-constValue: simpleNonNumericalDataValue {}
-        | simpleNumericalDataValue {}
+constValue: simpleNonNumericalDataValue                         {printf("========  const simpleNonNumericalDataValue ***********\n");}
+        | simpleNumericalDataValue                              {printf("========  const simpleNumericalDataValue ***********\n");}
         ;
 
 /* forLoopInitialization: dataType IDENTIFIER ASSIGN expression ';'
         | IDENTIFIER ASSIGN expression ';'
         ; */
         
-expression: expression ADD expression {printf("========  ADDITION OPERATION ***********\n");}
-           | expression SUB expression {printf("========  SUBTRACTION OPERATION ***********\n");}
-           | expression MUL expression {printf("========  MULTIPLICATION OPERATION ***********\n");}
-           | expression DIV expression {printf("========  DIVISION OPERATION ***********\n");}
-           | IDENTIFIER INC             {printf("========  INCREMENT ***********\n");}
-           | IDENTIFIER DEC             {printf("========  DECREMENT ***********\n");}
-           | '(' expression ')' {printf("========  PARENTHESIZED EXPRESSION ***********\n");}
-           | dataValue {}
+expression: expression ADD expression           {printf("========  ADDITION OPERATION ***********\n");}
+           | expression SUB expression          {printf("========  SUBTRACTION OPERATION ***********\n");}
+           | expression MUL expression          {printf("========  MULTIPLICATION OPERATION ***********\n");}
+           | expression DIV expression          {printf("========  DIVISION OPERATION ***********\n");}
+           | IDENTIFIER INC                     {printf("========  INCREMENT ***********\n");}
+           | IDENTIFIER DEC                     {printf("========  DECREMENT ***********\n");}
+           | '(' expression ')'                 {printf("========  PARENTHESIZED EXPRESSION ***********\n");}
+           | dataValue                          {printf("========  dataValue ***********\n");}
            ;
 
-printStatement: expression ',' printStatement {}
-        | expression {}
+printStatement: expression ',' printStatement   {printf("========  expression ',' printStatement ***********\n");}
+        | expression                            {printf("========  expression ***********\n");}
         ;   
 
-codeBlock: codeStatement {}
-        |  codeBlock codeStatement {}
+codeBlock: codeStatement                        {printf("========  codeStatement ***********\n");}
+        |  codeBlock codeStatement              {printf("========  codeBlock codeStatement ***********\n");}
         ;
 
 /* Part 2 End */
