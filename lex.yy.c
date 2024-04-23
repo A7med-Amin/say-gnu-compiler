@@ -286,22 +286,22 @@ static void yy_fatal_error YY_PROTO(( yyconst char msg[] ));
 #define YY_END_OF_BUFFER 54
 static yyconst short int yy_accept[147] =
     {   0,
-        0,    0,   54,   52,   51,   51,   39,   52,   32,   52,
-       52,   48,   30,   28,   47,   29,   31,   24,   42,   36,
-       44,   46,   46,   46,   46,   46,   46,   46,   46,   46,
-       46,   46,   46,   46,   46,   52,   51,   41,    0,   27,
-       37,    0,   26,   35,   33,   24,   34,    0,    0,    0,
-       43,   40,   45,   46,   46,   46,   46,   46,   46,   46,
-       46,   46,   46,   46,   46,    8,   46,   46,   46,   46,
-       46,   46,   46,   46,   46,   38,   26,    0,    0,   49,
-       25,   46,   46,   46,   46,   46,   46,   46,   46,   46,
-       46,   14,    1,   46,   46,   46,   46,   46,   46,   46,
+        0,    0,   54,   52,   51,   51,   33,   52,   26,   52,
+       52,   48,   24,   22,   47,   23,   25,   43,   36,   30,
+       38,   42,   42,   42,   42,   42,   42,   42,   42,   42,
+       42,   42,   42,   42,   42,   52,   51,   35,    0,   46,
+       31,    0,   45,   29,   27,   43,   28,    0,   49,    0,
+       37,   34,   39,   42,   42,   42,   42,   42,   42,   42,
+       42,   42,   42,   42,   42,    8,   42,   42,   42,   42,
+       42,   42,   42,   42,   42,   32,   45,    0,    0,   49,
+       44,   42,   42,   42,   42,   42,   42,   42,   42,   42,
+       42,   14,    1,   42,   42,   42,   42,   42,   42,   42,
 
-       46,   46,   50,    5,   46,   11,    3,   46,   46,   46,
-        9,   20,   46,   46,   46,   46,   46,   46,   46,   22,
-       46,    7,   46,   17,    6,   46,   46,   23,    2,   21,
-       46,   46,   46,   46,   16,   13,   46,   46,   15,   19,
-        4,   10,   46,   12,   18,    0
+       42,   42,   50,    5,   42,   11,    3,   42,   42,   42,
+        9,   20,   42,   42,   42,   42,   42,   42,   42,   40,
+       42,    7,   42,   17,    6,   42,   42,   41,    2,   21,
+       42,   42,   42,   42,   16,   13,   42,   42,   15,   19,
+        4,   10,   42,   12,   18,    0
     } ;
 
 static yyconst int yy_ec[256] =
@@ -354,7 +354,7 @@ static yyconst short int yy_base[152] =
       172,  144,  143,  172,  172,   58,  172,  140,    0,  133,
       172,  172,  172,    0,  114,  122,  109,  124,  111,  117,
       105,  102,  109,  105,  102,    0,   99,  107,   33,   99,
-      105,   94,   94,  102,  101,  172,  172,  119,  113,  172,
+      105,   94,   94,  102,  101,  172,  172,  119,  113,    0,
       111,   95,  104,   99,   87,   38,  101,   96,   88,   82,
        97,    0,    0,   84,   91,   76,   85,   75,   87,   82,
 
@@ -375,7 +375,7 @@ static yyconst short int yy_def[152] =
       146,  146,  146,  146,  146,  146,  146,  150,  151,  146,
       146,  146,  146,  149,  149,  149,  149,  149,  149,  149,
       149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
-      149,  149,  149,  149,  149,  146,  146,  150,  150,  146,
+      149,  149,  149,  149,  149,  146,  146,  150,  150,  151,
       146,  149,  149,  149,  149,  149,  149,  149,  149,  149,
       149,  149,  149,  149,  149,  149,  149,  149,  149,  149,
 
@@ -456,7 +456,7 @@ static char *yy_last_accepting_cpos;
 char *yytext;
 #line 1 "Lexer.l"
 #define INITIAL 0
-/* Part 1: Defniitions */
+/* Part 1: Definitions */
 #line 4 "Lexer.l"
     /* C libraries */
     #include <stdio.h>
@@ -464,13 +464,10 @@ char *yytext;
 
     /* communications with yacc */
     #include "Parser.tab.h"
-    #include<string.h>
-    // int yylval;
-    int yyerror(char *s); 
-    extern int yylineno;
-	int yylex();
+    extern void yyerror(char* s);
+
 /* Part 1 End */
-#line 474 "lex.yy.c"
+#line 471 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -621,13 +618,13 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 19 "Lexer.l"
+#line 16 "Lexer.l"
 
 
     /* Part 2: Regex and Action Rules */
 
     /* Data Types */
-#line 631 "lex.yy.c"
+#line 628 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -712,294 +709,295 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 24 "Lexer.l"
+#line 21 "Lexer.l"
 {return INT;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 25 "Lexer.l"
+#line 22 "Lexer.l"
 {return FLOAT;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 26 "Lexer.l"
+#line 23 "Lexer.l"
 {return CHAR;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 27 "Lexer.l"
+#line 24 "Lexer.l"
 {return STRING;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 28 "Lexer.l"
+#line 25 "Lexer.l"
 {return BOOL;}
 	YY_BREAK
+/* Keywords */
 case 6:
 YY_RULE_SETUP
-#line 29 "Lexer.l"
+#line 28 "Lexer.l"
 {return CONST;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 30 "Lexer.l"
+#line 29 "Lexer.l"
 {return VOID;}
 	YY_BREAK
 /* Keywords */
 /* Consitions */
 case 8:
 YY_RULE_SETUP
-#line 34 "Lexer.l"
+#line 33 "Lexer.l"
 {return IF;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 35 "Lexer.l"
+#line 34 "Lexer.l"
 {return ELSE;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 36 "Lexer.l"
+#line 35 "Lexer.l"
 {return SWITCH;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 37 "Lexer.l"
+#line 36 "Lexer.l"
 {return CASE;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 38 "Lexer.l"
+#line 37 "Lexer.l"
 {return DEFAULT;}
 	YY_BREAK
 /* Loops */
 case 13:
 YY_RULE_SETUP
-#line 40 "Lexer.l"
+#line 39 "Lexer.l"
 {return WHILE;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 41 "Lexer.l"
+#line 40 "Lexer.l"
 {return FOR;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 42 "Lexer.l"
+#line 41 "Lexer.l"
 {return REPEAT;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 43 "Lexer.l"
+#line 42 "Lexer.l"
 {return UNTIL;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 44 "Lexer.l"
+#line 43 "Lexer.l"
 {return BREAK;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 45 "Lexer.l"
+#line 44 "Lexer.l"
 {return CONTINUE;}
 	YY_BREAK
 /* General Keywords */
 case 19:
 YY_RULE_SETUP
-#line 47 "Lexer.l"
+#line 46 "Lexer.l"
 {return RETURN;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 48 "Lexer.l"
+#line 47 "Lexer.l"
 {return ENUM;}
 	YY_BREAK
 /* Print */
 case 21:
 YY_RULE_SETUP
-#line 51 "Lexer.l"
+#line 50 "Lexer.l"
 {return PRINT;}
-	YY_BREAK
-/* Variable Values */
-/* Boolean Variable */
-case 22:
-YY_RULE_SETUP
-#line 55 "Lexer.l"
-{ yylval.bval = 1; return BOOLEAN; }
-	YY_BREAK
-case 23:
-YY_RULE_SETUP
-#line 56 "Lexer.l"
-{ yylval.bval = 0; return BOOLEAN; }
-	YY_BREAK
-/* Integer Variable */
-case 24:
-YY_RULE_SETUP
-#line 59 "Lexer.l"
-{yylval.ival = atoi(yytext); return INTEGER;}
-	YY_BREAK
-/* Float Variable */
-case 25:
-YY_RULE_SETUP
-#line 62 "Lexer.l"
-{yylval.fval = atof(yytext); return FLOATING;}
-	YY_BREAK
-/* Char Variable */
-case 26:
-YY_RULE_SETUP
-#line 65 "Lexer.l"
-{yylval.cval = yytext[0]; return CHARACTER;}
-	YY_BREAK
-/* String Variable */
-case 27:
-YY_RULE_SETUP
-#line 68 "Lexer.l"
-{yylval.sval = yytext; return STRING_LITERAL;}
 	YY_BREAK
 /* Operators */
 /* Arithmetic */
+case 22:
+YY_RULE_SETUP
+#line 54 "Lexer.l"
+{return ADD;}
+	YY_BREAK
+case 23:
+YY_RULE_SETUP
+#line 55 "Lexer.l"
+{return SUB;}
+	YY_BREAK
+case 24:
+YY_RULE_SETUP
+#line 56 "Lexer.l"
+{return MUL;}
+	YY_BREAK
+case 25:
+YY_RULE_SETUP
+#line 57 "Lexer.l"
+{return DIV;}
+	YY_BREAK
+case 26:
+YY_RULE_SETUP
+#line 58 "Lexer.l"
+{return MOD;}
+	YY_BREAK
+case 27:
+YY_RULE_SETUP
+#line 59 "Lexer.l"
+{return INC;}
+	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 72 "Lexer.l"
-{return ADD;}
+#line 60 "Lexer.l"
+{return DEC;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 73 "Lexer.l"
-{return SUB;}
+#line 61 "Lexer.l"
+{return POW;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 74 "Lexer.l"
-{return MUL;}
-	YY_BREAK
-case 31:
-YY_RULE_SETUP
-#line 75 "Lexer.l"
-{return DIV;}
-	YY_BREAK
-case 32:
-YY_RULE_SETUP
-#line 76 "Lexer.l"
-{return MOD;}
-	YY_BREAK
-case 33:
-YY_RULE_SETUP
-#line 77 "Lexer.l"
-{return INC;}
-	YY_BREAK
-case 34:
-YY_RULE_SETUP
-#line 78 "Lexer.l"
-{return DEC;}
-	YY_BREAK
-case 35:
-YY_RULE_SETUP
-#line 79 "Lexer.l"
-{return POW;}
-	YY_BREAK
-case 36:
-YY_RULE_SETUP
-#line 80 "Lexer.l"
+#line 62 "Lexer.l"
 {return ASSIGN;}
 	YY_BREAK
 /* Logical */
-case 37:
+case 31:
 YY_RULE_SETUP
-#line 83 "Lexer.l"
+#line 65 "Lexer.l"
 {return AND;}
 	YY_BREAK
-case 38:
+case 32:
 YY_RULE_SETUP
-#line 84 "Lexer.l"
+#line 66 "Lexer.l"
 {return OR;}
 	YY_BREAK
-case 39:
+case 33:
 YY_RULE_SETUP
-#line 85 "Lexer.l"
+#line 67 "Lexer.l"
 {return NOT;}
 	YY_BREAK
 /* Comparison */
+case 34:
+YY_RULE_SETUP
+#line 70 "Lexer.l"
+{return EQ;}
+	YY_BREAK
+case 35:
+YY_RULE_SETUP
+#line 71 "Lexer.l"
+{return NEQ;}
+	YY_BREAK
+case 36:
+YY_RULE_SETUP
+#line 72 "Lexer.l"
+{return LT;}
+	YY_BREAK
+case 37:
+YY_RULE_SETUP
+#line 73 "Lexer.l"
+{return LTE;}
+	YY_BREAK
+case 38:
+YY_RULE_SETUP
+#line 74 "Lexer.l"
+{return GT;}
+	YY_BREAK
+case 39:
+YY_RULE_SETUP
+#line 75 "Lexer.l"
+{return GTE;}
+	YY_BREAK
+/* Variable Values  and Identifier*/
+/* Boolean Variable */
 case 40:
 YY_RULE_SETUP
-#line 88 "Lexer.l"
-{return EQ;}
+#line 79 "Lexer.l"
+{ yylval.bval = "true"; return BOOLEAN_TRUE; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 89 "Lexer.l"
-{return NEQ;}
-	YY_BREAK
-case 42:
-YY_RULE_SETUP
-#line 90 "Lexer.l"
-{return LT;}
-	YY_BREAK
-case 43:
-YY_RULE_SETUP
-#line 91 "Lexer.l"
-{return LTE;}
-	YY_BREAK
-case 44:
-YY_RULE_SETUP
-#line 92 "Lexer.l"
-{return GT;}
-	YY_BREAK
-case 45:
-YY_RULE_SETUP
-#line 93 "Lexer.l"
-{return GTE;}
+#line 80 "Lexer.l"
+{ yylval.bval = "false"; return BOOLEAN_FALSE; }
 	YY_BREAK
 /* Identifiers */
+case 42:
+YY_RULE_SETUP
+#line 83 "Lexer.l"
+{yylval.sval = yytext; return IDENTIFIER;}
+	YY_BREAK
+/* Integer Variable */
+case 43:
+YY_RULE_SETUP
+#line 86 "Lexer.l"
+{yylval.ival = atoi(yytext); return INTEGER;}
+	YY_BREAK
+/* Float Variable */
+case 44:
+YY_RULE_SETUP
+#line 89 "Lexer.l"
+{yylval.fval = atof(yytext); return FLOATING;}
+	YY_BREAK
+/* Char Variable */
+case 45:
+YY_RULE_SETUP
+#line 92 "Lexer.l"
+{yylval.cval = yytext[0]; return CHARACTER;}
+	YY_BREAK
+/* String Variable */
 case 46:
 YY_RULE_SETUP
-#line 96 "Lexer.l"
-{yylval.sval = yytext; return IDENTIFIER;}
+#line 95 "Lexer.l"
+{yylval.sval = yytext; return STRING_LITERAL;}
 	YY_BREAK
 /* Colon and Semicolon */
 case 47:
 YY_RULE_SETUP
-#line 100 "Lexer.l"
+#line 98 "Lexer.l"
 {return yytext[0];}
 	YY_BREAK
 /* Brackets */
 case 48:
 YY_RULE_SETUP
-#line 103 "Lexer.l"
+#line 101 "Lexer.l"
 {return yytext[0];}
 	YY_BREAK
 /* Comments */
 /* Single Line Comments */
 case 49:
 YY_RULE_SETUP
-#line 107 "Lexer.l"
+#line 105 "Lexer.l"
 {;}
 	YY_BREAK
 /* Multi Line Comments */
 case 50:
 YY_RULE_SETUP
-#line 110 "Lexer.l"
+#line 108 "Lexer.l"
 {;}
 	YY_BREAK
 /* Whitespace */
 case 51:
 YY_RULE_SETUP
-#line 113 "Lexer.l"
+#line 111 "Lexer.l"
 {;}
 	YY_BREAK
 /* Error */
 case 52:
 YY_RULE_SETUP
-#line 116 "Lexer.l"
+#line 114 "Lexer.l"
 {yyerror("Token not found");}
 	YY_BREAK
 /* Part 2 End */
 case 53:
 YY_RULE_SETUP
-#line 120 "Lexer.l"
+#line 118 "Lexer.l"
 ECHO;
 	YY_BREAK
-#line 1003 "lex.yy.c"
+#line 1001 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1885,7 +1883,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 120 "Lexer.l"
+#line 118 "Lexer.l"
 
 
 /* Part 3: Subroutines */

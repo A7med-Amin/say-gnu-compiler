@@ -65,15 +65,6 @@
 %%
 
 /* Part 2: Patterns and Action Rules */
-Scope: '{' '}'
-    | '{' codeStatement '}'
-
-elseScope: '{' '}'
-    | '{' codeStatement '}'
-
-
-
-
 
 program:                                                                            {printf("========  PROGRAM START ***********\n");}
         | codeBlock                                                                 {printf("========  codeBlock ***********\n");}
@@ -89,8 +80,9 @@ codeStatement: dataType IDENTIFIER ';'                                          
         /* | REPEAT codeBlock UNTIL '(' expression ')'                                 {printf("========  REPEAT UNTILL ***********\n");}   */
         /* | FOR '(' forLoopInitialization expression ';' expression ')' codeBlock     {printf("========  FOR LOOP ***********\n");}  */
         | PRINT '(' printStatement ')' ';'                                          {printf("========  PRINT STATEMENT ***********\n");}
+        | IF expression scopeBlock                                                  {printf("========  IF STATEMENT ***********\n");}
+        | IF expression scopeBlock ELSE scopeBlock                                  {printf("========  IF ELSE STATEMENT ***********\n");}
         | error   { yyerror("Unexpected statement."); }
-        | IF '(' codeStatement ')' Scope ELSE elseScope {printf("🚀🚀✨✨ IF ELSE ✨✨🚀🚀\n");}
         ;
 
 dataType: INT {} 
@@ -144,6 +136,9 @@ printStatement: expression ',' printStatement   {printf("========  expression ',
 codeBlock: codeStatement                        {printf("========  codeStatement ***********\n");}
         |  codeBlock codeStatement              {printf("========  codeBlock codeStatement ***********\n");}
         ;
+
+scopeBlock: '{' '}'
+    | '{' codeStatement '}'
 
 /* Part 2 End */
 
