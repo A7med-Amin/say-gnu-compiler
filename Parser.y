@@ -80,7 +80,7 @@ codeStatement: dataType IDENTIFIER ';'                                          
         | FOR '(' forLoopInitialization expression ';' expression ')' scopeBlock    {printf("\033[32m========  FOR LOOP ***********\033[0m\n");} 
         | PRINT '(' printStatement ')' ';'                                          {printf("========  PRINT STATEMENT ***********\033[0m\n");}
         | IF '(' expression ')' scopeBlock                                          {printf("\033[35m========  IF STATEMENT ***********\033[0m\n");}
-        | IF expression scopeBlock ELSE scopeBlock                                  {printf("\033[35m========  IF ELSE STATEMENT ***********\033[0m\n");}
+        | IF '(' expression ')' scopeBlock ELSE scopeBlock                                  {printf("\033[35m========  IF ELSE STATEMENT ***********\033[0m\n");}
         /* | expression                                                                {printf("========  EXPRESSION ***********\n");} */
         | function                                                                 {printf("========  FUNCTION DECLARATION ***********\n");}
         | functionCall  ';'                                                        {printf("========  FUNCTION CALL ***********\n");}
