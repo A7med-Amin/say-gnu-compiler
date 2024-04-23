@@ -65,16 +65,13 @@
 %%
 
 /* Part 2: Patterns and Action Rules */
-type: INT | FLOAT | CHAR | STRING | BOOL | CONST | VOID
 Scope: '{' '}'
-    | '{' Statement '}'
+    | '{' codeStatement '}'
 
 elseScope: '{' '}'
-    | '{' Statement '}'
+    | '{' codeStatement '}'
 
 
-Statement: type IDENTIFIER ';'
-    | IF '(' Statement ')' Scope ELSE elseScope {printf("🚀🚀✨✨ IF ELSE ✨✨🚀🚀\n");}
 
 
 
@@ -93,6 +90,7 @@ codeStatement: dataType IDENTIFIER ';'                                          
         /* | FOR '(' forLoopInitialization expression ';' expression ')' codeBlock     {printf("========  FOR LOOP ***********\n");}  */
         | PRINT '(' printStatement ')' ';'                                          {printf("========  PRINT STATEMENT ***********\n");}
         | error   { yyerror("Unexpected statement."); }
+        | IF '(' codeStatement ')' Scope ELSE elseScope {printf("🚀🚀✨✨ IF ELSE ✨✨🚀🚀\n");}
         ;
 
 dataType: INT {} 
