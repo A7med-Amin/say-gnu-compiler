@@ -215,8 +215,9 @@ returnCase: RETURN ';'    		                                                    
 functionCall: IDENTIFIER '(' callList ')'   		                                            {printf("========  FUNCTION CALL ***********\n");}
         ;
 
-callList:  IDENTIFIER ',' callList {}
-	    |  IDENTIFIER              {}
+callList:  complexNumericalValue ',' callList {}
+	    |  complexNumericalValue              {}
+        | functionCall                  /* Recursive Call or nested function call */
 		| 
 	    ;	
 
