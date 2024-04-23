@@ -53,3 +53,5 @@ dkms.conf
 
 # Local files
 *.yy.c
+*.tab.c
+*.tab.h
