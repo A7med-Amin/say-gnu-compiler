@@ -114,8 +114,23 @@ complexNumericalValue: simpleNumericalDataValue {}
         | '(' complexNumericalValue ')' {printf("========  PARENTHESIS ***********\n");}
         ;
 
+LogicalOperation: expression AND expression
+        | expression OR expression {printf("========  OR OPERATION ***********\n");}
+        | dataValue EQ dataValue   {printf("========  EQUAL OPERATION ***********\n");}
+        | dataValue NEQ dataValue  {printf("========  NOT EQUAL OPERATION ***********\n");}
+        | expression GT expression {printf("========  GREATER THAN OPERATION ***********\n");}
+        | expression LT expression {printf("========  LESS THAN OPERATION ***********\n");}
+        | expression GTE expression {printf("========  GREATER THAN OR EQUAL OPERATION ***********\n");}
+        | expression LTE expression {printf("========  LESS THAN OR EQUAL OPERATION ***********\n");}
+        | NOT expression         {printf("========  NOT OPERATION ***********\n");}
+        ;
+
+
+
+
 dataValue: complexNumericalValue {}
         | simpleNonNumericalDataValue {}
+        | LogicalOperation {}
         ;
 
 constValue: simpleNonNumericalDataValue                         {printf("========  const simpleNonNumericalDataValue ***********\n");}
