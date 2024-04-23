@@ -72,7 +72,7 @@ elseScope: '{' '}'
 
 
 Statement: type IDENTIFIER ';'
-    | IF '(' Expression ')' Scope ELSE elseScope {printf("🚀🚀✨✨ IF ELSE ✨✨🚀🚀\n");}
+    | IF '(' Statement ')' Scope ELSE elseScope {printf("🚀🚀✨✨ IF ELSE ✨✨🚀🚀\n");}
 
 
 
