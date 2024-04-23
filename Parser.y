@@ -79,9 +79,13 @@ codeStatement: dataType IDENTIFIER ';'                                          
         /* | codeBlock                                                                 {printf("========  BLOCK ***********\n");}   */
         /* | REPEAT codeBlock UNTIL '(' expression ')'                                 {printf("========  REPEAT UNTILL ***********\n");}   */
         /* | FOR '(' forLoopInitialization expression ';' expression ')' codeBlock     {printf("========  FOR LOOP ***********\n");}  */
-        | PRINT '(' printStatement ')' ';'                                          {printf("========  PRINT STATEMENT ***********\n");}
-        | IF expression scopeBlock                                                  {printf("========  IF STATEMENT ***********\n");}
-        | IF expression scopeBlock ELSE scopeBlock                                  {printf("========  IF ELSE STATEMENT ***********\n");}
+        | PRINT '(' printStatement ')' ';'                                         {printf("========  PRINT STATEMENT ***********\n");}
+        | IF expression scopeBlock                                                 {printf("========  IF STATEMENT ***********\n");}
+        | IF expression scopeBlock ELSE scopeBlock                                 {printf("========  IF ELSE STATEMENT ***********\n");}
+        | function                                                                 {printf("========  FUNCTION DECLARATION ***********\n");}
+        | functionCall  ';'                                                        {printf("========  FUNCTION CALL ***********\n");}
+        | dataType IDENTIFIER ASSIGN functionCall ';'                              {printf("========  DECLARE AND ASSIGNMENT WITH FUNCTION ***********\n");}
+        | IDENTIFIER ASSIGN functionCall ';'                                       {printf("========  ASSIGNMENT WITH FUNCTION ***********\n");}
         | error   { yyerror("Unexpected statement."); }
         ;
 
@@ -138,7 +142,28 @@ codeBlock: codeStatement                        {printf("========  codeStatement
         ;
 
 scopeBlock: '{' '}'
-    | '{' codeStatement '}'
+        | '{' codeStatement '}'
+
+function :  dataType IDENTIFIER '(' argList ')' '{' codeStatement RETURN  expression ';' '}'    {printf("========  FUNCTION ***********\n");}
+        |   VOID IDENTIFIER '(' argList ')' '{' codeStatement returnCase '}'                    {printf("========  VOID FUNCTION ***********\n");}
+        ;
+
+returnCase: RETURN ';'    		                    {printf("========  VOID FUNCTION RETURN ***********\n");}	 
+        |                                           {printf("========  NO VOID FUNCTION RETURN ***********\n");}	 
+        ;
+
+functionCall: IDENTIFIER '(' callList ')'   		{printf("========  FUNCTION CALL ***********\n");}
+        ;
+
+callList:  IDENTIFIER ',' callList {}
+	    |  IDENTIFIER              {}
+		| 
+	    ;	
+
+argList:  dataType IDENTIFIER ',' argList {}
+	    | dataType IDENTIFIER 		      {}
+		|                                 {}
+	    ;
 
 /* Part 2 End */
 
