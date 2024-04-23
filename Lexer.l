@@ -1,4 +1,4 @@
-/* Part 1: Defniitions */
+/* Part 1: Definitions */
 
 %{
     /* C libraries */
@@ -45,23 +45,6 @@
     /* Print */
 "print"                     {return PRINT;}
 
-    /* Variable Values */
-            /* Boolean Variable */
-"true"                         { yylval.bval = 1; return BOOLEAN; }
-"false"                        { yylval.bval = 0; return BOOLEAN; }
-
-        /* Integer Variable */
-[-+]?[0-9]+                 {yylval.ival = atoi(yytext); return INTEGER;}
-
-        /* Float Variable */
-[-+]?[0-9]+\.[0-9]+         {yylval.fval = atof(yytext); return FLOATING;}
-
-        /* Char Variable */
-\'.?\'                      {yylval.cval = yytext[0]; return CHARACTER;}
-
-        /* String Variable */
-\".*\"                      {yylval.sval = yytext; return STRING_LITERAL;}
-
     /* Operators */
         /* Arithmetic */
 "+"                         {return ADD;}
@@ -87,9 +70,25 @@
 ">"                         {return GT;}
 ">="                        {return GTE;}
 
+    /* Variable Values  and Identifier*/
+            /* Boolean Variable */
+true                         { yylval.bval = 1; return BOOLEAN; }
+false                        { yylval.bval = 0; return BOOLEAN; }
+
     /* Identifiers */
 [a-zA-Z_][a-zA-Z0-9_]*      {yylval.sval = yytext; return IDENTIFIER;}
 
+        /* Integer Variable */
+[-+]?[0-9]+                 {yylval.ival = atoi(yytext); return INTEGER;}
+
+        /* Float Variable */
+[-+]?[0-9]+\.[0-9]+         {yylval.fval = atof(yytext); return FLOATING;}
+
+        /* Char Variable */
+\'.?\'                      {yylval.cval = yytext[0]; return CHARACTER;}
+
+        /* String Variable */
+\".*\"                      {yylval.sval = yytext; return STRING_LITERAL;}
 
     /* Colon and Semicolon */
 [:;,]                        {return yytext[0];}

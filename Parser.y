@@ -1,4 +1,4 @@
-/* Part 1: Defniitions */
+/* Part 1: Definitions */
 
 %{
     /* C libraries */
