@@ -72,6 +72,7 @@ codeStatement: dataType IDENTIFIER ';'      {printf("🚀🚀🚀🚀  VARIABLE 
         | IDENTIFIER ASSIGN expression ';' {printf("🚀🚀🚀🚀  VARIABLE ASSIGNMENT ✨✨✨✨\n");}
         | CONST dataType IDENTIFIER ASSIGN constValue ';' {printf("🚀🚀🚀🚀  CONSTANT VARIABLE DECLARATION WITH VALUE ASSIGNMENT ✨✨✨✨\n");}
         | PRINT '(' printStatement ')' ';' {printf("🚀🚀🚀🚀  PRINT STATEMENT ✨✨✨✨\n");}
+        | error ';'  { yyerror("Unexpected statement."); }
         ;
 
 dataType: INT {} 
@@ -91,25 +92,25 @@ simpleNonNumericalDataValue: CHARACTER {printf("🚀🚀🚀🚀  CHAR ✨✨✨
         | BOOLEAN_FALSE {printf("🚀🚀🚀🚀  FALSE BOOLEAN ✨✨✨✨\n");}
         ;
 
-complexValue: simpleNumericalDataValue
+complexValue: simpleNumericalDataValue {}
         | IDENTIFIER {printf("🚀🚀🚀🚀  IDENTIFIER ✨✨✨✨\n");}
         | '(' complexValue ')' {printf("🚀🚀🚀🚀  PARENTHESIS ✨✨✨✨\n");}
         /* ADD more expresions like add and sub*/
         ;
 
 dataValue: complexValue {}
-        | simpleNonNumericalDataValue
+        | simpleNonNumericalDataValue {}
         ;
 
-constValue: simpleNonNumericalDataValue
-        | simpleNumericalDataValue
+constValue: simpleNonNumericalDataValue {}
+        | simpleNumericalDataValue {}
         ;
 
 expression: dataValue {}
         ;
 
-printStatement: expression ',' printStatement
-        | expression
+printStatement: expression ',' printStatement {}
+        | expression {}
         ;        
 
 /* Part 2 End */
@@ -120,7 +121,6 @@ printStatement: expression ',' printStatement
 
 void yyerror(char* s){
     fprintf(stderr, "\nERROR MESS: %s\n", s);
-    exit(1);
 }
 
 int main(){

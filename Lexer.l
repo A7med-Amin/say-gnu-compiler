@@ -7,6 +7,7 @@
 
     /* communications with yacc */
     #include "Parser.tab.h"
+    extern void yyerror(char* s);
 
 %}
 
