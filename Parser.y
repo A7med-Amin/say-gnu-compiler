@@ -7,6 +7,7 @@
 
     void yyerror(char* s);
     int yylex(void);
+    int yylineno;     /* from lexer represents line numbers */
     extern FILE *yyin;
 
     void printRed(const char *text) {
@@ -43,16 +44,17 @@
     char cval;
     char* sval;
     char* bval;
+    char* id;
 }
 
 /* Data Types */
 %token INT FLOAT CHAR STRING BOOL CONST VOID
 
 /* Keywords */
-%token IF ELSE SWITCH CASE DEFAULT WHILE FOR REPEAT UNTIL BREAK CONTINUE RETURN ENUM
+%token IF ELSE SWITCH CASE DEFAULT WHILE FOR REPEAT UNTIL BREAK RETURN
 
 /* Identifiers */
-%token IDENTIFIER
+%token <id> IDENTIFIER
 
 /* Values */
     /* Boolean */

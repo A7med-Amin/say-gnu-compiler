@@ -8,6 +8,8 @@
     /* communications with yacc */
     #include "Parser.tab.h"
     extern void yyerror(char* s);
+    extern int yylineno;
+	int yylex();
 
 %}
 
@@ -80,7 +82,7 @@
 "false"                        { yylval.bval = "false"; return BOOLEAN_FALSE; }
 
     /* Identifiers */
-[a-zA-Z_][a-zA-Z0-9_]*      {yylval.sval = yytext; return IDENTIFIER;}
+[a-zA-Z_][a-zA-Z0-9_]*      {yylval.id = strdup(yytext); return IDENTIFIER;}
 
         /* Integer Variable */
 [0-9]+                      {yylval.ival = atoi(yytext); return INTEGER;}
@@ -89,10 +91,10 @@
 [0-9]+\.[0-9]+              {yylval.fval = atof(yytext); return FLOATING;}
 
         /* Char Variable */
-\'.?\'                      {yylval.cval = yytext[0]; return CHARACTER;}
+\'.?\'                      {yylval.cval = strdup(yytext[0]); return CHARACTER;}
 
         /* String Variable */
-\".*\"                      {yylval.sval = yytext; return STRING_LITERAL;}
+\".*\"                      {yylval.sval = strdup(yytext); return STRING_LITERAL;}
 
     /* Colon and Semicolon */
 [:;,]                        {return yytext[0];}
@@ -108,7 +110,10 @@
 "/*"([^*]|\*[^\/])*"*/"      {;}
 
     /* Whitespace */
-[ \t\n]+                     {;}
+[ \t]+                     {;}
+
+    /* New Line */
+(\n)                         {yylineno = yylineno+1;}
 
     /* Error */
 .                            {yyerror("Token not found");}
