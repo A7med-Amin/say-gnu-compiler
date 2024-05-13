@@ -1,5 +1,14 @@
 #include "semantic_analyzer.hpp"
 
+SymbolTable *currentSymbolTable;
+SymbolTable *rootSymbolTable;         // Root symbol table (Akbar parent fehom)
+SymbolTableEntry *currentFunction = NULL;
+stack<EntryType> functionParameters;
+
+FILE *semanticFile = fopen("semantic_error.txt", "w");
+FILE *quadrupleFile = fopen("quadruple.txt", "w");
+FILE *syntaxFile = fopen("syntax_error.txt", "w");
+ofstream symbolTablesFile("symbol_table.txt");
 
 void initSymbolTable()
 {
@@ -22,7 +31,7 @@ void createNewSymbolTable()
     currentSymbolTable = newSymbolTable;
 }
 
-void addEntryToCurrentTable(char *identifier, Kind kind, TypeValue *typeValue, bool isInitialized,  EntryType functionOutput = VOID)
+void addEntryToCurrentTable(char *identifier, Kind kind, TypeValue *typeValue, bool isInitialized,  EntryType functionOutput)
 {
     string id(identifier);              // convert char* to string
     SymbolTableEntry *entry = new SymbolTableEntry();

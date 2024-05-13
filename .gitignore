@@ -55,3 +55,7 @@ dkms.conf
 *.yy.c
 *.tab.c
 *.tab.h
+quadruple.txt
+semantic_error.txt
+symbol_table.txt
+syntax_error.txt

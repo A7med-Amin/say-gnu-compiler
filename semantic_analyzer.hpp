@@ -13,18 +13,8 @@
 #include <variant>
 #include "symbol_table.hpp"
 
-SymbolTable *currentSymbolTable;
-SymbolTable *rootSymbolTable;         // Root symbol table (Akbar parent fehom)
-SymbolTableEntry *currentFunction = NULL;
-stack<EntryType> functionParameters;
-
 // Define a variant that can hold any of the specified types
 using valueVariant = std::variant<int, float, bool, char*, char>;
-
-FILE *semanticFile = fopen("semantic_error.txt", "w");
-FILE *quadrupleFile = fopen("quadruple.txt", "w");
-FILE *syntaxFile = fopen("syntax_error.txt", "w");
-ofstream symbolTablesFile("symbol_table.txt");
 
 void initSymbolTable();
 void createNewSymbolTable();
