@@ -86,11 +86,6 @@ class SymbolTable
             }
         }
 
-        // Special function to remove a child 
-        void removeChild(SymbolTable* child) {
-            children.erase(remove(children.begin(), children.end(), child), children.end());
-        }
-
         // Getters
         SymbolTable* getParent() const { return parent; }
         SymbolTableEntry* getEntry(const string& key) const { // Find the entry with the given key

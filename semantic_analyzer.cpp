@@ -1,9 +1,9 @@
 #include "semantic_analyzer.hpp"
 
 
-void Init()
+void initSymbolTable()
 {
-    currentSymbolTable = new SymbolTable();
+    currentSymbolTable = new SymbolTable();         // root symbol table
     unordered_map<string, SymbolTableEntry *> map;
     vector<SymbolTable *> children;
     currentSymbolTable->setChildren(children);
@@ -87,27 +87,6 @@ void insertFuncParamsToStack(SymbolTableEntry *currentFunc)
     }
 }
 
-void printSemanticError(string error, int codeLine)
-{
-    fprintf(semanticFile, "%s at line %d\n", error.c_str(), codeLine);
-    printf("Semantic errors\n");
-    printSymbolTables();
-    exit(0);
-}
-
-void printSemanticWarning(string warning, int codeLine)
-{
-    fprintf(semanticFile, "%s at line %d\n", warning.c_str(), codeLine);
-}
-
-void printSyntaxError(string error, int codeLine)
-{
-    fprintf(syntaxFile, "%s at line %d\n", error.c_str(), codeLine);
-    printf("Syntax errors\n");
-    printSymbolTables();
-    exit(0);
-}
-
 SymbolTableEntry *identifierScopeCheck(char *identifier)
 {
     string id(identifier);
@@ -126,7 +105,7 @@ SymbolTableEntry *identifierScopeCheck(char *identifier)
 void checkIsBool(bool isBool, int codeLine)
 {  // Check if the type is bool for if condition and while condition
     if (isBool)
-        printSemanticError("Condition must be boolean at line", codeLine);
+        writeSemanticError("Condition must be boolean at line", codeLine);
 }
 
 TypeValue *convertTypeValToEntry(int type, const valueVariant &value)
@@ -255,6 +234,31 @@ bool checkEqualityLT(TypeValue *val1, TypeValue *val2)
         return false;
 }
 
+
+// ***************************************************** ERROR HANDLERS *****************************************************
+
+void writeSemanticError(string error, int codeLine)
+{
+    fprintf(semanticFile, "%s at line %d\n", error.c_str(), codeLine);
+    printf("Semantic errors\n");
+    saveSymbolTables();
+    exit(0);
+}
+
+void writeSemanticWarning(string warning, int codeLine)
+{
+    fprintf(semanticFile, "%s at line %d\n", warning.c_str(), codeLine);
+}
+
+void writeSyntaxError(string error, int codeLine)
+{
+    fprintf(syntaxFile, "%s at line %d\n", error.c_str(), codeLine);
+    printf("Syntax errors\n");
+    saveSymbolTables();
+    exit(0);
+}
+
+
 // TODO: Check This Functions
 void symbolTableWrite(SymbolTable *table, int level, ofstream &outputFile)
 {
@@ -337,7 +341,7 @@ void symbolTableWrite(SymbolTable *table, int level, ofstream &outputFile)
     }
 }
 
-void printSymbolTables()
+void saveSymbolTables()
 {
     symbolTableWrite(rootSymbolTable, 0, symbolTablesFile);
     symbolTablesFile.close();

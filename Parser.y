@@ -6,7 +6,7 @@
     #include <stdlib.h>
 
     /* Header Files */
-    #include "semantic_ analyzer.hpp"
+    #include "semantic_analyzer.hpp"
 
     /* Function prototypes */
     void yyerror(char* s);
@@ -48,24 +48,23 @@
     char cval;
     char* sval;
     char* bval;
-    char* id;
 }
 
 /* Data Types */
-%token INT FLOAT CHAR STRING BOOL CONST VOID
+%token INT_TYPE FLOAT_TYPE CHAR_TYPE STRING_TYPE BOOL_TYPE CONSTANT VOID_TYPE
 
 /* Keywords */
 %token IF ELSE SWITCH CASE DEFAULT WHILE FOR REPEAT UNTIL BREAK RETURN
 
 /* Identifiers */
-%token <id> IDENTIFIER
+%token IDENTIFIER
 
 /* Values */
     /* Boolean */
 %token <bval> BOOLEAN_TRUE 
 %token <bval> BOOLEAN_FALSE 
     /* Integer */
-%token <ival> INTEGER
+%token <ival> INTEGER_VALUE
     /* Float */
 %token <fval> FLOATING
     /* Character */
@@ -99,7 +98,7 @@
 
 /* Part 2: Patterns and Action Rules */
 
-program:                                                                                    {printf("========  PROGRAM START ***********\n");}
+program:                                                                                    {printf("======== EMPTY PROGRAM ***********\n");}
         | codeBlock                                                                         {    
                                                                                                 printf("                 #_   _#\n");
                                                                                                 printf("                 |a` `a|\n");
@@ -142,7 +141,7 @@ program:                                                                        
 codeStatement: dataType IDENTIFIER ';'                                                      {printf("\033[33m========  VARIABLE DECLARATION ***********\033[0m\n");}
         | dataType IDENTIFIER ASSIGN expression ';'                                         {printf("\033[33m========  VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\033[0m\n");}
         | IDENTIFIER ASSIGN expression ';'                                                  {printf("\033[33m========  VARIABLE ASSIGNMENT ***********\033[0m\n");}
-        | CONST dataType IDENTIFIER ASSIGN constValue ';'                                   {printf("\033[33m========  CONSTANT VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\033[0m\n");}
+        | CONSTANT dataType IDENTIFIER ASSIGN constValue ';'                                   {printf("\033[33m========  CONSTANT VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\033[0m\n");}
         | WHILE '(' expression ')' scopeBlock                                               {printBlue("========  WHILE LOOP ***********");}   
         | REPEAT scopeBlock UNTIL '(' expression ')'                                        {printBlue("========  REPEAT UNTILL ***********");}  
         | FOR '(' forLoopInitialization expression ';' expression ')' scopeBlock            {printBlue("========  FOR LOOP ***********");} 
@@ -154,17 +153,17 @@ codeStatement: dataType IDENTIFIER ';'                                          
         | functionCall  ';'                                                                 {printf("========  FUNCTION CALL ***********\n");}
         | dataType IDENTIFIER ASSIGN functionCall ';'                                       {printf("========  DECLARE AND ASSIGNMENT WITH FUNCTION ***********\n");}
         | IDENTIFIER ASSIGN functionCall ';'   
-        | error   { yyerror("Unexpected statement."); }
+        | error                                                                             { yyerror("Unexpected statement."); }
         ;
 
-dataType: INT {} 
-        | FLOAT {} 
-        | CHAR {}
-        | STRING {}
-        | BOOL {}
+dataType: INT_TYPE {} 
+        | FLOAT_TYPE {} 
+        | CHAR_TYPE {}
+        | STRING_TYPE {}
+        | BOOL_TYPE {}
         ;
 
-simpleNumericalDataValue: INTEGER                                                           {printf("\033[36m========  INTEGER (%d) ***********\033[0m\n", $1);}
+simpleNumericalDataValue: INTEGER_VALUE                                                           {printf("\033[36m========  INTEGER (%d) ***********\033[0m\n", $1);}
         | FLOATING                                                                          {printf("========  FLOAT (%f) ***********\n", $1);}
         ;
 
@@ -209,7 +208,6 @@ expression: complexNumericalValue
         | '(' complexNumericalValue ')'
         | '(' simpleNonNumericalDataValue ')'                                       
         | '(' LogicalOperation ')'                                       
-                                       
         ;
 
 constValue: simpleNonNumericalDataValue                         
@@ -228,29 +226,28 @@ codeBlock: codeStatement                                            {printRed("=
         |  codeBlock codeStatement                                  {printRed("========  END OF CODEBLOCK ***********\n");}
         ;
 
-scopeBlock: '{' '}'                                                 {printf("========  EMPTY SCOPE ***********\n");}
-    | '{' codeStatement '}'                                         {printf("========  SCOPE ***********\n");}
-    | '{' expression ';' '}'                                        {printf("========  SCOPE ***********\n");}
-
+scopeBlock: '{' '}'                                                                                         {printf("========  EMPTY SCOPE ***********\n");}
+    | '{' {createNewSymbolTable();} codeBlock {scopeEnd();} '}'                                         {printf("========  SCOPE ***********\n");}
+    | '{' {createNewSymbolTable();} expression ';' {scopeEnd();} '}'                                        {printf("========  SCOPE ***********\n");}
     ;
 
 
-switchBlock: '{' caseExpression '}'                     
+switchBlock: '{' {createNewSymbolTable();} caseExpression {scopeEnd();} '}'                     
     ;
 
 caseExpression:	
             caseDefault 	                   
-    |       CASE expression ':' codeStatement BREAK ';' caseExpression  
+    |       CASE expression ':' codeBlock BREAK ';' caseExpression  
 	;
 
 caseDefault:
-            DEFAULT ':' codeStatement BREAK ';'    		            	 
-            | DEFAULT ':' codeStatement    		                    	 
+            DEFAULT ':' codeBlock BREAK ';'    		            	 
+            | DEFAULT ':' codeBlock    		                    	 
             |                                                       	 
     ;
 
-function :  dataType IDENTIFIER '(' argList ')' '{' codeStatement RETURN  expression ';' '}'    {printf("========  FUNCTION ***********\n");}
-        |   VOID IDENTIFIER '(' argList ')' '{' codeStatement returnCase '}'                    {printf("========  VOID FUNCTION ***********\n");}
+function :  dataType IDENTIFIER '(' argList ')' '{' codeBlock RETURN  expression ';' '}'    {printf("========  FUNCTION ***********\n");}
+        |   VOID_TYPE IDENTIFIER '(' argList ')' '{' codeBlock returnCase '}'                    {printf("========  VOID FUNCTION ***********\n");}
         ;
 
 returnCase: RETURN ';'    		                                                                {printf("========  VOID FUNCTION RETURN ***********\n");}	 
@@ -285,8 +282,10 @@ void yyerror(char* s){
 }
 
 int main(int argc, char **argv) {
+    // Initialize the symbol table
+    initSymbolTable();
+    
     FILE *file;
-
     // Check if a filename was provided
     if (argc > 1) {
         // File name provided, open the file for reading
@@ -310,6 +309,9 @@ int main(int argc, char **argv) {
         // Close the file if it was opened
         fclose(file);
     }
+
+    // Save the symbol tables
+    saveSymbolTables();
 
     return 0;
 }

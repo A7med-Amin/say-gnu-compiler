@@ -20,15 +20,15 @@
     /* Part 2: Regex and Action Rules */
 
     /* Data Types */
-"int"                       {return INT;}
-"float"                     {return FLOAT;}
-"char"                      {return CHAR;}
-"string"                    {return STRING;}
-"bool"                      {return BOOL;}
+"int"                       {return INT_TYPE;}
+"float"                     {return FLOAT_TYPE;}
+"char"                      {return CHAR_TYPE;}
+"string"                    {return STRING_TYPE;}
+"bool"                      {return BOOL_TYPE;}
 
     /* Keywords */
-"const"                     {return CONST;}
-"void"                      {return VOID;}
+"const"                     {return CONSTANT;}
+"void"                      {return VOID_TYPE;}
 
     /* Keywords */
         /* Consitions */
@@ -43,10 +43,8 @@
 "repeat"                    {return REPEAT;}
 "until"                     {return UNTIL;}
 "break"                     {return BREAK;}
-"continue"                  {return CONTINUE;}
         /* General Keywords */
 "return"                    {return RETURN;}
-"enum"                      {return ENUM;}
 
     /* Print */
 "print"                     {return PRINT;}
@@ -82,19 +80,19 @@
 "false"                        { yylval.bval = "false"; return BOOLEAN_FALSE; }
 
     /* Identifiers */
-[a-zA-Z_][a-zA-Z0-9_]*      {yylval.id = strdup(yytext); return IDENTIFIER;}
+[a-zA-Z_][a-zA-Z0-9_]*      {yylval.sval = (yytext); return IDENTIFIER;}
 
         /* Integer Variable */
-[0-9]+                      {yylval.ival = atoi(yytext); return INTEGER;}
+[0-9]+                      {yylval.ival = atoi(yytext); return INTEGER_VALUE;}
 
         /* Float Variable */
 [0-9]+\.[0-9]+              {yylval.fval = atof(yytext); return FLOATING;}
 
         /* Char Variable */
-\'.?\'                      {yylval.cval = strdup(yytext[0]); return CHARACTER;}
+\'.?\'                      {yylval.cval = (yytext[0]); return CHARACTER;}
 
         /* String Variable */
-\".*\"                      {yylval.sval = strdup(yytext); return STRING_LITERAL;}
+\".*\"                      {yylval.sval = (yytext); return STRING_LITERAL;}
 
     /* Colon and Semicolon */
 [:;,]                        {return yytext[0];}

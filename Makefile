@@ -1,7 +1,7 @@
 build:
 	flex Lexer.l
 	bison -d -t Parser.y
-	gcc -o compiler lex.yy.c parser.tab.c
+	g++ -o compiler lex.yy.c parser.tab.c
 
 all: build run
 
