@@ -5,6 +5,10 @@
     #include <stdio.h>
     #include <stdlib.h>
 
+    /* Header Files */
+    #include "semantic_ analyzer.hpp"
+
+    /* Function prototypes */
     void yyerror(char* s);
     int yylex(void);
     int yylineno;     /* from lexer represents line numbers */
