@@ -45,34 +45,58 @@
 %}
 
 %union{
-    int ival;
-    float fval;
-    char cval;
-    char* sval;
-    const char* bval;
+    int dataType;
+    char * stringVal;
+    struct ActualValue{
+        int type;
+        char* nameRep;
+        union{
+            int ival;
+            float fval;
+            char cval;
+            char* sval;
+            bool bval;
+        };
+    }actualValue;
 }
 
+/* Program Grammer Types */
+%type <actualValue> simpleNumericalDataValue
+%type <actualValue> simpleNonNumericalDataValue
+%type <actualValue> constValue
+%type <actualValue> complexNumericalValue
+%type <actualValue> LogicalOperation
+%type <actualValue> expression
+%type <actualValue> functionCall
+
+
+
 /* Data Types */
-%token INT_TYPE FLOAT_TYPE CHAR_TYPE STRING_TYPE BOOL_TYPE CONSTANT VOID_TYPE
+%type <dataType> dataType
+%token<dataType> INT_TYPE 
+%token<dataType> FLOAT_TYPE 
+%token<dataType> CHAR_TYPE 
+%token<dataType> STRING_TYPE 
+%token<dataType> BOOL_TYPE 
 
 /* Keywords */
+%token CONSTANT VOID_TYPE
 %token IF ELSE SWITCH CASE DEFAULT WHILE FOR REPEAT UNTIL BREAK RETURN
 
 /* Identifiers */
-%token IDENTIFIER
-
+%token <stringVal> IDENTIFIER
 /* Values */
     /* Boolean */
-%token <bval> BOOLEAN_TRUE 
-%token <bval> BOOLEAN_FALSE 
+%token <actualValue> BOOLEAN_TRUE 
+%token <actualValue> BOOLEAN_FALSE 
     /* Integer */
-%token <ival> INTEGER_VALUE
+%token <actualValue> INTEGER_VALUE
     /* Float */
-%token <fval> FLOATING
+%token <actualValue> FLOATING
     /* Character */
-%token <cval> CHARACTER
+%token <actualValue> CHARACTER
     /* String */
-%token <sval> STRING_LITERAL
+%token <actualValue> STRING_LITERAL
 
 /* Operators */
     /* Arithmetic */
@@ -140,7 +164,14 @@ program:                                                                        
         ;
 
 
-codeStatement: dataType IDENTIFIER ';'                                                      {printf("\033[33m========  VARIABLE DECLARATION ***********\033[0m\n");}
+codeStatement: dataType IDENTIFIER ';'                                                      
+            {
+                SymbolTableEntry* entry = identifierScopeCheck($2);
+                if(entry != nullptr){
+                        writeSemanticError("Already declared variable within this scope",yylineno);
+                        return 0;
+                }
+            }
         | dataType IDENTIFIER ASSIGN expression ';'                                         {printf("\033[33m========  VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\033[0m\n");}
         | IDENTIFIER ASSIGN expression ';'                                                  {printf("\033[33m========  VARIABLE ASSIGNMENT ***********\033[0m\n");}
         | CONSTANT dataType IDENTIFIER ASSIGN constValue ';'                                   {printf("\033[33m========  CONSTANT VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\033[0m\n");}
