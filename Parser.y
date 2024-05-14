@@ -1,6 +1,8 @@
 /* Part 1: Definitions */
 
 %{
+    #define register
+
     /* C libraries */
     #include <stdio.h>
     #include <stdlib.h>
@@ -9,7 +11,7 @@
     #include "semantic_analyzer.hpp"
 
     /* Function prototypes */
-    void yyerror(char* s);
+    void yyerror(const char* s);
     int yylex(void);
     int yylineno;     /* from lexer represents line numbers */
     extern FILE *yyin;
@@ -47,7 +49,7 @@
     float fval;
     char cval;
     char* sval;
-    char* bval;
+    const char* bval;
 }
 
 /* Data Types */
@@ -277,7 +279,7 @@ argList:  dataType IDENTIFIER ',' argList {}
 
 
 
-void yyerror(char* s){
+void yyerror(const char* s){
     fprintf(stderr, "\nERROR MESS: %s\n", s);
 }
 

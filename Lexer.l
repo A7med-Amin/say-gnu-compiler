@@ -1,13 +1,15 @@
 /* Part 1: Definitions */
 
 %{
+    #define register
+
     /* C libraries */
     #include <stdio.h>
     #include <stdlib.h>
 
     /* communications with yacc */
     #include "Parser.tab.h"
-    extern void yyerror(char* s);
+    extern void yyerror(const char* s);
     extern int yylineno;
 	int yylex();
 
