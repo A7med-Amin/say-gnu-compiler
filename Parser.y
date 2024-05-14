@@ -145,17 +145,25 @@ codeStatement: dataType IDENTIFIER ';'                                          
         | IDENTIFIER ASSIGN expression ';'                                                  {printf("\033[33m========  VARIABLE ASSIGNMENT ***********\033[0m\n");}
         | CONSTANT dataType IDENTIFIER ASSIGN constValue ';'                                   {printf("\033[33m========  CONSTANT VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\033[0m\n");}
         | WHILE '(' expression ')' scopeBlock                                               {printBlue("========  WHILE LOOP ***********");}   
-        | REPEAT scopeBlock UNTIL '(' expression ')'                                        {printBlue("========  REPEAT UNTILL ***********");}  
-        | FOR '(' forLoopInitialization expression ';' expression ')' scopeBlock            {printBlue("========  FOR LOOP ***********");} 
+        | REPEAT scopeBlock UNTIL '(' expression ')' ';'                                      {printBlue("========  REPEAT UNTILL ***********");}  
+        | FOR '(' {createNewSymbolTable();} forLoopInitialization expression ';' expression ')' loopsScopeBlock            {printBlue("========  FOR LOOP ***********");} 
         | PRINT '(' printStatement ')' ';'                                                  {printf("========  PRINT STATEMENT ***********\033[0m\n");}
         | IF '(' expression ')' scopeBlock                                                  {printBlue("========  IF STATEMENT ***********");}
         | IF '(' expression ')' scopeBlock ELSE scopeBlock                                  {printBlue("========  IF ELSE STATEMENT ***********");}
+        | IF '(' expression ')' scopeBlock elseIfStmnt                                      {printBlue("========  IF ELSE IF STATEMENT ***********");}
         | SWITCH '(' IDENTIFIER ')' switchBlock                                             {printBlue("========  SWITCH CASE ***********");}
         | function                                                                          {printf("========  FUNCTION DECLARATION ***********\n");}
         | functionCall  ';'                                                                 {printf("========  FUNCTION CALL ***********\n");}
         | dataType IDENTIFIER ASSIGN functionCall ';'                                       {printf("========  DECLARE AND ASSIGNMENT WITH FUNCTION ***********\n");}
         | IDENTIFIER ASSIGN functionCall ';'   
+        | scopeBlock
         | error                                                                             { yyerror("Unexpected statement."); }
+        ;
+
+elseIfStmnt: ELSE IF '(' expression ')' scopeBlock elseIfStmnt
+        | ELSE IF '(' expression ')' scopeBlock
+        | ELSE scopeBlock
+        |
         ;
 
 dataType: INT_TYPE {} 
@@ -203,7 +211,6 @@ LogicalOperation: expression AND expression                     {printGreen("===
         ;
 
 
-
 expression: complexNumericalValue                                
         | simpleNonNumericalDataValue                           
         | LogicalOperation
@@ -219,20 +226,22 @@ constValue: simpleNonNumericalDataValue
 forLoopInitialization: dataType IDENTIFIER ASSIGN expression ';'   
         | IDENTIFIER ASSIGN expression ';'                         
         ;
-        
+
 printStatement: expression ',' printStatement                       
         | expression                                                
         ;   
 
-codeBlock: codeStatement                                            {printRed("========  END OF CODEBLOCK ***********\n");}
-        |  codeBlock codeStatement                                  {printRed("========  END OF CODEBLOCK ***********\n");}
+codeBlock: codeStatement                                            {}
+        |  codeBlock codeStatement                                  {}
         ;
 
-scopeBlock: '{' '}'                                                                                         {printf("========  EMPTY SCOPE ***********\n");}
-    | '{' {createNewSymbolTable();} codeBlock {scopeEnd();} '}'                                         {printf("========  SCOPE ***********\n");}
-    | '{' {createNewSymbolTable();} expression ';' {scopeEnd();} '}'                                        {printf("========  SCOPE ***********\n");}
+scopeBlock: '{' {createNewSymbolTable();} codeBlock {scopeEnd();} '}'                                             {printf("========  SCOPE ***********\n");}
     ;
 
+loopsScopeBlock: '{' codeBlock {scopeEnd();} '}'                                                                  {printf("========  LOOPS SCOPE ***********\n");}
+    ;
+
+/////////////////////////////// Switch Case ///////////////////////////////
 
 switchBlock: '{' {createNewSymbolTable();} caseExpression {scopeEnd();} '}'                     
     ;
@@ -248,8 +257,10 @@ caseDefault:
             |                                                       	 
     ;
 
-function :  dataType IDENTIFIER '(' argList ')' '{' codeBlock RETURN  expression ';' '}'    {printf("========  FUNCTION ***********\n");}
-        |   VOID_TYPE IDENTIFIER '(' argList ')' '{' codeBlock returnCase '}'                    {printf("========  VOID FUNCTION ***********\n");}
+/////////////////////////////// Function ///////////////////////////////
+
+function :  dataType IDENTIFIER '(' {createNewSymbolTable();} argList ')' '{' codeBlock RETURN  expression ';' {scopeEnd();} '}'  {printf("========  FUNCTION ***********\n");}
+        |   VOID_TYPE IDENTIFIER '(' {createNewSymbolTable();} argList ')' '{' codeBlock returnCase {scopeEnd();} '}'             {printf("========  VOID FUNCTION ***********\n");}
         ;
 
 returnCase: RETURN ';'    		                                                                {printf("========  VOID FUNCTION RETURN ***********\n");}	 
