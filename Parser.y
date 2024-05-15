@@ -74,6 +74,7 @@
 %type <actualValue> printStatement
 %type <actualValue> callSingleParam
 %type <actualValue> callList
+%type <actualValue> printMultiple
 
 
 /* Data Types */
@@ -366,9 +367,13 @@ arg: dataType IDENTIFIER
         ;
 
 /* Print Statement */
-printStatement: expression ',' printStatement                       
-        | expression                                                
+printStatement: printMultiple ',' printStatement                        
+        | printMultiple                                          
         ;  
+
+printMultiple: expression                       
+        | constantValue   
+        ;
 
 /* Part 2 End */
 
