@@ -6,7 +6,6 @@ SymbolTableEntry *currentFunction = NULL;
 stack<EntryType> functionParameters;
 
 FILE *semanticFile = fopen("semantic_error.txt", "w");
-FILE *quadrupleFile = fopen("quadruple.txt", "w");
 FILE *syntaxFile = fopen("syntax_error.txt", "w");
 ofstream symbolTablesFile("symbol_table.txt");
 
@@ -380,6 +379,5 @@ void saveSymbolTables()
     symbolTableWrite(rootSymbolTable, 0, symbolTablesFile);
     symbolTablesFile.close();
     fclose(semanticFile);
-    fclose(quadrupleFile);
     fclose(syntaxFile);
 }
