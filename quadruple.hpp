@@ -2,28 +2,29 @@
 #define QUADRUPLE_HPP
 
 #include <string>
+using namespace std;
 
 struct Quadruple {
-    std::string op;
-    std::string arg1;
-    std::string arg2;
-    std::string result;
+public:
+    string op;
+    string arg1;
+    string arg2;
+    string result;
 
-    Quadruple(std::string op, std::string arg1, std::string arg2, std::string result)
-        : op(op), arg1(arg1), arg2(arg2), result(result) {}
+    // Declare the constructor
+    Quadruple(string op, string arg1, string arg2, string result);
 
     // setters
-    void setOp(std::string op);
-    void setArg1(std::string arg1);
-    void setArg2(std::string arg2);
-    void setResult(std::string result);
+    void setOp(string op);
+    void setArg1(string arg1);
+    void setArg2(string arg2);
+    void setResult(string result);
 
     // getters
-    std::string getOp();
-    std::string getArg1();
-    std::string getArg2();
-    std::string getResult();
-
+    string getOp();
+    string getArg1();
+    string getArg2();
+    string getResult();
 };
 
 #endif // QUADRUPLE_HPP

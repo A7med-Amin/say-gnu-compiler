@@ -7,7 +7,11 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include "AssemblyGenerator.hpp"
-
+    #include <cstdio>
+    #include <cstdlib>
+    #include <cstring>
+    #include <sstream>
+    #include <iostream>
     /* Header Files */
     #include "semantic_analyzer.hpp"
 
@@ -495,11 +499,14 @@ void yyerror(const char* s){
     fprintf(stderr, "\nERROR MESS: %s\n", s);
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     // Initialize the symbol table
     initSymbolTable();
     
-    FILE *file;
+    FILE* file = nullptr;
+    char inputBuffer[256];
+    bool useStandardInput = false;
+
     // Check if a filename was provided
     if (argc > 1) {
         // File name provided, open the file for reading
@@ -508,20 +515,33 @@ int main(int argc, char **argv) {
             perror(argv[1]);
             return 1;
         }
-        // Set Flex to read from it instead of standard input:
+        // Set Flex to read from it instead of standard input
         yyin = file;
-    } 
-    /* else {
-        // No filename provided, read from standard input
-        yyin = stdin;
-    } */
-    
-
-    yyparse();
-	printf("\nParsing complete\n");
-
-    if (argc > 1) {
+        yyparse();
+        printf("\nParsing complete\n");
         fclose(file);
+    } else {
+        // No filename provided, keep reading from standard input until "exit" is typed
+        while (true) {
+            printf("Enter input (or type 'exit' to continue): ");
+            fgets(inputBuffer, sizeof(inputBuffer), stdin);
+            // Check for special input keyword
+            if (strncmp(inputBuffer, "exit", 4) == 0) {
+                break;
+            }
+            // Use a temporary file to simulate fmemopen
+            FILE* tempFile = tmpfile();
+            if (!tempFile) {
+                perror("tmpfile");
+                return 1;
+            }
+            fputs(inputBuffer, tempFile);
+            rewind(tempFile);
+            yyin = tempFile;
+            yyparse();
+            printf("\nParsing complete\n");
+            fclose(tempFile);
+        }
     }
 
     saveSymbolTables();
@@ -532,7 +552,13 @@ int main(int argc, char **argv) {
     FILE* quadFile = fopen(quadPath, "w");
     FILE* assemblyFile = fopen(assemblyPath, "w");
 
-    /* fprintf(quadFile, "OpCode: %d  Arg1: %s  Arg2: %s Result: %s \n", Walker->DATA->OpCode, Walker->DATA->Arg1, Walker->DATA->Arg2, Walker->DATA->Result); */
+    if (quadFile && assemblyFile) {
+        assemblyGenerator.printQuadsToFile();
+        fclose(quadFile);
+        fclose(assemblyFile);
+    } else {
+        perror("Error opening output files");
+    }
 
     return 0;
 }

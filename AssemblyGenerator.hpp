@@ -28,6 +28,6 @@ public:
     void clearTemps();
     void addQuad(const string& operation, const string& operand1, const string& operand2, const string& destination);
     // void printQuads();
-    // void printQuadsToFile();
+    void printQuadsToFile();
 };
 
