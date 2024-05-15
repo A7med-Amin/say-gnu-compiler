@@ -15,6 +15,34 @@
     int yylex(void);
     int yylineno;     /* from lexer represents line numbers */
     extern FILE *yyin;
+
+    /* Macros */
+    #ifndef TYPE_VALUE_MACROS_HPP
+    #define TYPE_VALUE_MACROS_HPP
+    #define GET_TYPE_VALUE(compareDataType, value1, value3, lhs, rhs)        \
+        switch (compareDataType) {                                         \
+        case INT_TYPE:                                                 \
+            lhs = convertTypeValToEntry(INT_TYPE, value1.ival);        \
+            rhs = convertTypeValToEntry(INT_TYPE, value3.ival);        \
+            break;                                                     \
+        case FLOAT_TYPE:                                               \
+            lhs = convertTypeValToEntry(FLOAT_TYPE, value1.fval);      \
+            rhs = convertTypeValToEntry(FLOAT_TYPE, value3.fval);      \
+            break;                                                     \
+        case STRING_TYPE:                                              \
+            lhs = convertTypeValToEntry(STRING_TYPE, value1.sval);     \
+            rhs = convertTypeValToEntry(STRING_TYPE, value3.sval);     \
+            break;                                                     \
+        case BOOL_TYPE:                                                \
+            lhs = convertTypeValToEntry(BOOL_TYPE, value1.bval);       \
+            rhs = convertTypeValToEntry(BOOL_TYPE, value3.bval);       \
+            break;                                                     \
+        case CHAR_TYPE:                                                \
+            lhs = convertTypeValToEntry(CHAR_TYPE, value1.cval);       \
+            rhs = convertTypeValToEntry(CHAR_TYPE, value3.cval);       \
+            break;                                                     \
+        }
+    #endif // TYPE_VALUE_MACROS_HPP
 %}
 
 %union{
@@ -143,8 +171,8 @@ program:                                                                        
                                                                                             }
         ;
 
-codeBlock: codeStatement                                            {}
-        |  codeBlock codeStatement                                  {}
+codeBlock: codeStatement                                           
+        |  codeBlock codeStatement                                
         ;
 
 
@@ -175,27 +203,166 @@ expression: arithmetic | boolean ;
 
 boolean: BOOLEAN_TRUE | BOOLEAN_FALSE 
         | expression EQ arithmetic 
-        {printGray("========  EQUAL OPERATION ***********");}
+        {
+            int lhsType = $1.type;
+            int rhsType = $3.type;
+            if (typeMismatch(lhsType, rhsType))
+            {
+                printf("%d %d \n", lhsType, rhsType);
+                writeSemanticError("Type mismatch", yylineno);
+                return 0;
+            }
+            $$.type = BOOL_TYPE;
+            TypeValue * lhs;
+            TypeValue * rhs;
+            EntryType compareDataType= static_cast<EntryType>(lhsType);
+            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+            $$.bval = checkEqualityEqual(lhs, rhs);
+        }
         | expression NEQ arithmetic 
-        {printGray("========  NOT EQUAL OPERATION ***********");}
+        {
+            int lhsType = $1.type;
+            int rhsType = $3.type;
+            if (typeMismatch(lhsType, rhsType))
+            {
+                printf("%d %d \n", lhsType, rhsType);
+                writeSemanticError("Type mismatch", yylineno);
+                return 0;
+            }
+            $$.type = BOOL_TYPE;
+            TypeValue * lhs;
+            TypeValue * rhs;
+            EntryType compareDataType= static_cast<EntryType>(lhsType);
+            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+            $$.bval = checkEqualityNot(lhs, rhs);
+        }
         | expression GT arithmetic 
-        {printGray("========  GREATER THAN OPERATION ***********");}
+        {
+            int lhsType = $1.type;
+            int rhsType = $3.type;
+            if (typeMismatch(lhsType, rhsType))
+            {
+                printf("%d %d \n", lhsType, rhsType);
+                writeSemanticError("Type mismatch", yylineno);
+                return 0;
+            }
+            $$.type = BOOL_TYPE;
+            TypeValue * lhs;
+            TypeValue * rhs;
+            EntryType compareDataType= static_cast<EntryType>(lhsType);
+            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+            $$.bval = checkEqualityGT(lhs, rhs);
+        }
         | expression LT arithmetic 
-        {printGray("========  LESS THAN OPERATION ***********");}
+        {
+            int lhsType = $1.type;
+            int rhsType = $3.type;
+            if (typeMismatch(lhsType, rhsType))
+            {
+                printf("%d %d \n", lhsType, rhsType);
+                writeSemanticError("Type mismatch", yylineno);
+                return 0;
+            }
+            $$.type = BOOL_TYPE;
+            TypeValue * lhs;
+            TypeValue * rhs;
+            EntryType compareDataType= static_cast<EntryType>(lhsType);
+            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+            $$.bval = checkEqualityLT(lhs, rhs);
+        }
         | expression GTE arithmetic 
-        {printGray("========  GREATER THAN OR EQUAL OPERATION ***********");}
+        {
+            int lhsType = $1.type;
+            int rhsType = $3.type;
+            if (typeMismatch(lhsType, rhsType))
+            {
+                printf("%d %d \n", lhsType, rhsType);
+                writeSemanticError("Type mismatch", yylineno);
+                return 0;
+            }
+            $$.type = BOOL_TYPE;
+            TypeValue * lhs;
+            TypeValue * rhs;
+            EntryType compareDataType= static_cast<EntryType>(lhsType);
+            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+            $$.bval = checkEqualityGTE(lhs, rhs);
+        }
         | expression LTE arithmetic 
-        {printGray("========  LESS THAN OR EQUAL OPERATION ***********");}
+        {
+            int lhsType = $1.type;
+            int rhsType = $3.type;
+            if (typeMismatch(lhsType, rhsType))
+            {
+                printf("%d %d \n", lhsType, rhsType);
+                writeSemanticError("Type mismatch", yylineno);
+                return 0;
+            }
+            $$.type = BOOL_TYPE;
+            TypeValue * lhs;
+            TypeValue * rhs;
+            EntryType compareDataType= static_cast<EntryType>(lhsType);
+            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+            $$.bval = checkEqualityLTE(lhs, rhs);
+        }
         | NOT expression 
-        {printGray("========  NOT OPERATION ***********");}
+        {
+            int varType = $2.type;
+            if (varType != BOOL_TYPE)
+            {
+                writeSemanticError("Type mismatch with NOT operation", yylineno);
+                return 0;
+            }
+            $$.type = BOOL_TYPE;
+            $$.bval = !$2.bval;
+        }
         | expression AND arithmetic
-        {printGray("========  AND OPERATION ***********");}
+        {
+            int lhsType = $1.type;
+            int rhsType = $3.type;
+            if (lhsType != BOOL_TYPE || rhsType != BOOL_TYPE)
+            {
+                writeSemanticError("Type mismatch with AND operation, types must be boolean", yylineno);
+                return 0;
+            }
+            $$.type = BOOL_TYPE;
+            $$.bval = $1.bval && $3.bval;
+        }
         | expression AND NOT arithmetic
-        {printGray("========  AND NOT OPERATION ***********");}
+        {
+            int lhsType = $1.type;
+            int rhsType = $4.type;
+            if (lhsType != BOOL_TYPE || rhsType != BOOL_TYPE)
+            {
+                writeSemanticError("Type mismatch with AND operation, types must be boolean", yylineno);
+                return 0;
+            }
+            $$.type = BOOL_TYPE;
+            $$.bval = $1.bval && !$4.bval;
+        }
         | expression OR arithmetic
-        {printGray("========  OR OPERATION ***********");}
+        {
+            int lhsType = $1.type;
+            int rhsType = $3.type;
+            if (lhsType != BOOL_TYPE || rhsType != BOOL_TYPE)
+            {
+                writeSemanticError("Type mismatch with OR operation, types must be boolean", yylineno);
+                return 0;
+            }
+            $$.type = BOOL_TYPE;
+            $$.bval = $1.bval || $3.bval;
+        }
         | expression OR NOT arithmetic
-        {printGray("========  OR NOT OPERATION ***********");}
+        {
+            int lhsType = $1.type;
+            int rhsType = $4.type;
+            if (lhsType != BOOL_TYPE || rhsType != BOOL_TYPE)
+            {
+                writeSemanticError("Type mismatch with OR operation, types must be boolean", yylineno);
+                return 0;
+            }
+            $$.type = BOOL_TYPE;
+            $$.bval = $1.bval || !$4.bval;
+        }
         ; 
 
 arithmetic: IDENTIFIER INC                                        
@@ -480,9 +647,6 @@ printStatement: dataValue ',' printStatement
 %%
 
 /* Part 3: Subroutines */
-
-
-
 
 void yyerror(const char* s){
     fprintf(stderr, "\nERROR MESS: %s\n", s);
