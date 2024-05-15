@@ -31,6 +31,11 @@ void createNewSymbolTable()
     currentSymbolTable = newSymbolTable;
 }
 
+void scopeEnd()
+{
+    currentSymbolTable = currentSymbolTable->getParent();
+}
+
 void addEntryToCurrentTable(char *identifier, Kind kind, TypeValue *typeValue, bool isInitialized,  EntryType functionOutput)
 {
     string id(identifier);              // convert char* to string
@@ -65,11 +70,6 @@ SymbolTableEntry *getIdentifierEntry(const char *identifier)
 
     currentSymbolTable = temp; // Restore currentSymbolTable if nothing is found
     return nullptr; // Return nullptr if no entry is found
-}
-
-void scopeEnd()
-{
-    currentSymbolTable = currentSymbolTable->getParent();
 }
 
 EntryType checkIdientifierType(char *identifier)

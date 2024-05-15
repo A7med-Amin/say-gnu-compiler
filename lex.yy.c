@@ -904,93 +904,111 @@ YY_RULE_SETUP
 case 38:
 YY_RULE_SETUP
 #line 81 "Lexer.l"
-{ yylval.bval = "true"; return BOOLEAN_TRUE; }
+{ yylval.actualValue.bval = true; 
+                                yylval.actualValue.type = BOOL_TYPE;
+                                yylval.actualValue.nameRep = strdup(yytext);
+                                return BOOLEAN_TRUE; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 82 "Lexer.l"
-{ yylval.bval = "false"; return BOOLEAN_FALSE; }
+#line 85 "Lexer.l"
+{ yylval.actualValue.bval = false; 
+                                yylval.actualValue.type = BOOL_TYPE;
+                                yylval.actualValue.nameRep = strdup(yytext);
+                                return BOOLEAN_FALSE; }
 	YY_BREAK
 /* Identifiers */
 case 40:
 YY_RULE_SETUP
-#line 85 "Lexer.l"
-{yylval.sval = (yytext); return IDENTIFIER;}
+#line 91 "Lexer.l"
+{yylval.stringVal = strdup(yytext); return IDENTIFIER;}
 	YY_BREAK
 /* Integer Variable */
 case 41:
 YY_RULE_SETUP
-#line 88 "Lexer.l"
-{yylval.ival = atoi(yytext); return INTEGER_VALUE;}
+#line 94 "Lexer.l"
+{yylval.actualValue.type = INT_TYPE;
+                            yylval.actualValue.ival = atoi(yytext);
+                            yylval.actualValue.nameRep = strdup(yytext);
+                            return INTEGER_VALUE;}
 	YY_BREAK
 /* Float Variable */
 case 42:
 YY_RULE_SETUP
-#line 91 "Lexer.l"
-{yylval.fval = atof(yytext); return FLOATING;}
+#line 100 "Lexer.l"
+{yylval.actualValue.type = FLOAT_TYPE;
+                            yylval.actualValue.fval = atof(yytext);
+                            yylval.actualValue.nameRep = strdup(yytext); 
+                            return FLOATING;}
 	YY_BREAK
 /* Char Variable */
 case 43:
 YY_RULE_SETUP
-#line 94 "Lexer.l"
-{yylval.cval = (yytext[0]); return CHARACTER;}
+#line 106 "Lexer.l"
+{yylval.actualValue.type = CHAR_TYPE;
+                            yylval.actualValue.cval = (yytext[1]); 
+                            yylval.actualValue.nameRep = strdup(yytext); 
+                            return CHARACTER;}
 	YY_BREAK
 /* String Variable */
 case 44:
 YY_RULE_SETUP
-#line 97 "Lexer.l"
-{yylval.sval = (yytext); return STRING_LITERAL;}
+#line 112 "Lexer.l"
+{yylval.actualValue.type = STRING_TYPE;
+                            yylval.actualValue.sval = strdup(yytext); 
+                            yylval.actualValue.nameRep = strdup(yytext); 
+                            return STRING_LITERAL;}
 	YY_BREAK
 /* Colon and Semicolon */
 case 45:
 YY_RULE_SETUP
-#line 100 "Lexer.l"
+#line 118 "Lexer.l"
 {return yytext[0];}
 	YY_BREAK
 /* Brackets */
 case 46:
 YY_RULE_SETUP
-#line 103 "Lexer.l"
+#line 121 "Lexer.l"
 {return yytext[0];}
 	YY_BREAK
 /* Comments */
 /* Single Line Comments */
 case 47:
 YY_RULE_SETUP
-#line 107 "Lexer.l"
+#line 125 "Lexer.l"
 {;}
 	YY_BREAK
 /* Multi Line Comments */
 case 48:
 YY_RULE_SETUP
-#line 110 "Lexer.l"
+#line 128 "Lexer.l"
 {;}
 	YY_BREAK
 /* Whitespace */
 case 49:
 YY_RULE_SETUP
-#line 113 "Lexer.l"
+#line 131 "Lexer.l"
 {;}
 	YY_BREAK
 /* New Line */
 case 50:
 YY_RULE_SETUP
-#line 116 "Lexer.l"
+#line 134 "Lexer.l"
 {yylineno = yylineno+1;}
 	YY_BREAK
 /* Error */
 case 51:
 YY_RULE_SETUP
-#line 119 "Lexer.l"
+#line 137 "Lexer.l"
 {yyerror("Token not found");}
 	YY_BREAK
 /* Part 2 End */
 case 52:
 YY_RULE_SETUP
-#line 123 "Lexer.l"
+#line 141 "Lexer.l"
 ECHO;
 	YY_BREAK
-#line 994 "lex.yy.c"
+#line 1012 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1876,7 +1894,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 123 "Lexer.l"
+#line 141 "Lexer.l"
 
 
 /* Part 3: Subroutines */

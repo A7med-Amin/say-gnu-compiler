@@ -78,23 +78,41 @@
 
     /* Variable Values  and Identifier*/
             /* Boolean Variable */
-"true"                         { yylval.bval = "true"; return BOOLEAN_TRUE; }
-"false"                        { yylval.bval = "false"; return BOOLEAN_FALSE; }
+"true"                         { yylval.actualValue.bval = true; 
+                                yylval.actualValue.type = BOOL_TYPE;
+                                yylval.actualValue.nameRep = strdup(yytext);
+                                return BOOLEAN_TRUE; }
+"false"                        { yylval.actualValue.bval = false; 
+                                yylval.actualValue.type = BOOL_TYPE;
+                                yylval.actualValue.nameRep = strdup(yytext);
+                                return BOOLEAN_FALSE; }
 
     /* Identifiers */
-[a-zA-Z_][a-zA-Z0-9_]*      {yylval.sval = (yytext); return IDENTIFIER;}
+[a-zA-Z_][a-zA-Z0-9_]*      {yylval.stringVal = strdup(yytext); return IDENTIFIER;}
 
         /* Integer Variable */
-[0-9]+                      {yylval.ival = atoi(yytext); return INTEGER_VALUE;}
+[0-9]+                      {yylval.actualValue.type = INT_TYPE;
+                            yylval.actualValue.ival = atoi(yytext);
+                            yylval.actualValue.nameRep = strdup(yytext);
+                            return INTEGER_VALUE;}
 
         /* Float Variable */
-[0-9]+\.[0-9]+              {yylval.fval = atof(yytext); return FLOATING;}
+[0-9]+\.[0-9]+              {yylval.actualValue.type = FLOAT_TYPE;
+                            yylval.actualValue.fval = atof(yytext);
+                            yylval.actualValue.nameRep = strdup(yytext); 
+                            return FLOATING;}
 
         /* Char Variable */
-\'.?\'                      {yylval.cval = (yytext[0]); return CHARACTER;}
+\'.?\'                      {yylval.actualValue.type = CHAR_TYPE;
+                            yylval.actualValue.cval = (yytext[1]); 
+                            yylval.actualValue.nameRep = strdup(yytext); 
+                            return CHARACTER;}
 
         /* String Variable */
-\".*\"                      {yylval.sval = (yytext); return STRING_LITERAL;}
+\".*\"                      {yylval.actualValue.type = STRING_TYPE;
+                            yylval.actualValue.sval = strdup(yytext); 
+                            yylval.actualValue.nameRep = strdup(yytext); 
+                            return STRING_LITERAL;}
 
     /* Colon and Semicolon */
 [:;,]                        {return yytext[0];}
