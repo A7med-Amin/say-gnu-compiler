@@ -16,14 +16,24 @@
 // Define a variant that can hold any of the specified types
 using valueVariant = std::variant<int, float, bool, char*, char>;
 
+/* Colorful Printing functions */
+void printRed(const char *text);
+void printYellow(const char *text);
+void printGreen(const char *text);
+void printCyan(const char *text);
+void printGray(const char *text);
+void printBlue(const char *text);
+void printMagenta(const char *text);
+/////////////////////////////////////
+
 void initSymbolTable();
 void createNewSymbolTable();
 void scopeEnd();
 
-void addEntryToCurrentTable(char *identifier, Kind kind, TypeValue *typeValue, bool isInitialized,  EntryType functionOutput = VOID);
+void addEntryToCurrentTable(char *identifier, Kind kind, TypeValue *typeValue, bool isInitialized,  EntryType functionOutput = VOID_DTYPE);
 SymbolTableEntry *getIdentifierEntry(const char *identifier);
 EntryType checkIdientifierType(char *identifier);
-bool typeMatch(int type1, int type2);
+bool typeMismatch(int type1, int type2);
 void insertFuncParamsToStack(SymbolTableEntry *currentFunc);
 SymbolTableEntry *identifierScopeCheck(char *identifier);
 void checkIsBool(bool isBool, int codeLine);

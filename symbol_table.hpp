@@ -14,16 +14,17 @@ enum Kind{
 };
 
 enum EntryType{
-    INTEGER,
-    FLOAT,
-    STRING,
-    BOOL,
-    CHARACTAR,
-    VOID
+    INT_TYPE,
+    FLOAT_TYPE,
+    STRING_TYPE,
+    BOOL_TYPE,
+    CHAR_TYPE,
+    VOID_DTYPE
 };
 
 struct TypeValue{
         EntryType type;
+        char* nameRep;
         union {
         int ival;
         float fval;

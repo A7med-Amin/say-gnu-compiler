@@ -10,6 +10,30 @@ FILE *quadrupleFile = fopen("quadruple.txt", "w");
 FILE *syntaxFile = fopen("syntax_error.txt", "w");
 ofstream symbolTablesFile("symbol_table.txt");
 
+/* Colorful print functions */
+void printRed(const char *text) {
+    printf("\033[31m%s\033[0m\n", text);
+    }
+void printYellow(const char *text) {
+        printf("\033[33m%s\033[0m\n", text);
+    }
+void printGreen(const char *text) {
+        printf("\033[92m%s\033[0m\n", text);
+    }
+void printCyan(const char *text) {
+        printf("\033[36m%s\033[0m\n", text);
+    }
+void printGray(const char *text) {
+        printf("\033[90m%s\033[0m\n", text);
+    }
+void printBlue(const char *text) {
+        printf("\033[34m%s\033[0m\n", text);
+    }
+void printMagenta(const char *text) {
+        printf("\033[35m%s\033[0m\n", text);
+    }
+
+/* Semantic Analyzer functions */
 void initSymbolTable()
 {
     currentSymbolTable = new SymbolTable();         // root symbol table
@@ -76,15 +100,15 @@ EntryType checkIdientifierType(char *identifier)
 {
     SymbolTableEntry *entry = getIdentifierEntry(identifier);
     if (entry == NULL)
-        return VOID;
+        return VOID_DTYPE;
     return entry->getTypeValue()->type;
 }
 
-bool typeMatch(int type1, int type2)
+bool typeMismatch(int type1, int type2)
 {
     if (type1 == type2)
-        return true;
-    return false;
+        return false;
+    return true;
 }
 
 void insertFuncParamsToStack(SymbolTableEntry *currentFunc)
@@ -124,19 +148,19 @@ TypeValue *convertTypeValToEntry(int type, const valueVariant &value)
     
     std::visit([&](auto&& arg) {
         switch (typeVal->type) {
-        case INTEGER:
+        case INT_TYPE:
             typeVal->value.ival = get<int>(value);
             break;
-        case FLOAT:
+        case FLOAT_TYPE:
             typeVal->value.fval = get<float>(value);
             break;
-        case CHARACTAR:
+        case CHAR_TYPE:
             typeVal->value.cval = get<char>(value);
             break;
-        case STRING:
+        case STRING_TYPE:
             typeVal->value.sval = get<char*>(value);
             break;
-        case BOOL:
+        case BOOL_TYPE:
             typeVal->value.bval = get<bool>(value);
             break;
         default:
@@ -149,15 +173,15 @@ TypeValue *convertTypeValToEntry(int type, const valueVariant &value)
 
 bool checkEqualityEqual(TypeValue *val1, TypeValue *val2)
 {
-    if (val1->type == INTEGER)
+    if (val1->type == INT_TYPE)
         return val1->value.ival == val2->value.ival;
-    else if (val1->type == FLOAT)
+    else if (val1->type == FLOAT_TYPE)
         return val1->value.fval == val2->value.fval;
-    else if (val1->type == BOOL)
+    else if (val1->type == BOOL_TYPE)
         return val1->value.bval == val2->value.bval;
-    else if (val1->type == CHARACTAR)
+    else if (val1->type == CHAR_TYPE)
         return val1->value.cval == val2->value.cval;
-    else if (val1->type == STRING)
+    else if (val1->type == STRING_TYPE)
         return strcmp(val1->value.sval, val2->value.sval) == 0;
     else
         return false;
@@ -165,15 +189,15 @@ bool checkEqualityEqual(TypeValue *val1, TypeValue *val2)
 
 bool checkEqualityNot(TypeValue *val1, TypeValue *val2)
 {
-    if (val1->type == INTEGER)
+    if (val1->type == INT_TYPE)
         return val1->value.ival != val2->value.ival;
-    else if (val1->type == FLOAT)
+    else if (val1->type == FLOAT_TYPE)
         return val1->value.fval != val2->value.fval;
-    else if (val1->type == BOOL)
+    else if (val1->type == BOOL_TYPE)
         return val1->value.bval != val2->value.bval;
-    else if (val1->type == CHARACTAR)
+    else if (val1->type == CHAR_TYPE)
         return val1->value.cval != val2->value.cval;
-    else if (val1->type == STRING)
+    else if (val1->type == STRING_TYPE)
         return strcmp(val1->value.sval, val2->value.sval) != 0;
     else
         return false;
@@ -181,15 +205,15 @@ bool checkEqualityNot(TypeValue *val1, TypeValue *val2)
 
 bool checkEqualityGTE(TypeValue *val1, TypeValue *val2)
 {
-    if (val1->type == INTEGER)
+    if (val1->type == INT_TYPE)
         return val1->value.ival >= val2->value.ival;
-    else if (val1->type == FLOAT)
+    else if (val1->type == FLOAT_TYPE)
         return val1->value.fval >= val2->value.fval;
-    else if (val1->type == BOOL)
+    else if (val1->type == BOOL_TYPE)
         return val1->value.bval >= val2->value.bval;
-    else if (val1->type == CHARACTAR)
+    else if (val1->type == CHAR_TYPE)
         return val1->value.cval >= val2->value.cval;
-    else if (val1->type == STRING)
+    else if (val1->type == STRING_TYPE)
         return strcmp(val1->value.sval, val2->value.sval) >= 0;
     else
         return false;
@@ -197,15 +221,15 @@ bool checkEqualityGTE(TypeValue *val1, TypeValue *val2)
 
 bool checkEqualityLTE(TypeValue *val1, TypeValue *val2)
 {
-    if (val1->type == INTEGER)
+    if (val1->type == INT_TYPE)
         return val1->value.ival <= val2->value.ival;
-    else if (val1->type == FLOAT)
+    else if (val1->type == FLOAT_TYPE)
         return val1->value.fval <= val2->value.fval;
-    else if (val1->type == BOOL)
+    else if (val1->type == BOOL_TYPE)
         return val1->value.bval <= val2->value.bval;
-    else if (val1->type == CHARACTAR)
+    else if (val1->type == CHAR_TYPE)
         return val1->value.cval <= val2->value.cval;
-    else if (val1->type == STRING)
+    else if (val1->type == STRING_TYPE)
         return strcmp(val1->value.sval, val2->value.sval) <= 0;
     else
         return false;
@@ -213,15 +237,15 @@ bool checkEqualityLTE(TypeValue *val1, TypeValue *val2)
 
 bool checkEqualityGT(TypeValue *val1, TypeValue *val2)
 {
-    if (val1->type == INTEGER)
+    if (val1->type == INT_TYPE)
         return val1->value.ival > val2->value.ival;
-    else if (val1->type == FLOAT)
+    else if (val1->type == FLOAT_TYPE)
         return val1->value.fval > val2->value.fval;
-    else if (val1->type == BOOL)
+    else if (val1->type == BOOL_TYPE)
         return val1->value.bval > val2->value.bval;
-    else if (val1->type == CHARACTAR)
+    else if (val1->type == CHAR_TYPE)
         return val1->value.cval > val2->value.cval;
-    else if (val1->type == STRING)
+    else if (val1->type == STRING_TYPE)
         return strcmp(val1->value.sval, val2->value.sval) > 0;
     else
         return false;
@@ -229,15 +253,15 @@ bool checkEqualityGT(TypeValue *val1, TypeValue *val2)
 
 bool checkEqualityLT(TypeValue *val1, TypeValue *val2)
 {
-    if (val1->type == INTEGER)
+    if (val1->type == INT_TYPE)
         return val1->value.ival < val2->value.ival;
-    else if (val1->type == FLOAT)
+    else if (val1->type == FLOAT_TYPE)
         return val1->value.fval < val2->value.fval;
-    else if (val1->type == BOOL)
+    else if (val1->type == BOOL_TYPE)
         return val1->value.bval < val2->value.bval;
-    else if (val1->type == CHARACTAR)
+    else if (val1->type == CHAR_TYPE)
         return val1->value.cval < val2->value.cval;
-    else if (val1->type == STRING)
+    else if (val1->type == STRING_TYPE)
         return strcmp(val1->value.sval, val2->value.sval) < 0;
     else
         return false;
@@ -248,21 +272,22 @@ bool checkEqualityLT(TypeValue *val1, TypeValue *val2)
 
 void writeSemanticError(string error, int codeLine)
 {
-    fprintf(semanticFile, "%s at line %d\n", error.c_str(), codeLine);
-    printf("Semantic errors\n");
+    fprintf(semanticFile, "ERROR: %s at line %d\n", error.c_str(), codeLine);
+    printRed("Semantic ERROR See semantic_error.txt for more details\n");
     saveSymbolTables();
     exit(0);
 }
 
 void writeSemanticWarning(string warning, int codeLine)
 {
-    fprintf(semanticFile, "%s at line %d\n", warning.c_str(), codeLine);
+    fprintf(semanticFile, "WARNING: %s at line %d\n", warning.c_str(), codeLine);
+    printYellow("Warning See semantic_error.txt for more details\n");
 }
 
 void writeSyntaxError(string error, int codeLine)
 {
-    fprintf(syntaxFile, "%s at line %d\n", error.c_str(), codeLine);
-    printf("Syntax errors\n");
+    fprintf(syntaxFile, "ERROR: %s at line %d\n", error.c_str(), codeLine);
+    printRed("Syntax ERROR See syntax_error.txt for more details\n");
     saveSymbolTables();
     exit(0);
 }
@@ -308,32 +333,32 @@ void symbolTableWrite(SymbolTable *table, int level, ofstream &outputFile)
         }
         switch (typeValue->type)
         {
-        case INTEGER:
+        case INT_TYPE:
             outputFile << setw(16) << "INT_TYPE";
             if (symbolEntry->getKind() == VAR || symbolEntry->getKind() == CONST)
                 outputFile << setw(15) << typeValue->value.ival;
             break;
-        case FLOAT:
+        case FLOAT_TYPE:
             outputFile << setw(16) << "FLOAT_TYPE";
             if (symbolEntry->getKind() == VAR || symbolEntry->getKind() == CONST)
                 outputFile << setw(15) << typeValue->value.fval;
             break;
-        case STRING:
+        case STRING_TYPE:
             outputFile << setw(16) << "STRING_TYPE";
             if (symbolEntry->getKind() == VAR || symbolEntry->getKind() == CONST)
                 outputFile << setw(15) << typeValue->value.sval;
             break;
-        case BOOL:
+        case BOOL_TYPE:
             outputFile << setw(16) << "BOOL_TYPE";
             if (symbolEntry->getKind() == VAR || symbolEntry->getKind() == CONST)
                 outputFile << setw(15) << typeValue->value.bval;
             break;
-        case CHARACTAR:
+        case CHAR_TYPE:
             outputFile << setw(16) << "CHAR_TYPE";
             if (symbolEntry->getKind() == VAR || symbolEntry->getKind() == CONST)
                 outputFile << setw(15) << typeValue->value.cval;
             break;
-        case VOID:
+        case VOID_DTYPE:
             outputFile << setw(16) << "VOID_TYPE";
             break;
         }

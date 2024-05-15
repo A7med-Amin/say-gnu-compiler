@@ -8,6 +8,7 @@
     #include <stdlib.h>
 
     /* communications with yacc */
+    #include "symbol_table.hpp"
     #include "Parser.tab.h"
     extern void yyerror(const char* s);
     extern int yylineno;
@@ -22,11 +23,11 @@
     /* Part 2: Regex and Action Rules */
 
     /* Data Types */
-"int"                       {return INT_TYPE;}
-"float"                     {return FLOAT_TYPE;}
-"char"                      {return CHAR_TYPE;}
-"string"                    {return STRING_TYPE;}
-"bool"                      {return BOOL_TYPE;}
+"int"                       {yylval.lexType = INT_TYPE; return INT_DATA_TYPE;}
+"float"                     {yylval.lexType = FLOAT_TYPE; return FLOAT_DATA_TYPE;}
+"char"                      {yylval.lexType = CHAR_TYPE; return CHAR_DATA_TYPE;}
+"string"                    {yylval.lexType = STRING_TYPE; return STRING_DATA_TYPE;}
+"bool"                      {yylval.lexType = BOOL_TYPE; return BOOLEAN_DATA_TYPE;}
 
     /* Keywords */
 "const"                     {return CONSTANT;}

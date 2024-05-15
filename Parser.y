@@ -15,37 +15,10 @@
     int yylex(void);
     int yylineno;     /* from lexer represents line numbers */
     extern FILE *yyin;
-
-    void printRed(const char *text) {
-    printf("\033[31m%s\033[0m\n", text);
-    }
-
-    void printBlue(const char *text) {
-        printf("\033[34m%s\033[0m\n", text);
-    }
-
-    void printMagenta(const char *text) {
-        printf("\033[35m%s\033[0m\n", text);
-    }
-    void printYellow(const char *text) {
-        printf("\033[33m%s\033[0m\n", text);
-    }
-
-    void printGreen(const char *text) {
-        printf("\033[92m%s\033[0m\n", text);
-    }
-
-    void printCyan(const char *text) {
-        printf("\033[36m%s\033[0m\n", text);
-    }
-
-    void printGray(const char *text) {
-        printf("\033[90m%s\033[0m\n", text);
-    }
 %}
 
 %union{
-    int dataType;
+    int lexType;
     char * stringVal;
     struct ActualValue{
         int type;
@@ -74,15 +47,16 @@
 %type <actualValue> printStatement
 %type <actualValue> callSingleParam
 %type <actualValue> callList
+%type <actualValue> switchValidValue
 
 
 /* Data Types */
-%type <dataType> dataType
-%token<dataType> INT_TYPE 
-%token<dataType> FLOAT_TYPE 
-%token<dataType> CHAR_TYPE 
-%token<dataType> STRING_TYPE 
-%token<dataType> BOOL_TYPE 
+%type <lexType> dataType
+%token <lexType> INT_DATA_TYPE 
+%token <lexType> FLOAT_DATA_TYPE 
+%token <lexType> CHAR_DATA_TYPE 
+%token <lexType> STRING_DATA_TYPE 
+%token <lexType> BOOLEAN_DATA_TYPE 
 
 /* Keywords */
 %token CONSTANT VOID_TYPE
@@ -190,7 +164,7 @@ codeStatement: variableDeclaration
         ;
 
 /* Data Types and Data Values */
-dataType: INT_TYPE | FLOAT_TYPE| CHAR_TYPE | STRING_TYPE | BOOL_TYPE ;
+dataType: INT_DATA_TYPE | FLOAT_DATA_TYPE| CHAR_DATA_TYPE | STRING_DATA_TYPE | BOOLEAN_DATA_TYPE ;
 
 dataValue: expression | STRING_LITERAL | CHARACTER;
 
@@ -265,16 +239,74 @@ instance: INTEGER_VALUE | FLOATING | functionCall
 
 /* Declaration and Assignment */
 assignment: IDENTIFIER ASSIGN dataValue ';' 
-        {printf(" %d\n %s", $3.type, $3.nameRep, );}
+        {printf(" %d\n %s", $3.type, $3.nameRep);}
         ;
 
 variableDeclaration: dataType IDENTIFIER ';' 
-        {printf("========  VARIABLE DECLARATION ***********\n");}
+        {
+            // Check if the variable has been declared before
+            SymbolTableEntry* newEntry = identifierScopeCheck($2);
+            // If the variable has been declared before, throw an error
+            if(newEntry != nullptr){
+                writeSemanticError("Multiple variable declaration not allowed", yylineno);
+                return 0;
+            }
+            // Create a new entry for the variable to symbol table
+            TypeValue* idTypeValue = new TypeValue;
+            idTypeValue->type = static_cast<EntryType>($1);
+            printf("Type: %d\n", idTypeValue->type);
+            printf("1: %d\n", $1);
+
+            addEntryToCurrentTable($2, VAR, idTypeValue, false);
+        }
         | variableDeclarationWithAssignment
         ;
 
 variableDeclarationWithAssignment: dataType IDENTIFIER ASSIGN dataValue ';'
-        {printf("========  VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\n");}
+        {
+            // Check if the variable has been declared before
+            SymbolTableEntry* newEntry = identifierScopeCheck($2);
+            // If the variable has been declared before, throw an error
+            if(newEntry != nullptr){
+                writeSemanticError("Multiple variable declaration not allowed", yylineno);
+                return 0;
+            }
+            // Check on type mismatch
+            int idType = $1;
+            int valType = $4.type;
+            printf("%d %d\n", idType, valType);
+            if (typeMismatch(idType, valType))
+            {
+                writeSemanticError("Declaration type mismatch", yylineno);
+                return 0;
+            }
+            // Create a new entry for the variable to symbol table
+            TypeValue* idTypeValue = new TypeValue;
+            idTypeValue->type = static_cast<EntryType>(idType);
+            switch(idTypeValue->type){
+                case INT_TYPE:
+                    printf("INTEGER\n");
+                    idTypeValue->value.ival = $4.ival;
+                    break;
+                case FLOAT_TYPE:
+                    printf("Float\n");
+                    idTypeValue->value.fval = $4.fval;
+                    break;
+                case STRING_TYPE:
+                    printf("String\n");
+                    idTypeValue->value.sval = $4.sval;
+                    break;
+                case BOOL_TYPE:
+                    printf("Bool\n");
+                    idTypeValue->value.bval = $4.bval;
+                    break;
+                case CHAR_TYPE:
+                    printf("Char\n");
+                    idTypeValue->value.cval = $4.cval;
+                    break;
+            }
+            addEntryToCurrentTable($2, VAR, idTypeValue, true);
+        }
         ;
 
 constantDeclaration: CONSTANT dataType IDENTIFIER ASSIGN constantValue ';'
@@ -299,11 +331,15 @@ elseStmnt: ELSE scopeBlock
 switchBlock: '{' {createNewSymbolTable();} caseExpression {scopeEnd();} '}'                     
     ;
 
+
 caseExpression:	
             caseDefault 	                   
-    |       CASE dataValue ':' codeBlock BREAK ';' caseExpression  
+    |       CASE switchValidValue ':' codeBlock BREAK ';' caseExpression  
     {printf("========  CASE STATEMENT ***********\n");}
 	;
+
+switchValidValue: INTEGER_VALUE | CHARACTER 
+        ;
 
 caseDefault:
             DEFAULT ':' codeBlock BREAK ';'    		            	 

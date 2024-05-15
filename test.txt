@@ -61,6 +61,8 @@ print(a>=b);
 print(x,"hello",y);
 
 // Errors
+//int x;
+//int x;
 
 // Advanced Testing
 
