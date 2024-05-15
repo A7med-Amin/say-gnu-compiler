@@ -6,6 +6,8 @@
     /* C libraries */
     #include <stdio.h>
     #include <stdlib.h>
+    #include <cmath>  // Include the cmath header for pow function
+
     #include "AssemblyGenerator.hpp"
 
     /* Header Files */
@@ -444,23 +446,218 @@ arithmetic: IDENTIFIER INC
         ;
 
 complexArithmetic: complexArithmetic ADD minorTerm       
-        {}
+        {
+            int lhsType = $1.type;
+            int rhsType = $3.type;
+            if ((lhsType != INT_TYPE && lhsType != FLOAT_TYPE) || (rhsType != INT_TYPE && rhsType != FLOAT_TYPE))
+            {
+                writeSemanticError("Type mismatch with ADD operation, must be integers or float", yylineno);
+                return 0;
+            }
+            TypeValue * lhs;
+            TypeValue * rhs;
+            EntryType compareDataType= static_cast<EntryType>(lhsType);
+            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+            switch(lhsType){
+                case INT_TYPE:
+                    if (rhsType == FLOAT_TYPE)
+                    {
+                        $$.type = FLOAT_TYPE;
+                        $$.fval = lhs->value.ival + rhs->value.fval;
+                    }
+                    else
+                    {
+                        $$.type = INT_TYPE;
+                        $$.ival = lhs->value.ival + rhs->value.ival;
+                    }
+                    break;
+                case FLOAT_TYPE:
+                    $$.type = FLOAT_TYPE;
+                    if (rhsType == INT_TYPE)
+                    {
+                        $$.fval = lhs->value.fval + rhs->value.ival;
+                    }
+                    else
+                    {
+                        $$.fval = lhs->value.fval + rhs->value.fval;
+                    }
+                    break;
+            }
+        }
         | complexArithmetic SUB minorTerm       
-        {}
+        {
+            int lhsType = $1.type;
+            int rhsType = $3.type;
+            if ((lhsType != INT_TYPE && lhsType != FLOAT_TYPE) || (rhsType != INT_TYPE && rhsType != FLOAT_TYPE))
+            {
+                writeSemanticError("Type mismatch with SUB operation, must be integers or float", yylineno);
+                return 0;
+            }
+            TypeValue * lhs;
+            TypeValue * rhs;
+            EntryType compareDataType= static_cast<EntryType>(lhsType);
+            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+            switch(lhsType){
+                case INT_TYPE:
+                    if (rhsType == FLOAT_TYPE)
+                    {
+                        $$.type = FLOAT_TYPE;
+                        $$.fval = lhs->value.ival - rhs->value.fval;
+                    }
+                    else
+                    {
+                        $$.type = INT_TYPE;
+                        $$.ival = lhs->value.ival - rhs->value.ival;
+                    }
+                    break;
+                case FLOAT_TYPE:
+                    $$.type = FLOAT_TYPE;
+                    if (rhsType == INT_TYPE)
+                    {
+                        $$.fval = lhs->value.fval - rhs->value.ival;
+                    }
+                    else
+                    {
+                        $$.fval = lhs->value.fval - rhs->value.fval;
+                    }
+                    break;
+            }
+        }
         | minorTerm
         ;
 
 minorTerm: minorTerm MUL majorTerm       
-        {}
+        {
+            int lhsType = $1.type;
+            int rhsType = $3.type;
+            if ((lhsType != INT_TYPE && lhsType != FLOAT_TYPE) || (rhsType != INT_TYPE && rhsType != FLOAT_TYPE))
+            {
+                writeSemanticError("Type mismatch with MUL operation, must be integers or float", yylineno);
+                return 0;
+            }
+            TypeValue * lhs;
+            TypeValue * rhs;
+            EntryType compareDataType= static_cast<EntryType>(lhsType);
+            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+            switch(lhsType){
+                case INT_TYPE:
+                    if (rhsType == FLOAT_TYPE)
+                    {
+                        $$.type = FLOAT_TYPE;
+                        $$.fval = lhs->value.ival * rhs->value.fval;
+                    }
+                    else
+                    {
+                        $$.type = INT_TYPE;
+                        $$.ival = lhs->value.ival * rhs->value.ival;
+                    }
+                    break;
+                case FLOAT_TYPE:
+                    $$.type = FLOAT_TYPE;
+                    if (rhsType == INT_TYPE)
+                    {
+                        $$.fval = lhs->value.fval * rhs->value.ival;
+                    }
+                    else
+                    {
+                        $$.fval = lhs->value.fval * rhs->value.fval;
+                    }
+                    break;
+            }
+        }
         | minorTerm DIV majorTerm       
-        {}
+        {
+            int lhsType = $1.type;
+            int rhsType = $3.type;
+            if ((lhsType != INT_TYPE && lhsType != FLOAT_TYPE) || (rhsType != INT_TYPE && rhsType != FLOAT_TYPE))
+            {
+                writeSemanticError("Type mismatch with DIV operation, must be integers or float", yylineno);
+                return 0;
+            }
+            TypeValue * lhs;
+            TypeValue * rhs;
+            EntryType compareDataType= static_cast<EntryType>(lhsType);
+            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+            switch(lhsType){
+                case INT_TYPE:
+                    if (rhsType == FLOAT_TYPE)
+                    {
+                        $$.type = FLOAT_TYPE;
+                        $$.fval = lhs->value.ival / rhs->value.fval;
+                    }
+                    else
+                    {
+                        $$.type = INT_TYPE;
+                        $$.ival = lhs->value.ival / rhs->value.ival;
+                    }
+                    break;
+                case FLOAT_TYPE:
+                    $$.type = FLOAT_TYPE;
+                    if (rhsType == INT_TYPE)
+                    {
+                        $$.fval = lhs->value.fval / rhs->value.ival;
+                    }
+                    else
+                    {
+                        $$.fval = lhs->value.fval / rhs->value.fval;
+                    }
+                    break;
+            }
+        }
         | minorTerm MOD majorTerm       
-        {}
+        {
+            int lhsType = $1.type;
+            int rhsType = $3.type;
+            if (lhsType != INT_TYPE || rhsType != INT_TYPE)
+            {
+                writeSemanticError("Type mismatch with MOD operation, must be integers", yylineno);
+                return 0;
+            }
+            $$.type = INT_TYPE;
+            $$.ival = $1.ival % $3.ival;
+        }
         | majorTerm
         ;
 
 majorTerm: majorTerm POW instance       
-        {}
+        {
+            int lhsType = $1.type;
+            int rhsType = $3.type;
+            if ((lhsType != INT_TYPE && lhsType != FLOAT_TYPE) || (rhsType != INT_TYPE && rhsType != FLOAT_TYPE))
+            {
+                writeSemanticError("Type mismatch with POW operation, must be integers or float", yylineno);
+                return 0;
+            }
+            TypeValue * lhs;
+            TypeValue * rhs;
+            EntryType compareDataType= static_cast<EntryType>(lhsType);
+            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+            switch(lhsType){
+                case INT_TYPE:
+                    if (rhsType == FLOAT_TYPE)
+                    {
+                        $$.type = FLOAT_TYPE;
+                        $$.fval = pow(lhs->value.ival, rhs->value.fval);
+                    }
+                    else
+                    {
+                        $$.type = INT_TYPE;
+                        $$.ival = pow(lhs->value.ival, rhs->value.ival);
+                    }
+                    break;
+                case FLOAT_TYPE:
+                    $$.type = FLOAT_TYPE;
+                    if (rhsType == INT_TYPE)
+                    {
+                        $$.fval = pow(lhs->value.fval, rhs->value.ival);
+                    }
+                    else
+                    {
+                        $$.fval = pow(lhs->value.fval, rhs->value.fval);
+                    }
+                    break;
+            }
+        }
         | instance
         ;
 
@@ -470,7 +667,37 @@ instance: INTEGER_VALUE
         { printf("========  FLOATING ***********\n");} 
         | functionCall
         | IDENTIFIER 
-        { printf("========  IDENTIFIER ***********\n");}
+        {
+            SymbolTableEntry* newEntry = getIdentifierEntry($1);
+            if(newEntry == nullptr){
+                writeSemanticError("Using variable not declared", yylineno);
+                return 0;
+            }
+            if(!newEntry->getinitialization())
+            {
+                writeSemanticError("Variable not initialized", yylineno);
+                return 0;
+            }
+            newEntry->setused(true);
+            $$.type = (int)newEntry->getTypeValue()->type;
+            switch($$.type){
+                case INT_TYPE:
+                    $$.ival = newEntry->getTypeValue()->value.ival;
+                    break;
+                case FLOAT_TYPE:
+                    $$.fval = newEntry->getTypeValue()->value.fval;
+                    break;
+                case STRING_TYPE:
+                    $$.sval = newEntry->getTypeValue()->value.sval;
+                    break;
+                case BOOL_TYPE:
+                    $$.bval = newEntry->getTypeValue()->value.bval;
+                    break;
+                case CHAR_TYPE:
+                    $$.cval = newEntry->getTypeValue()->value.cval;
+                    break;
+            }
+        }
         | '(' expression ')' {$$ = $2;}
         ;
 
