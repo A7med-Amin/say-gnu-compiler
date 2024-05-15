@@ -6,6 +6,7 @@
     /* C libraries */
     #include <stdio.h>
     #include <stdlib.h>
+    #include "AssemblyGenerator.hpp"
 
     /* Header Files */
     #include "semantic_analyzer.hpp"
@@ -15,6 +16,8 @@
     int yylex(void);
     int yylineno;     /* from lexer represents line numbers */
     extern FILE *yyin;
+
+    AssemblyGenerator assemblyGenerator;
 %}
 
 %union{
@@ -258,6 +261,10 @@ variableDeclaration: dataType IDENTIFIER ';'
             printf("1: %d\n", $1);
 
             addEntryToCurrentTable($2, VAR, idTypeValue, false);
+            const char* name = assemblyGenerator.addAssignment(newEntry);
+            assemblyGenerator.addQuad("ALLOC",$2,"",name);
+
+
         }
         | variableDeclarationWithAssignment
         ;
@@ -457,7 +464,7 @@ int main(int argc, char **argv) {
     FILE* quadFile = fopen(quadPath, "w");
     FILE* assemblyFile = fopen(assemblyPath, "w");
 
-    fprintf(quadFile, "OpCode: %d  Arg1: %s  Arg2: %s Result: %s \n", Walker->DATA->OpCode, Walker->DATA->Arg1, Walker->DATA->Arg2, Walker->DATA->Result);
+    /* fprintf(quadFile, "OpCode: %d  Arg1: %s  Arg2: %s Result: %s \n", Walker->DATA->OpCode, Walker->DATA->Arg1, Walker->DATA->Arg2, Walker->DATA->Result); */
 
     return 0;
 }
