@@ -242,7 +242,47 @@ instance: INTEGER_VALUE | FLOATING | functionCall
 
 /* Declaration and Assignment */
 assignment: IDENTIFIER ASSIGN dataValue ';' 
-        {printf(" %d\n %s", $3.type, $3.nameRep);}
+        {
+            // Check if the variable has been declared before
+            SymbolTableEntry* newEntry = getIdentifierEntry($1);
+            // If the variable has not been declared before, throw an error
+            if(newEntry == nullptr){
+                writeSemanticError("Using variable not declared", yylineno);
+                return 0;
+            }
+            // Check if the variable is a constant
+            if(newEntry->getKind() == CONST){
+                writeSemanticError("Cannot assign value to constant", yylineno);
+                return 0;
+            }
+            // Check on type mismatch
+            int idType = (int)newEntry->getTypeValue()->type;
+            int valType = $3.type;
+            if (typeMismatch(idType, valType))
+            {
+                writeSemanticError("Assignment type mismatch", yylineno);
+                return 0;
+            }
+            // Assign the value to the variable (update the symbol table entry)
+            switch(idType){
+                case INT_TYPE:
+                    newEntry->getTypeValue()->value.ival = $3.ival;
+                    break;
+                case FLOAT_TYPE:
+                    newEntry->getTypeValue()->value.fval = $3.fval;
+                    break;
+                case STRING_TYPE:
+                    newEntry->getTypeValue()->value.sval = $3.sval;
+                    break;
+                case BOOL_TYPE:
+                    newEntry->getTypeValue()->value.bval = $3.bval;
+                    break;
+                case CHAR_TYPE:
+                    newEntry->getTypeValue()->value.cval = $3.cval;
+                    break;
+            }
+            newEntry->setinitialization(true);
+        }
         ;
 
 variableDeclaration: dataType IDENTIFIER ';' 
@@ -257,9 +297,6 @@ variableDeclaration: dataType IDENTIFIER ';'
             // Create a new entry for the variable to symbol table
             TypeValue* idTypeValue = new TypeValue;
             idTypeValue->type = static_cast<EntryType>($1);
-            printf("Type: %d\n", idTypeValue->type);
-            printf("1: %d\n", $1);
-
             addEntryToCurrentTable($2, VAR, idTypeValue, false);
             const char* name = assemblyGenerator.addAssignment(newEntry);
             assemblyGenerator.addQuad("ALLOC",$2,"",name);
@@ -281,7 +318,6 @@ variableDeclarationWithAssignment: dataType IDENTIFIER ASSIGN dataValue ';'
             // Check on type mismatch
             int idType = $1;
             int valType = $4.type;
-            printf("%d %d\n", idType, valType);
             if (typeMismatch(idType, valType))
             {
                 writeSemanticError("Declaration type mismatch", yylineno);
@@ -292,23 +328,18 @@ variableDeclarationWithAssignment: dataType IDENTIFIER ASSIGN dataValue ';'
             idTypeValue->type = static_cast<EntryType>(idType);
             switch(idTypeValue->type){
                 case INT_TYPE:
-                    printf("INTEGER\n");
                     idTypeValue->value.ival = $4.ival;
                     break;
                 case FLOAT_TYPE:
-                    printf("Float\n");
                     idTypeValue->value.fval = $4.fval;
                     break;
                 case STRING_TYPE:
-                    printf("String\n");
                     idTypeValue->value.sval = $4.sval;
                     break;
                 case BOOL_TYPE:
-                    printf("Bool\n");
                     idTypeValue->value.bval = $4.bval;
                     break;
                 case CHAR_TYPE:
-                    printf("Char\n");
                     idTypeValue->value.cval = $4.cval;
                     break;
             }
@@ -317,7 +348,44 @@ variableDeclarationWithAssignment: dataType IDENTIFIER ASSIGN dataValue ';'
         ;
 
 constantDeclaration: CONSTANT dataType IDENTIFIER ASSIGN constantValue ';'
-        {printf("========  CONSTANT VARIABLE DECLARATION WITH VALUE ASSIGNMENT ***********\n");}
+        {
+            // Check if the variable has been declared before
+            SymbolTableEntry* newEntry = identifierScopeCheck($3);
+            // If the variable has been declared before, throw an error
+            if(newEntry != nullptr){
+                writeSemanticError("Multiple variable declaration not allowed", yylineno);
+                return 0;
+            }
+            // Check on type mismatch
+            int idType = $2;
+            int valType = $5.type;
+            if (typeMismatch(idType, valType))
+            {
+                writeSemanticError("Declaration type mismatch", yylineno);
+                return 0;
+            }
+            // Create a new entry for the variable to symbol table
+            TypeValue* idTypeValue = new TypeValue;
+            idTypeValue->type = static_cast<EntryType>(idType);
+            switch(idTypeValue->type){
+                case INT_TYPE:
+                    idTypeValue->value.ival = $5.ival;
+                    break;
+                case FLOAT_TYPE:
+                    idTypeValue->value.fval = $5.fval;
+                    break;
+                case STRING_TYPE:
+                    idTypeValue->value.sval = $5.sval;
+                    break;
+                case BOOL_TYPE:
+                    idTypeValue->value.bval = $5.bval;
+                    break;
+                case CHAR_TYPE:
+                    idTypeValue->value.cval = $5.cval;
+                    break;
+            }
+            addEntryToCurrentTable($3, CONST, idTypeValue, true);
+        }
         ;   
 
 /* Conditional statements */
