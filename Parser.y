@@ -109,39 +109,39 @@
 
 program:                                                                                    {printf("======== EMPTY PROGRAM ***********\n");}
         | codeBlock                                                                         {    
-                                                                                                printf("                 #_   _#\n");
-                                                                                                printf("                 |a` `a|\n");
-                                                                                                printf("                 |  u  |\n");
-                                                                                                printf("                 \\  =  /\n");
-                                                                                                printf("                 |\\___/|\n");
-                                                                                                printf("        ___ ____/:     :\\____ ___\n");
-                                                                                                printf("      .'   `.-===-\\   /-===-.`   '.\n");
-                                                                                                printf("     /      .-\"\"\"\"\"-.-\"\"\"\"\"-.      \\\n");
-                                                                                                printf("    /'             =:=             '\\\n");
-                                                                                                printf("  .'  ' .:    o   -=:=-   o    :. '  `.\n");
-                                                                                                printf("  (.'   /'. '-.....-'-.....-' .\\'   '.)\n");
-                                                                                                printf("  /' ._/   \".     --:--     .\"   \\_. '\\\n");
-                                                                                                printf(" |  .'|      \".  ---:---  .\"      |'.  |\n");
-                                                                                                printf(" |  : |       |  ---:---  |       | :  |\n");
-                                                                                                printf("  \\ : |       |_____._____|       | : /\n");
-                                                                                                printf("  /   (       |----|------|       )   \\\n");
-                                                                                                printf(" /... .|      |    |      |      |. ...\\\n");
-                                                                                                printf("|::::/'' jgs /     |       \\     ''\\::::|\n");
-                                                                                                printf("'\"\"\"\"       /'    .L_      `\\       \"\"\"\"'\n");
-                                                                                                printf("           /'-.,__/` `\\__..-'\\\n");
-                                                                                                printf("          ;      /     \\      ;\n");
-                                                                                                printf("          :     /       \\     |\n");
-                                                                                                printf("          |    /         \\.   |\n");
-                                                                                                printf("          |`../           |  ,/\n");
-                                                                                                printf("          ( _ )           |  _)\n");
-                                                                                                printf("          |   |           |   |\n");
-                                                                                                printf("          |___|           \\___|\n");
-                                                                                                printf("          :===|            |==|\n");
-                                                                                                printf("           \\  /            |__|\n");
-                                                                                                printf("           /\\/\\           /\"\"\"`8.__\n");
-                                                                                                printf("           |oo|           \\__.//___)\n");
-                                                                                                printf("           |==|\n");
-                                                                                                printf("           \\__/\n");
+                                                                                                // printf("                 #_   _#\n");
+                                                                                                // printf("                 |a` `a|\n");
+                                                                                                // printf("                 |  u  |\n");
+                                                                                                // printf("                 \\  =  /\n");
+                                                                                                // printf("                 |\\___/|\n");
+                                                                                                // printf("        ___ ____/:     :\\____ ___\n");
+                                                                                                // printf("      .'   `.-===-\\   /-===-.`   '.\n");
+                                                                                                // printf("     /      .-\"\"\"\"\"-.-\"\"\"\"\"-.      \\\n");
+                                                                                                // printf("    /'             =:=             '\\\n");
+                                                                                                // printf("  .'  ' .:    o   -=:=-   o    :. '  `.\n");
+                                                                                                // printf("  (.'   /'. '-.....-'-.....-' .\\'   '.)\n");
+                                                                                                // printf("  /' ._/   \".     --:--     .\"   \\_. '\\\n");
+                                                                                                // printf(" |  .'|      \".  ---:---  .\"      |'.  |\n");
+                                                                                                // printf(" |  : |       |  ---:---  |       | :  |\n");
+                                                                                                // printf("  \\ : |       |_____._____|       | : /\n");
+                                                                                                // printf("  /   (       |----|------|       )   \\\n");
+                                                                                                // printf(" /... .|      |    |      |      |. ...\\\n");
+                                                                                                // printf("|::::/'' jgs /     |       \\     ''\\::::|\n");
+                                                                                                // printf("'\"\"\"\"       /'    .L_      `\\       \"\"\"\"'\n");
+                                                                                                // printf("           /'-.,__/` `\\__..-'\\\n");
+                                                                                                // printf("          ;      /     \\      ;\n");
+                                                                                                // printf("          :     /       \\     |\n");
+                                                                                                // printf("          |    /         \\.   |\n");
+                                                                                                // printf("          |`../           |  ,/\n");
+                                                                                                // printf("          ( _ )           |  _)\n");
+                                                                                                // printf("          |   |           |   |\n");
+                                                                                                // printf("          |___|           \\___|\n");
+                                                                                                // printf("          :===|            |==|\n");
+                                                                                                // printf("           \\  /            |__|\n");
+                                                                                                // printf("           /\\/\\           /\"\"\"`8.__\n");
+                                                                                                // printf("           |oo|           \\__.//___)\n");
+                                                                                                // printf("           |==|\n");
+                                                                                                // printf("           \\__/\n");
                                                                                                 printf("                       SALAMO ALEEKO! ")
                                                                                             }
         ;
@@ -298,6 +298,7 @@ variableDeclaration: dataType IDENTIFIER ';'
             TypeValue* idTypeValue = new TypeValue;
             idTypeValue->type = static_cast<EntryType>($1);
             addEntryToCurrentTable($2, VAR, idTypeValue, false);
+
             const char* name = assemblyGenerator.addAssignment(newEntry);
             assemblyGenerator.addQuad("ALLOC",$2,"",name);
 
@@ -326,24 +327,35 @@ variableDeclarationWithAssignment: dataType IDENTIFIER ASSIGN dataValue ';'
             // Create a new entry for the variable to symbol table
             TypeValue* idTypeValue = new TypeValue;
             idTypeValue->type = static_cast<EntryType>(idType);
+            string valueStr;
             switch(idTypeValue->type){
                 case INT_TYPE:
                     idTypeValue->value.ival = $4.ival;
+                    valueStr = to_string($4.ival);
                     break;
                 case FLOAT_TYPE:
                     idTypeValue->value.fval = $4.fval;
+                    valueStr = to_string($4.fval);
                     break;
                 case STRING_TYPE:
                     idTypeValue->value.sval = $4.sval;
+                    valueStr = $4.sval;
                     break;
                 case BOOL_TYPE:
                     idTypeValue->value.bval = $4.bval;
+                    valueStr = to_string($4.bval);
                     break;
                 case CHAR_TYPE:
                     idTypeValue->value.cval = $4.cval;
+                    valueStr = to_string($4.cval);
                     break;
             }
             addEntryToCurrentTable($2, VAR, idTypeValue, true);
+
+            const char* name = assemblyGenerator.addAssignment(newEntry);
+            const char* name = generator.addTemp($1.value , "" , "");
+            assemblyGenerator.addQuad("ALLOC",$2,"",name);
+            assemblyGenerator.addQuad("ASSIGN",valueStr,"",name);
         }
         ;
 
@@ -533,7 +545,6 @@ int main(int argc, char **argv) {
     FILE* assemblyFile = fopen(assemblyPath, "w");
 
     assemblyGenerator.printQuadsToFile();
-
 
     return 0;
 }
