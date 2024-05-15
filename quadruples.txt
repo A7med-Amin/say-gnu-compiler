@@ -1,4 +1,2 @@
 START main
 
-ALLOC     x           R0    
-ASSIGN    7           R0    

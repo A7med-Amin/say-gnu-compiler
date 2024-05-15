@@ -464,9 +464,13 @@ majorTerm: majorTerm POW instance
         | instance
         ;
 
-instance: INTEGER_VALUE | FLOATING | functionCall
+instance: INTEGER_VALUE 
+        { printf("========  INTEGER_VALUE ***********\n");} 
+        | FLOATING  
+        { printf("========  FLOATING ***********\n");} 
+        | functionCall
         | IDENTIFIER 
-        {}
+        { printf("========  IDENTIFIER ***********\n");}
         | '(' expression ')' {$$ = $2;}
         ;
 
@@ -582,10 +586,10 @@ variableDeclarationWithAssignment: dataType IDENTIFIER ASSIGN dataValue ';'
             }
             addEntryToCurrentTable($2, VAR, idTypeValue, true);
 
-            const char* name = assemblyGenerator.addAssignment(newEntry);
+            // const char* name = assemblyGenerator.addAssignment(newEntry);
             // const char* name = generator.addTemp($1.value , "" , "");
-            assemblyGenerator.addQuad("ALLOC",$2,"",name);
-            assemblyGenerator.addQuad("ASSIGN",valueStr,"",name);
+            // assemblyGenerator.addQuad("ALLOC",$2,"",name);
+            // assemblyGenerator.addQuad("ASSIGN",valueStr,"",name);
         }
         ;
 
