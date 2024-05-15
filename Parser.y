@@ -129,14 +129,13 @@
 %left MUL DIV MOD
 %left EQ NEQ GT LT GTE LTE */
 
-%right ASSIGN
-%right POW
-%nonassoc NOT
-%left MUL DIV MOD
 %left ADD SUB
-%nonassoc EQ NEQ GT LT GTE LTE
+%left MUL DIV MOD
 %nonassoc AND OR
-
+%nonassoc EQ NEQ GT LT GTE LTE
+%nonassoc NOT
+%right POW
+%right ASSIGN
 
 /* Part 1 End */
 
@@ -183,10 +182,9 @@ program:                                                                        
                                                                                             }
         ;
 
-codeBlock: codeStatement                                            {}
-        |  codeBlock codeStatement                                  {}
+codeBlock: codeStatement                                            
+        |  codeBlock codeStatement                                  
         ;
-
 
 codeStatement: variableDeclaration                                                                  
         | constantDeclaration                                                                  
@@ -931,7 +929,6 @@ elseStmnt: ELSE scopeBlock
 /* Switch Case */
 switchBlock: '{' {createNewSymbolTable();} caseExpression {scopeEnd();} '}'                     
     ;
-
 
 caseExpression:	
             caseDefault 	                   
