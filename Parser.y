@@ -20,6 +20,7 @@
     int yylex(void);
     int yylineno;     /* from lexer represents line numbers */
     extern FILE *yyin;
+    AssemblyGenerator assemblyGenerator;
 
     /* Macros */
     #ifndef TYPE_VALUE_MACROS_HPP
