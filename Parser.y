@@ -7,11 +7,7 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include "AssemblyGenerator.hpp"
-    #include <cstdio>
-    #include <cstdlib>
-    #include <cstring>
-    #include <sstream>
-    #include <iostream>
+
     /* Header Files */
     #include "semantic_analyzer.hpp"
 
@@ -20,35 +16,8 @@
     int yylex(void);
     int yylineno;     /* from lexer represents line numbers */
     extern FILE *yyin;
-    AssemblyGenerator assemblyGenerator;
 
-    /* Macros */
-    #ifndef TYPE_VALUE_MACROS_HPP
-    #define TYPE_VALUE_MACROS_HPP
-    #define GET_TYPE_VALUE(compareDataType, value1, value3, lhs, rhs)        \
-        switch (compareDataType) {                                         \
-        case INT_TYPE:                                                 \
-            lhs = convertTypeValToEntry(INT_TYPE, value1.ival);        \
-            rhs = convertTypeValToEntry(INT_TYPE, value3.ival);        \
-            break;                                                     \
-        case FLOAT_TYPE:                                               \
-            lhs = convertTypeValToEntry(FLOAT_TYPE, value1.fval);      \
-            rhs = convertTypeValToEntry(FLOAT_TYPE, value3.fval);      \
-            break;                                                     \
-        case STRING_TYPE:                                              \
-            lhs = convertTypeValToEntry(STRING_TYPE, value1.sval);     \
-            rhs = convertTypeValToEntry(STRING_TYPE, value3.sval);     \
-            break;                                                     \
-        case BOOL_TYPE:                                                \
-            lhs = convertTypeValToEntry(BOOL_TYPE, value1.bval);       \
-            rhs = convertTypeValToEntry(BOOL_TYPE, value3.bval);       \
-            break;                                                     \
-        case CHAR_TYPE:                                                \
-            lhs = convertTypeValToEntry(CHAR_TYPE, value1.cval);       \
-            rhs = convertTypeValToEntry(CHAR_TYPE, value3.cval);       \
-            break;                                                     \
-        }
-    #endif // TYPE_VALUE_MACROS_HPP
+    AssemblyGenerator assemblyGenerator;
 %}
 
 %union{
@@ -177,8 +146,8 @@ program:                                                                        
                                                                                             }
         ;
 
-codeBlock: codeStatement                                           
-        |  codeBlock codeStatement                                
+codeBlock: codeStatement                                            {}
+        |  codeBlock codeStatement                                  {}
         ;
 
 
@@ -209,166 +178,27 @@ expression: arithmetic | boolean ;
 
 boolean: BOOLEAN_TRUE | BOOLEAN_FALSE 
         | expression EQ arithmetic 
-        {
-            int lhsType = $1.type;
-            int rhsType = $3.type;
-            if (typeMismatch(lhsType, rhsType))
-            {
-                printf("%d %d \n", lhsType, rhsType);
-                writeSemanticError("Type mismatch", yylineno);
-                return 0;
-            }
-            $$.type = BOOL_TYPE;
-            TypeValue * lhs;
-            TypeValue * rhs;
-            EntryType compareDataType= static_cast<EntryType>(lhsType);
-            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
-            $$.bval = checkEqualityEqual(lhs, rhs);
-        }
+        {printGray("========  EQUAL OPERATION ***********");}
         | expression NEQ arithmetic 
-        {
-            int lhsType = $1.type;
-            int rhsType = $3.type;
-            if (typeMismatch(lhsType, rhsType))
-            {
-                printf("%d %d \n", lhsType, rhsType);
-                writeSemanticError("Type mismatch", yylineno);
-                return 0;
-            }
-            $$.type = BOOL_TYPE;
-            TypeValue * lhs;
-            TypeValue * rhs;
-            EntryType compareDataType= static_cast<EntryType>(lhsType);
-            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
-            $$.bval = checkEqualityNot(lhs, rhs);
-        }
+        {printGray("========  NOT EQUAL OPERATION ***********");}
         | expression GT arithmetic 
-        {
-            int lhsType = $1.type;
-            int rhsType = $3.type;
-            if (typeMismatch(lhsType, rhsType))
-            {
-                printf("%d %d \n", lhsType, rhsType);
-                writeSemanticError("Type mismatch", yylineno);
-                return 0;
-            }
-            $$.type = BOOL_TYPE;
-            TypeValue * lhs;
-            TypeValue * rhs;
-            EntryType compareDataType= static_cast<EntryType>(lhsType);
-            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
-            $$.bval = checkEqualityGT(lhs, rhs);
-        }
+        {printGray("========  GREATER THAN OPERATION ***********");}
         | expression LT arithmetic 
-        {
-            int lhsType = $1.type;
-            int rhsType = $3.type;
-            if (typeMismatch(lhsType, rhsType))
-            {
-                printf("%d %d \n", lhsType, rhsType);
-                writeSemanticError("Type mismatch", yylineno);
-                return 0;
-            }
-            $$.type = BOOL_TYPE;
-            TypeValue * lhs;
-            TypeValue * rhs;
-            EntryType compareDataType= static_cast<EntryType>(lhsType);
-            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
-            $$.bval = checkEqualityLT(lhs, rhs);
-        }
+        {printGray("========  LESS THAN OPERATION ***********");}
         | expression GTE arithmetic 
-        {
-            int lhsType = $1.type;
-            int rhsType = $3.type;
-            if (typeMismatch(lhsType, rhsType))
-            {
-                printf("%d %d \n", lhsType, rhsType);
-                writeSemanticError("Type mismatch", yylineno);
-                return 0;
-            }
-            $$.type = BOOL_TYPE;
-            TypeValue * lhs;
-            TypeValue * rhs;
-            EntryType compareDataType= static_cast<EntryType>(lhsType);
-            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
-            $$.bval = checkEqualityGTE(lhs, rhs);
-        }
+        {printGray("========  GREATER THAN OR EQUAL OPERATION ***********");}
         | expression LTE arithmetic 
-        {
-            int lhsType = $1.type;
-            int rhsType = $3.type;
-            if (typeMismatch(lhsType, rhsType))
-            {
-                printf("%d %d \n", lhsType, rhsType);
-                writeSemanticError("Type mismatch", yylineno);
-                return 0;
-            }
-            $$.type = BOOL_TYPE;
-            TypeValue * lhs;
-            TypeValue * rhs;
-            EntryType compareDataType= static_cast<EntryType>(lhsType);
-            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
-            $$.bval = checkEqualityLTE(lhs, rhs);
-        }
+        {printGray("========  LESS THAN OR EQUAL OPERATION ***********");}
         | NOT expression 
-        {
-            int varType = $2.type;
-            if (varType != BOOL_TYPE)
-            {
-                writeSemanticError("Type mismatch with NOT operation", yylineno);
-                return 0;
-            }
-            $$.type = BOOL_TYPE;
-            $$.bval = !$2.bval;
-        }
+        {printGray("========  NOT OPERATION ***********");}
         | expression AND arithmetic
-        {
-            int lhsType = $1.type;
-            int rhsType = $3.type;
-            if (lhsType != BOOL_TYPE || rhsType != BOOL_TYPE)
-            {
-                writeSemanticError("Type mismatch with AND operation, types must be boolean", yylineno);
-                return 0;
-            }
-            $$.type = BOOL_TYPE;
-            $$.bval = $1.bval && $3.bval;
-        }
+        {printGray("========  AND OPERATION ***********");}
         | expression AND NOT arithmetic
-        {
-            int lhsType = $1.type;
-            int rhsType = $4.type;
-            if (lhsType != BOOL_TYPE || rhsType != BOOL_TYPE)
-            {
-                writeSemanticError("Type mismatch with AND operation, types must be boolean", yylineno);
-                return 0;
-            }
-            $$.type = BOOL_TYPE;
-            $$.bval = $1.bval && !$4.bval;
-        }
+        {printGray("========  AND NOT OPERATION ***********");}
         | expression OR arithmetic
-        {
-            int lhsType = $1.type;
-            int rhsType = $3.type;
-            if (lhsType != BOOL_TYPE || rhsType != BOOL_TYPE)
-            {
-                writeSemanticError("Type mismatch with OR operation, types must be boolean", yylineno);
-                return 0;
-            }
-            $$.type = BOOL_TYPE;
-            $$.bval = $1.bval || $3.bval;
-        }
+        {printGray("========  OR OPERATION ***********");}
         | expression OR NOT arithmetic
-        {
-            int lhsType = $1.type;
-            int rhsType = $4.type;
-            if (lhsType != BOOL_TYPE || rhsType != BOOL_TYPE)
-            {
-                writeSemanticError("Type mismatch with OR operation, types must be boolean", yylineno);
-                return 0;
-            }
-            $$.type = BOOL_TYPE;
-            $$.bval = $1.bval || !$4.bval;
-        }
+        {printGray("========  OR NOT OPERATION ***********");}
         ; 
 
 arithmetic: IDENTIFIER INC                                        
@@ -658,18 +488,18 @@ printStatement: dataValue ',' printStatement
 
 /* Part 3: Subroutines */
 
+
+
+
 void yyerror(const char* s){
     fprintf(stderr, "\nERROR MESS: %s\n", s);
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     // Initialize the symbol table
     initSymbolTable();
     
-    FILE* file = nullptr;
-    char inputBuffer[256];
-    bool useStandardInput = false;
-
+    FILE *file;
     // Check if a filename was provided
     if (argc > 1) {
         // File name provided, open the file for reading
@@ -678,33 +508,20 @@ int main(int argc, char** argv) {
             perror(argv[1]);
             return 1;
         }
-        // Set Flex to read from it instead of standard input
+        // Set Flex to read from it instead of standard input:
         yyin = file;
-        yyparse();
-        printf("\nParsing complete\n");
+    } 
+    /* else {
+        // No filename provided, read from standard input
+        yyin = stdin;
+    } */
+    
+
+    yyparse();
+	printf("\nParsing complete\n");
+
+    if (argc > 1) {
         fclose(file);
-    } else {
-        // No filename provided, keep reading from standard input until "exit" is typed
-        while (true) {
-            printf("Enter input (or type 'exit' to continue): ");
-            fgets(inputBuffer, sizeof(inputBuffer), stdin);
-            // Check for special input keyword
-            if (strncmp(inputBuffer, "exit", 4) == 0) {
-                break;
-            }
-            // Use a temporary file to simulate fmemopen
-            FILE* tempFile = tmpfile();
-            if (!tempFile) {
-                perror("tmpfile");
-                return 1;
-            }
-            fputs(inputBuffer, tempFile);
-            rewind(tempFile);
-            yyin = tempFile;
-            yyparse();
-            printf("\nParsing complete\n");
-            fclose(tempFile);
-        }
     }
 
     saveSymbolTables();
@@ -715,13 +532,8 @@ int main(int argc, char** argv) {
     FILE* quadFile = fopen(quadPath, "w");
     FILE* assemblyFile = fopen(assemblyPath, "w");
 
-    if (quadFile && assemblyFile) {
-        assemblyGenerator.printQuadsToFile();
-        fclose(quadFile);
-        fclose(assemblyFile);
-    } else {
-        perror("Error opening output files");
-    }
+    assemblyGenerator.printQuadsToFile();
+
 
     return 0;
 }
