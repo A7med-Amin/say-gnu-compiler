@@ -520,7 +520,7 @@ variableDeclarationWithAssignment: dataType IDENTIFIER ASSIGN dataValue ';'
             addEntryToCurrentTable($2, VAR, idTypeValue, true);
 
             const char* name = assemblyGenerator.addAssignment(newEntry);
-            const char* name = generator.addTemp($1.value , "" , "");
+            // const char* name = generator.addTemp($1.value , "" , "");
             assemblyGenerator.addQuad("ALLOC",$2,"",name);
             assemblyGenerator.addQuad("ASSIGN",valueStr,"",name);
         }
