@@ -6,6 +6,7 @@
     /* C libraries */
     #include <stdio.h>
     #include <stdlib.h>
+    #include "AssemblyGenerator.hpp"
 
     /* Header Files */
     #include "semantic_analyzer.hpp"
@@ -462,6 +463,10 @@ variableDeclaration: dataType IDENTIFIER ';'
             TypeValue* idTypeValue = new TypeValue;
             idTypeValue->type = static_cast<EntryType>($1);
             addEntryToCurrentTable($2, VAR, idTypeValue, false);
+            const char* name = assemblyGenerator.addAssignment(newEntry);
+            assemblyGenerator.addQuad("ALLOC",$2,"",name);
+
+
         }
         | variableDeclarationWithAssignment
         ;
