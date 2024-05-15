@@ -272,7 +272,7 @@ bool checkEqualityLT(TypeValue *val1, TypeValue *val2)
 
 void writeSemanticError(string error, int codeLine)
 {
-    fprintf(semanticFile, "ERROR: %s at line %d\n", error.c_str(), codeLine);
+    fprintf(semanticFile, "ERROR: %s at line %d\n", error.c_str(), codeLine + 1);
     printRed("Semantic ERROR See semantic_error.txt for more details\n");
     saveSymbolTables();
     exit(0);
@@ -280,13 +280,13 @@ void writeSemanticError(string error, int codeLine)
 
 void writeSemanticWarning(string warning, int codeLine)
 {
-    fprintf(semanticFile, "WARNING: %s at line %d\n", warning.c_str(), codeLine);
+    fprintf(semanticFile, "WARNING: %s at line %d\n", warning.c_str(), codeLine + 1);
     printYellow("Warning See semantic_error.txt for more details\n");
 }
 
 void writeSyntaxError(string error, int codeLine)
 {
-    fprintf(syntaxFile, "ERROR: %s at line %d\n", error.c_str(), codeLine);
+    fprintf(syntaxFile, "ERROR: %s at line %d\n", error.c_str(), codeLine + 1);
     printRed("Syntax ERROR See syntax_error.txt for more details\n");
     saveSymbolTables();
     exit(0);
