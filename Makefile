@@ -10,3 +10,6 @@ run:
 
 runwithtestfile:
 	./compiler	test.txt
+
+runwithtest:
+	./compiler	singletest.txt
