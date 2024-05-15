@@ -69,11 +69,13 @@ void AssemblyGenerator::printQuadsToFile()
     cout << "Quadruples size: " << quadruples->size() << endl << endl;
 
 
-
-    // Write the quadruples to the file
     for (int i = 0; i < quadruples->size(); i++)
     {
-        outputFile << left << setw(20) << (*quadruples)[i]->getOp() << setw(6) << (*quadruples)[i] -> getArg1() << setw(6) << (*quadruples)[i] -> getArg2() << setw(6) << (*quadruples)[i] -> getResult() << endl;
+        outputFile << left << 
+        setw(10) << (*quadruples)[i]->getOp() << 
+        setw(6) << (*quadruples)[i] -> getArg1() << 
+        setw(6) << (*quadruples)[i] -> getArg2() << 
+        setw(6) << (*quadruples)[i] -> getResult() << endl;
     }
 
     // Close the file
