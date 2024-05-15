@@ -318,7 +318,7 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             $$.type = BOOL_TYPE;
             $$.bval = !$2.bval;
         }
-        | expression AND arithmetic
+        | expression AND expression
         {
             int lhsType = $1.type;
             int rhsType = $3.type;
@@ -330,19 +330,7 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             $$.type = BOOL_TYPE;
             $$.bval = $1.bval && $3.bval;
         }
-        | expression AND NOT arithmetic
-        {
-            int lhsType = $1.type;
-            int rhsType = $4.type;
-            if (lhsType != BOOL_TYPE || rhsType != BOOL_TYPE)
-            {
-                writeSemanticError("Type mismatch with AND operation, types must be boolean", yylineno);
-                return 0;
-            }
-            $$.type = BOOL_TYPE;
-            $$.bval = $1.bval && !$4.bval;
-        }
-        | expression OR arithmetic
+        | expression OR expression
         {
             int lhsType = $1.type;
             int rhsType = $3.type;
@@ -354,61 +342,136 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             $$.type = BOOL_TYPE;
             $$.bval = $1.bval || $3.bval;
         }
-        | expression OR NOT arithmetic
-        {
-            int lhsType = $1.type;
-            int rhsType = $4.type;
-            if (lhsType != BOOL_TYPE || rhsType != BOOL_TYPE)
-            {
-                writeSemanticError("Type mismatch with OR operation, types must be boolean", yylineno);
-                return 0;
-            }
-            $$.type = BOOL_TYPE;
-            $$.bval = $1.bval || !$4.bval;
-        }
         ; 
 
 arithmetic: IDENTIFIER INC                                        
-        {printMagenta("========  INCREMENT ***********");}
+        {
+            SymbolTableEntry* newEntry = getIdentifierEntry($1);
+            if(newEntry == nullptr){
+                writeSemanticError("Using variable not declared", yylineno);
+                return 0;
+            }
+            if(!newEntry->getinitialization())
+            {
+                writeSemanticError("Variable not initialized", yylineno);
+                return 0;
+            }
+            if(newEntry->getKind() == CONST){
+                writeSemanticError("Cannot increment constant variable", yylineno);
+                return 0;
+            }
+            if(newEntry->getTypeValue()->type != INT_TYPE){
+                writeSemanticError("Type mismatch with INC operation, types must be integer", yylineno);
+                return 0;
+            }
+            $$.type = INT_TYPE;
+            $$.ival = newEntry->getTypeValue()->value.ival + 1;
+            newEntry->getTypeValue()->value.ival = $$.ival;
+        }
         | IDENTIFIER DEC                                        
-        {printMagenta("========  DECREMENT ***********");}
+        {
+            SymbolTableEntry* newEntry = getIdentifierEntry($1);
+            if(newEntry == nullptr){
+                writeSemanticError("Using variable not declared", yylineno);
+                return 0;
+            }
+            if(!newEntry->getinitialization())
+            {
+                writeSemanticError("Variable not initialized", yylineno);
+                return 0;
+            }
+            if(newEntry->getKind() == CONST){
+                writeSemanticError("Cannot decrement constant variable", yylineno);
+                return 0;
+            }
+            if(newEntry->getTypeValue()->type != INT_TYPE){
+                writeSemanticError("Type mismatch with DEC operation, types must be integer", yylineno);
+                return 0;
+            }
+            $$.type = INT_TYPE;
+            $$.ival = newEntry->getTypeValue()->value.ival - 1;
+            newEntry->getTypeValue()->value.ival = $$.ival;
+        }
         | INC IDENTIFIER                                        
-        {printMagenta("========  INCREMENT ***********");}
+        {
+            SymbolTableEntry* newEntry = getIdentifierEntry($2);
+            if(newEntry == nullptr){
+                writeSemanticError("Using variable not declared", yylineno);
+                return 0;
+            }
+            if(!newEntry->getinitialization())
+            {
+                writeSemanticError("Variable not initialized", yylineno);
+                return 0;
+            }
+            if(newEntry->getKind() == CONST){
+                writeSemanticError("Cannot increment constant variable", yylineno);
+                return 0;
+            }
+            if(newEntry->getTypeValue()->type != INT_TYPE){
+                writeSemanticError("Type mismatch with INC operation, types must be integer", yylineno);
+                return 0;
+            }
+            $$.type = INT_TYPE;
+            $$.ival = newEntry->getTypeValue()->value.ival + 1;
+            newEntry->getTypeValue()->value.ival = $$.ival;
+        }
         | DEC IDENTIFIER                                        
-        {printMagenta("========  DECREMENT ***********");}
+        {
+            SymbolTableEntry* newEntry = getIdentifierEntry($2);
+            if(newEntry == nullptr){
+                writeSemanticError("Using variable not declared", yylineno);
+                return 0;
+            }
+            if(!newEntry->getinitialization())
+            {
+                writeSemanticError("Variable not initialized", yylineno);
+                return 0;
+            }
+            if(newEntry->getKind() == CONST){
+                writeSemanticError("Cannot decrement constant variable", yylineno);
+                return 0;
+            }
+            if(newEntry->getTypeValue()->type != INT_TYPE){
+                writeSemanticError("Type mismatch with DEC operation, types must be integer", yylineno);
+                return 0;
+            }
+            $$.type = INT_TYPE;
+            $$.ival = newEntry->getTypeValue()->value.ival - 1;
+            newEntry->getTypeValue()->value.ival = $$.ival;
+        }
         | complexArithmetic
-        {printMagenta("========  COMPLEX ARITHMETIC OPERATION ***********");}
         ;
 
 complexArithmetic: complexArithmetic ADD minorTerm       
-        {printMagenta("========  ADDITION OPERATION ***********");}
+        {}
         | complexArithmetic SUB minorTerm       
-        {printMagenta("========  SUBTRACTION OPERATION ***********");}
+        {}
         | minorTerm
         ;
 
 minorTerm: minorTerm MUL majorTerm       
-        {printMagenta("========  MULTIPLICATION OPERATION ***********");}
+        {}
         | minorTerm DIV majorTerm       
-        {printMagenta("========  DIVISION OPERATION ***********");}
+        {}
         | minorTerm MOD majorTerm       
-        {printMagenta("========  MODULUS OPERATION ***********");}
+        {}
         | majorTerm
         ;
 
 majorTerm: majorTerm POW instance       
-        {printMagenta("========  POWER OPERATION ***********");}
+        {}
         | instance
         ;
 
 instance: INTEGER_VALUE | FLOATING | functionCall
         | IDENTIFIER 
-        {printMagenta("========  IDENTIFIER ***********");}
+        {}
         | '(' expression ')' {$$ = $2;}
         ;
 
 /* Declaration and Assignment */
-assignment: IDENTIFIER ASSIGN dataValue ';' 
+assignment: IDENTIFIER ASSIGN dataValue ';'
         {
             // Check if the variable has been declared before
             SymbolTableEntry* newEntry = getIdentifierEntry($1);
