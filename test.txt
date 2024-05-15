@@ -34,7 +34,7 @@ switch (x){
 // loops
 while(true){x=6;}
 
-for(int i=0; i<5;i++){x++;}
+for(int i=0; i<5;i++){int x = x+1;}
 
 // Operatores
 z = 5+6;
@@ -61,9 +61,6 @@ print(a>=b);
 print(x,"hello",y);
 
 // Errors
-int = 6;
-x = 8
-y * 6;
 
 // Advanced Testing
 

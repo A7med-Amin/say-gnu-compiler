@@ -74,7 +74,6 @@
 %type <actualValue> printStatement
 %type <actualValue> callSingleParam
 %type <actualValue> callList
-%type <actualValue> printMultiple
 
 
 /* Data Types */
@@ -265,8 +264,8 @@ instance: INTEGER_VALUE | FLOATING | functionCall
         ;
 
 /* Declaration and Assignment */
-assignment: IDENTIFIER ASSIGN expression ';' 
-        {printf("========  ASSIGNMENT ***********\n");}
+assignment: IDENTIFIER ASSIGN dataValue ';' 
+        {printf(" %d\n %s", $3.type, $3.nameRep, );}
         ;
 
 variableDeclaration: dataType IDENTIFIER ';' 
@@ -302,7 +301,8 @@ switchBlock: '{' {createNewSymbolTable();} caseExpression {scopeEnd();} '}'
 
 caseExpression:	
             caseDefault 	                   
-    |       CASE expression ':' codeBlock BREAK ';' caseExpression  
+    |       CASE dataValue ':' codeBlock BREAK ';' caseExpression  
+    {printf("========  CASE STATEMENT ***********\n");}
 	;
 
 caseDefault:
@@ -367,13 +367,9 @@ arg: dataType IDENTIFIER
         ;
 
 /* Print Statement */
-printStatement: printMultiple ',' printStatement                        
-        | printMultiple                                          
+printStatement: dataValue ',' printStatement                        
+        | dataValue                                          
         ;  
-
-printMultiple: expression                       
-        | constantValue   
-        ;
 
 /* Part 2 End */
 

@@ -110,7 +110,7 @@
 
         /* String Variable */
 \".*\"                      {yylval.actualValue.type = STRING_TYPE;
-                            yylval.actualValue.sval = (yytext); 
+                            yylval.actualValue.sval = strdup(yytext); 
                             yylval.actualValue.nameRep = strdup(yytext); 
                             return STRING_LITERAL;}
 

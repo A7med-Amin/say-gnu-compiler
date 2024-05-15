@@ -955,7 +955,7 @@ case 44:
 YY_RULE_SETUP
 #line 112 "Lexer.l"
 {yylval.actualValue.type = STRING_TYPE;
-                            yylval.actualValue.sval = (yytext); 
+                            yylval.actualValue.sval = strdup(yytext); 
                             yylval.actualValue.nameRep = strdup(yytext); 
                             return STRING_LITERAL;}
 	YY_BREAK
