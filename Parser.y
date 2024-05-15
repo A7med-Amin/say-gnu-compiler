@@ -303,17 +303,24 @@ int main(int argc, char **argv) {
         // No filename provided, read from standard input
         yyin = stdin;
     } */
+    
 
-    // Parse through the input:
     yyparse();
+	printf("\nParsing complete\n");
 
     if (argc > 1) {
-        // Close the file if it was opened
         fclose(file);
     }
 
-    // Save the symbol tables
     saveSymbolTables();
+
+    const char* quadPath = "quad.txt";
+    const char* assemblyPath = "assembly.txt";
+
+    FILE* quadFile = fopen(quadPath, "w");
+    FILE* assemblyFile = fopen(assemblyPath, "w");
+
+    fprintf(quadFile, "OpCode: %d  Arg1: %s  Arg2: %s Result: %s \n", Walker->DATA->OpCode, Walker->DATA->Arg1, Walker->DATA->Arg2, Walker->DATA->Result);
 
     return 0;
 }
