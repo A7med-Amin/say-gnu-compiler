@@ -59,7 +59,7 @@ void scopeEnd()
     currentSymbolTable = currentSymbolTable->getParent();
 }
 
-void addEntryToCurrentTable(char *identifier, Kind kind, TypeValue *typeValue, bool isInitialized,  EntryType functionOutput)
+SymbolTableEntry * addEntryToCurrentTable(char *identifier, Kind kind, TypeValue *typeValue, bool isInitialized,  EntryType functionOutput)
 {
     string id(identifier);              // convert char* to string
     SymbolTableEntry *entry = new SymbolTableEntry();
@@ -74,6 +74,7 @@ void addEntryToCurrentTable(char *identifier, Kind kind, TypeValue *typeValue, b
     if (kind == CONST)
         entry->setModifiable(false); // Constants are not modifiable
     currentSymbolTable->addEntry(id, entry);
+    return entry;
 }
 
 SymbolTableEntry *getIdentifierEntry(const char *identifier)
