@@ -8,12 +8,15 @@ comment
 // Declaration and Assignment
 int declaration;
 float decWith_Assign=5.2;
-bool n=a||b;
+bool a = true && false;
+bool b = ! false;
+bool n= !a||b;
 int c=5*5;
 char harf='f';
 string str="compilers";
 const int SABET=100;
-
+int i = 9;
+int var;
 // Conditional EXpressions
 if(i==6){
     var=10;
@@ -22,16 +25,18 @@ else{
     var=20;
 }
 
-if(i==8){
+if((i>8 && i < 9) || (i!=8 && i <= 9)){
     var=12;
 }
 
 // loops
-while(true){x=6;}
+while(true){int x=6;}
 
-for(int i=0; i<5;i++){int x = x+1;}
+for(int i=0; i<5;i++){int x = i+1;}
 
 // Operatores
+int z;
+int d = 50;
 z = 5+6;
 z = 5-6;
 z = 5*6;
@@ -41,47 +46,50 @@ z = i++;
 z = i--;
 z = i**2;
 
-z = a && b;
-z = a || b;
-z = !a;
-
-print(a==b);
-print(a!=b);
-print(a<b);
-print(a>b);
-print(a<=b);
-print(a>=b);
+bool bolo;
+bolo = a && b;
+bolo = a || b;
+bolo = !a;
 
 // Multiple Printing
-// print(x,"hello",y); ---------------------------------------------------------
+//print(i,"hello",'y'); ---------------------------------------------------------
 
 // Errors
 // int = 6; ---------------------------------------------------------
 // x = 8 ---------------------------------------------------------
 // y * 6; ---------------------------------------------------------
 
+{
+    int ahmed = 209;
+}
+
 // Advanced Testing
-
-switch(x){ 
-    case 'c': int x = 6; 
+char coco = 'h';
+float j;
+switch(coco){ 
+    case 'c': j = 9.0; 
     break; 
-    case 5: int x = 6; 
+    case 'h': j = 6.33; 
     break; 
-    default: int y =7;
-    }
+    default: j =7.56;
+}
 
+{
+    int ameen = 209;
+}
 
-
-switch(x){
-    case 1: int x=1;
+int into = 7;
+int x;
+switch(into){
+    case 1: x=1;
             break;
-    case 2: int x=2;
+    case 2: x=2;
             break;
-    default: int x=0;
+    default:x=0;
             break;                
 }
 
 if((i==8)){
-    var=9;
+    var=2000000000;
 }
 

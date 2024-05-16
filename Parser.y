@@ -7,6 +7,7 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <cmath>  // Include the cmath header for pow function
+    #include <string>
 
     #include "AssemblyGenerator.hpp"
 
@@ -14,7 +15,7 @@
     #include "semantic_analyzer.hpp"
 
     /* Function prototypes */
-    void yyerror(const char* s);
+    extern void yyerror(const char *s);
     int yylex(void);
     int yylineno;     /* from lexer represents line numbers */
     extern FILE *yyin;
@@ -123,13 +124,19 @@
 
 
 // Associativity
-%left EQ NEQ GT LT GTE LTE
-%left ADD SUB 
-%left MUL DIV MOD
-%right ASSIGN POW
+/* %right ASSIGN POW
 %nonassoc AND OR NOT
+%left ADD SUB
+%left MUL DIV MOD
+%left EQ NEQ GT LT GTE LTE */
 
-
+%left ADD SUB
+%left MUL DIV MOD
+%left AND OR
+%nonassoc EQ NEQ GT LT GTE LTE
+%nonassoc NOT
+%right POW
+%right ASSIGN
 
 /* Part 1 End */
 
@@ -176,24 +183,64 @@ program:                                                                        
                                                                                             }
         ;
 
-codeBlock: codeStatement                                            {}
-        |  codeBlock codeStatement                                  {}
+codeBlock: codeStatement                                            
+        |  codeBlock codeStatement                                  
         ;
-
 
 codeStatement: variableDeclaration                                                                  
         | constantDeclaration                                                                  
         | assignment                                                                          
-        | WHILE '(' expression ')' scopeBlock        
-        | REPEAT scopeBlock UNTIL '(' expression ')' ';'                                     
-        | FOR '(' {createNewSymbolTable();} forLoopInitialization expression forLoopItter ')' loopsScopeBlock           
+        | WHILE '(' expression 
+        {
+            if ($3.type != BOOL_TYPE)
+            {
+                writeSemanticError("Condition of IF must be boolean", yylineno);
+                return 0;
+            }
+        }
+        ')' scopeBlock        
+        | REPEAT scopeBlock UNTIL '(' expression 
+        {
+            if ($5.type != BOOL_TYPE)
+            {
+                writeSemanticError("Condition of IF must be boolean", yylineno);
+                return 0;
+            }
+        }
+        ')' ';'                                     
+        | FOR '(' {createNewSymbolTable();} forLoopInitialization expression
+        {
+            if ($5.type != BOOL_TYPE)
+            {
+                writeSemanticError("Condition of FOR must be boolean", yylineno);
+                return 0;
+            }
+        }
+        forLoopItter ')' loopsScopeBlock           
         | ifCondition                                                                       
-        | SWITCH '(' IDENTIFIER ')' switchBlock                                             
+        | SWITCH '(' IDENTIFIER 
+        {
+            SymbolTableEntry* newEntry = getIdentifierEntry($3);
+            if(newEntry == nullptr){
+                writeSemanticError("Using variable not declared", yylineno);
+                return 0;
+            }
+            if(!newEntry->getinitialization())
+            {
+                writeSemanticError("Variable not initialized", yylineno);
+                return 0;
+            }
+            if(newEntry->getTypeValue()->type != INT_TYPE && newEntry->getTypeValue()->type != CHAR_TYPE){
+                writeSemanticError("Switch identifier must be char type or integer", yylineno);
+                return 0;
+            }
+        }
+        ')' switchBlock                                             
         | scopeBlock
         | PRINT '(' printStatement ')' ';'                                                 
         | function 
         | voidFunctionCall ';'
-        | error               { yyerror("Unexpected statement."); }
+        | error               { yyerror("Unexpected statement"); }
         ;
 
 /* Data Types and Data Values */
@@ -213,7 +260,6 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             int rhsType = $3.type;
             if (typeMismatch(lhsType, rhsType))
             {
-                printf("%d %d \n", lhsType, rhsType);
                 writeSemanticError("Type mismatch", yylineno);
                 return 0;
             }
@@ -230,7 +276,6 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             int rhsType = $3.type;
             if (typeMismatch(lhsType, rhsType))
             {
-                printf("%d %d \n", lhsType, rhsType);
                 writeSemanticError("Type mismatch", yylineno);
                 return 0;
             }
@@ -247,7 +292,6 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             int rhsType = $3.type;
             if (typeMismatch(lhsType, rhsType))
             {
-                printf("%d %d \n", lhsType, rhsType);
                 writeSemanticError("Type mismatch", yylineno);
                 return 0;
             }
@@ -264,7 +308,6 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             int rhsType = $3.type;
             if (typeMismatch(lhsType, rhsType))
             {
-                printf("%d %d \n", lhsType, rhsType);
                 writeSemanticError("Type mismatch", yylineno);
                 return 0;
             }
@@ -281,7 +324,6 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             int rhsType = $3.type;
             if (typeMismatch(lhsType, rhsType))
             {
-                printf("%d %d \n", lhsType, rhsType);
                 writeSemanticError("Type mismatch", yylineno);
                 return 0;
             }
@@ -298,7 +340,6 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             int rhsType = $3.type;
             if (typeMismatch(lhsType, rhsType))
             {
-                printf("%d %d \n", lhsType, rhsType);
                 writeSemanticError("Type mismatch", yylineno);
                 return 0;
             }
@@ -862,12 +903,27 @@ constantDeclaration: CONSTANT dataType IDENTIFIER ASSIGN constantValue ';'
         ;   
 
 /* Conditional statements */
-ifCondition: IF '(' expression ')' scopeBlock
-        {printf("========  IF STATEMENT ***********\n");}
+ifCondition: IF '(' expression
+        {
+            if ($3.type != BOOL_TYPE)
+            {
+                writeSemanticError("Condition of IF must be boolean", yylineno);
+                return 0;
+            }
+        }
+        ')' scopeBlock
         elseIfCondition elseStmnt
         ;
 
-elseIfCondition: elseIfCondition ELSE IF '(' expression ')' scopeBlock
+elseIfCondition: elseIfCondition ELSE IF '(' expression
+        {
+            if ($5.type != BOOL_TYPE)
+            {
+                writeSemanticError("Condition of ELSE IF must be boolean", yylineno);
+                return 0;
+            }
+        }
+        ')' scopeBlock
         |
         ;
 
@@ -879,11 +935,9 @@ elseStmnt: ELSE scopeBlock
 switchBlock: '{' {createNewSymbolTable();} caseExpression {scopeEnd();} '}'                     
     ;
 
-
 caseExpression:	
             caseDefault 	                   
     |       CASE switchValidValue ':' codeBlock BREAK ';' caseExpression  
-    {printf("========  CASE STATEMENT ***********\n");}
 	;
 
 switchValidValue: INTEGER_VALUE | CHARACTER 
@@ -914,22 +968,22 @@ loopsScopeBlock: '{' codeBlock {scopeEnd();} '}'
 
 /////////////////////////////// Function ///////////////////////////////
 
-function :  dataType IDENTIFIER '(' {createNewSymbolTable();} argList ')' '{' codeBlock RETURN  dataValue ';' {scopeEnd();} '}'  {printf("========  FUNCTION ***********\n");}
-        |  dataType IDENTIFIER '(' {createNewSymbolTable();} ')' '{' codeBlock RETURN  dataValue ';' {scopeEnd();} '}'           {printf("========  FUNCTION ***********\n");}
-        |   VOID_TYPE IDENTIFIER '(' {createNewSymbolTable();} argList ')' '{' codeBlock returnCase {scopeEnd();} '}'             {printf("========  VOID FUNCTION ***********\n");}
-        |   VOID_TYPE IDENTIFIER '(' {createNewSymbolTable();} ')' '{' codeBlock returnCase {scopeEnd();} '}'             {printf("========  VOID FUNCTION ***********\n");}
+function :  dataType IDENTIFIER '(' {createNewSymbolTable();} argList ')' '{' codeBlock RETURN  dataValue ';' {scopeEnd();} '}'  {}
+        |  dataType IDENTIFIER '(' {createNewSymbolTable();} ')' '{' codeBlock RETURN  dataValue ';' {scopeEnd();} '}'           {}
+        |   VOID_TYPE IDENTIFIER '(' {createNewSymbolTable();} argList ')' '{' codeBlock returnCase {scopeEnd();} '}'             {}
+        |   VOID_TYPE IDENTIFIER '(' {createNewSymbolTable();} ')' '{' codeBlock returnCase {scopeEnd();} '}'             {}
         ;
 
-returnCase: RETURN ';'    		                                                                {printf("========  VOID FUNCTION RETURN ***********\n");}	 
-        |                                                                                       {printf("========  NO VOID FUNCTION RETURN ***********\n");}	 
+returnCase: RETURN ';'    		                                                                {}	 
+        |                                                                                       {}	 
         ;
 
-functionCall: IDENTIFIER '(' callList ')'   		                                            {printf("========  FUNCTION CALL ***********\n");}
-        | IDENTIFIER '(' ')'   		                                                            {printf("========  FUNCTION CALL ***********\n");}
+functionCall: IDENTIFIER '(' callList ')'   		                                            {}
+        | IDENTIFIER '(' ')'   		                                                            {}
         ;
 
-voidFunctionCall: IDENTIFIER '(' callList ')'   		                                            {printf("========  FUNCTION CALL ***********\n");}
-        | IDENTIFIER '(' ')'   		                                                            {printf("========  FUNCTION CALL ***********\n");}
+voidFunctionCall: IDENTIFIER '(' callList ')'   		                                        {}
+        | IDENTIFIER '(' ')'   		                                                            {}
         ;
 
 callList:  callSingleParam ',' callList 
@@ -951,7 +1005,10 @@ arg: dataType IDENTIFIER
         ;
 
 /* Print Statement */
-printStatement: dataValue ',' printStatement                        
+printStatement: dataValue ',' printStatement  
+        {
+            printf("========  PRINT SUCCESSFUL ***********\n");
+        }                      
         | dataValue                                          
         ;  
 
@@ -960,13 +1017,6 @@ printStatement: dataValue ',' printStatement
 %%
 
 /* Part 3: Subroutines */
-
-
-
-
-void yyerror(const char* s){
-    fprintf(stderr, "\nERROR MESS: %s\n", s);
-}
 
 int main(int argc, char **argv) {
     // Initialize the symbol table
