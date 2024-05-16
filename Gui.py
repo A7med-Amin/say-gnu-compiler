@@ -56,6 +56,17 @@ class TextEditor:
         )
         run_button.pack(side=tk.TOP, anchor="ne", padx=10, pady=10)
 
+        # Scrolled text widget to display compilation status and errors
+        self.output_text = scrolledtext.ScrolledText(
+            self.master,
+            wrap=tk.WORD,
+            bg="white",
+            fg="#333",
+            font=("Arial", 12),
+            insertbackground="#333",
+        )
+        self.output_text.pack(expand=True, fill="both", padx=20, pady=(10, 0))
+
     def create_menu(self):
         menubar = tk.Menu(self.master)
         self.master.config(menu=menubar)
@@ -79,7 +90,7 @@ class TextEditor:
 
         view_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="View", menu=view_menu)
-        view_menu.add_command(label="Toggle Dark Theme", command=self.toggle_theme)
+        view_menu.add_command(label="Toggle Theme", command=self.toggle_theme)
 
     def create_shortcuts(self):
         # Add keyboard shortcut functionality to the menu items
@@ -130,9 +141,36 @@ class TextEditor:
         script_path = "gui.txt"
         with open(script_path, "w") as file:
             file.write(self.text.get("1.0", tk.END).strip())
-                
+
         subprocess.run(["make", "build"])
-        subprocess.run(["make", "gui"])
+        build_output = subprocess.run(["make", "gui"], capture_output=True, text=True)
+
+        if build_output.returncode == 0:
+            self.output_text.tag_config("success", foreground="green")
+            self.output_text.insert(tk.END, "\nCompilation successful\n", "success")
+        else:
+            self.output_text.tag_config("error", foreground="red")
+            self.output_text.insert(tk.END, "\nCompilation failed\n", "error")
+
+        syntax_error_file = "syntax_error.txt"
+        if os.path.exists(syntax_error_file):
+            with open(syntax_error_file, "r") as err_file:
+                syntax_errors = err_file.readlines()
+                for line in syntax_errors:
+                    self.output_text.insert(tk.END, line, "syntax error")
+
+        semantic_error_file = "semantic_error.txt"
+        if os.path.exists(semantic_error_file):
+            with open(semantic_error_file, "r") as err_file:
+                semantic_errors = err_file.readlines()
+                for line in semantic_errors:
+                    if line.startswith("WARNING"):
+                        self.output_text.tag_config("warning", foreground="yellow")
+                        self.output_text.insert(tk.END, line, "warning")
+                    elif line.startswith("ERROR"):
+                        self.output_text.tag_config("semantic error", foreground="red")
+                        self.output_text.insert(tk.END, line, "semantic error")
+
         os.remove(script_path)
 
     def toggle_theme(self):
