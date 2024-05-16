@@ -11,7 +11,7 @@ j = y;
 int myfunc(int a, int b) {
   float z = 5.2;
   z = z + 3;
-  string ahmed = "Ahmed";
+  // string ahmed = "Ahmed";
   return a + b;
 }
 
@@ -42,12 +42,14 @@ int main() {
   myfunc(3, 3);
 
   if (x > 5 && y > 5) {
-    string ameen = "Ameen";
+    //string ameen = "Ameen";
+    int z = 90;
   }
 
   for (int looper = 66; looper < 10; looper++) {
     if (looper > x) {
-      string MYSTRING = "MYSTRING";
+      // string MYSTRING = "MYSTRING";
+      char c = 's';
     }
   }
 
@@ -63,10 +65,4 @@ int main() {
 }
 
 int test = 0
-int foooo()
-{
-    if(test > 4)
-    {
-        returtn 90;
-    }
-}
+int foooo(){if(test > 4){returtn 90;}}
