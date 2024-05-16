@@ -129,7 +129,7 @@ class TextEditor:
     def run_code(self):
         try:
             # Save the content of the text editor to a temporary file
-            script_path = "temp_script.py"
+            script_path = "temp_script.txt"
             with open(script_path, "w") as file:
                 file.write(self.text.get("1.0", tk.END).strip())
 
