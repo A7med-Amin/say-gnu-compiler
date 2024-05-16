@@ -219,8 +219,10 @@ codeStatement: variableDeclaration
                 writeSemanticError("Condition of FOR must be boolean", yylineno);
                 return 0;
             }
+            
         }
-        forLoopItter ')' loopsScopeBlock           
+        forLoopItter ')' loopsScopeBlock { printf("for loop itter\n");
+            assemblyGenerator.endScope(forScope);}           
         | ifCondition                                                                       
         | SWITCH '(' IDENTIFIER 
         {
@@ -257,7 +259,7 @@ dataValue: expression
     { 
         string valueStr = $1.sval;
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
-        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
         $$.nameRep = strdup(valueStr.c_str());
         } 
 }
@@ -266,7 +268,7 @@ dataValue: expression
         char charValue = static_cast<char>($1.cval);  
         string valueStr(1, charValue);  
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
-        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
         $$.nameRep = strdup(valueStr.c_str());
         } 
 } 
@@ -276,42 +278,42 @@ constantValue: INTEGER_VALUE
 {
     string valueStr = to_string($1.ival);
     const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
-    assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+    assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
     $$.nameRep = strdup(valueStr.c_str());
 }
 | FLOATING 
 { 
         string valueStr = to_string($1.fval);
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
-        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
         $$.nameRep = strdup(valueStr.c_str());
 } 
 | CHARACTER 
 { 
         string valueStr = to_string($1.cval);
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
-        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
         $$.nameRep = strdup(valueStr.c_str());
 } 
 | STRING_LITERAL 
 { 
         string valueStr = $1.sval;
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
-        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
         $$.nameRep = strdup(valueStr.c_str());
 } 
 | BOOLEAN_TRUE 
 { 
         string valueStr = "TRUE";
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
-        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
         $$.nameRep = strdup(valueStr.c_str());
 } 
 | BOOLEAN_FALSE
 { 
         string valueStr = "FALSE";
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
-        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
         $$.nameRep = strdup(valueStr.c_str());
 }  
 ;
@@ -322,13 +324,13 @@ expression: arithmetic | boolean ;
 boolean: BOOLEAN_TRUE
         {
             const char* name = assemblyGenerator.addTempVariable("TRUE" , "" , "");
-            assemblyGenerator.addQuad("ASSIGN", "TRUE", "", name);
+            assemblyGenerator.addQuadruple("ASSIGN", "TRUE", "", name);
             $$.nameRep = strdup("TRUE");
         }
         | BOOLEAN_FALSE 
         {
         const char* name = assemblyGenerator.addTempVariable("FALSE" , "" , "");
-        assemblyGenerator.addQuad("ASSIGN", "FALSE", "", name);
+        assemblyGenerator.addQuadruple("ASSIGN", "FALSE", "", name);
         $$.nameRep = strdup("FALSE");
         }
         | expression EQ arithmetic 
@@ -353,7 +355,7 @@ boolean: BOOLEAN_TRUE
             const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
             const char* name = assemblyGenerator.addTempVariable(name1 , "==" , name2);
             $$.nameRep = concatenateNames(name1 , "==", name2);
-            assemblyGenerator.addQuad("EQU", name1, name2, name);
+            assemblyGenerator.addQuadruple("EQU", name1, name2, name);
         }
         | expression NEQ arithmetic 
         {
@@ -377,7 +379,7 @@ boolean: BOOLEAN_TRUE
             const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
             const char* name = assemblyGenerator.addTempVariable(name1 , "!=" , name2);
             $$.nameRep = concatenateNames(name1 , "!=", name2);
-            assemblyGenerator.addQuad("NEQ", name1, name2, name);
+            assemblyGenerator.addQuadruple("NEQ", name1, name2, name);
         }
         | expression GT arithmetic 
         {
@@ -401,7 +403,7 @@ boolean: BOOLEAN_TRUE
             const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
             const char* name = assemblyGenerator.addTempVariable(name1 , ">" , name2);
             $$.nameRep = concatenateNames(name1 , ">", name2);
-            assemblyGenerator.addQuad("GT", name1, name2, name);
+            assemblyGenerator.addQuadruple("GT", name1, name2, name);
         }
         | expression LT arithmetic 
         {
@@ -425,7 +427,7 @@ boolean: BOOLEAN_TRUE
             const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
             const char* name = assemblyGenerator.addTempVariable(name1 , "<" , name2);
             $$.nameRep = concatenateNames(name1 , "<", name2);
-            assemblyGenerator.addQuad("LT", name1, name2, name);
+            assemblyGenerator.addQuadruple("LT", name1, name2, name);
         }
         | expression GTE arithmetic 
         {
@@ -449,7 +451,7 @@ boolean: BOOLEAN_TRUE
             const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
             const char* name = assemblyGenerator.addTempVariable(name1 , ">=" , name2);
             $$.nameRep = concatenateNames(name1 , ">=", name2);
-            assemblyGenerator.addQuad("GTE", name1, name2, name);
+            assemblyGenerator.addQuadruple("GTE", name1, name2, name);
         }
         | expression LTE arithmetic 
         {
@@ -473,7 +475,7 @@ boolean: BOOLEAN_TRUE
             const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
             const char* name = assemblyGenerator.addTempVariable(name1 , "<=" , name2);
             $$.nameRep = concatenateNames(name1 , "<=", name2);
-            assemblyGenerator.addQuad("LTE", name1, name2, name);
+            assemblyGenerator.addQuadruple("LTE", name1, name2, name);
         }
         | NOT expression 
         {
@@ -490,7 +492,7 @@ boolean: BOOLEAN_TRUE
             const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
             const char* name = assemblyGenerator.addTempVariable("!", name1, "");
             $$.nameRep = concatenateNames("!", name1, "");
-            assemblyGenerator.addQuad("NOT", name1, "", name);
+            assemblyGenerator.addQuadruple("NOT", name1, "", name);
 
             
         }
@@ -512,7 +514,7 @@ boolean: BOOLEAN_TRUE
             const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
             const char* name = assemblyGenerator.addTempVariable(name1 , "&&" , name2);
             $$.nameRep = concatenateNames(name1 , "&&", name2);
-            assemblyGenerator.addQuad("AND", name1, name2, name);
+            assemblyGenerator.addQuadruple("AND", name1, name2, name);
         }
         | expression OR expression
         {
@@ -532,7 +534,7 @@ boolean: BOOLEAN_TRUE
             const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
             const char* name = assemblyGenerator.addTempVariable(name1 , "&&" , name2);
             $$.nameRep = concatenateNames(name1 , "||", name2);
-            assemblyGenerator.addQuad("OR", name1, name2, name);
+            assemblyGenerator.addQuadruple("OR", name1, name2, name);
         }
         ; 
 
@@ -564,7 +566,7 @@ arithmetic: IDENTIFIER INC
             const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
             const char* name = assemblyGenerator.addTempVariable(name1, "++" , "");
             $$.nameRep = concatenateNames(name1, "++" , "");
-            assemblyGenerator.addQuad("INC", name1, "", name);
+            assemblyGenerator.addQuadruple("INC", name1, "", name);
         }
         | IDENTIFIER DEC                                        
         {
@@ -594,7 +596,7 @@ arithmetic: IDENTIFIER INC
             const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
             const char* name = assemblyGenerator.addTempVariable(name1, "--" , "");
             $$.nameRep = concatenateNames(name1, "--" , "");
-            assemblyGenerator.addQuad("DEC", name1, "", name);
+            assemblyGenerator.addQuadruple("DEC", name1, "", name);
         }
         | INC IDENTIFIER                                        
         {
@@ -624,7 +626,7 @@ arithmetic: IDENTIFIER INC
             const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
             const char* name = assemblyGenerator.addTempVariable("++", name1 , "");
             $$.nameRep = concatenateNames("++", name1 , "");
-            assemblyGenerator.addQuad("INC", name1, "", name);
+            assemblyGenerator.addQuadruple("INC", name1, "", name);
         }
         | DEC IDENTIFIER                                        
         {
@@ -654,7 +656,7 @@ arithmetic: IDENTIFIER INC
             const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
             const char* name = assemblyGenerator.addTempVariable("--", name1 , "");
             $$.nameRep = concatenateNames("--", name1 , "");
-            assemblyGenerator.addQuad("DEC", name1, "", name);
+            assemblyGenerator.addQuadruple("DEC", name1, "", name);
         }
         | complexArithmetic
         ;
@@ -703,7 +705,7 @@ complexArithmetic: complexArithmetic ADD minorTerm
             const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
             const char* name = assemblyGenerator.addTempVariable(name1 , "+" , name2);
             $$.nameRep = concatenateNames(name1 , "+", name2);
-            assemblyGenerator.addQuad("ADD", name1, name2, name);
+            assemblyGenerator.addQuadruple("ADD", name1, name2, name);
         }
         | complexArithmetic SUB minorTerm       
         {
@@ -749,7 +751,7 @@ complexArithmetic: complexArithmetic ADD minorTerm
             const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
             const char* name = assemblyGenerator.addTempVariable(name1 , "-" , name2);
             $$.nameRep = concatenateNames(name1 , "-", name2);
-            assemblyGenerator.addQuad("MINUS", name1, name2, name);
+            assemblyGenerator.addQuadruple("MINUS", name1, name2, name);
         }
         | minorTerm
         ;
@@ -798,7 +800,7 @@ minorTerm: minorTerm MUL majorTerm
             const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
             const char* name = assemblyGenerator.addTempVariable(name1 , "*" , name2);
             $$.nameRep = concatenateNames(name1 , "*", name2);
-            assemblyGenerator.addQuad("MUL", name1, name2, name);
+            assemblyGenerator.addQuadruple("MUL", name1, name2, name);
         }
         | minorTerm DIV majorTerm       
         {
@@ -844,7 +846,7 @@ minorTerm: minorTerm MUL majorTerm
             const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
             const char* name = assemblyGenerator.addTempVariable(name1 , "/" , name2);
             $$.nameRep = concatenateNames(name1 , "/", name2);
-            assemblyGenerator.addQuad("DIV", name1, name2, name);
+            assemblyGenerator.addQuadruple("DIV", name1, name2, name);
         }
         | minorTerm MOD majorTerm       
         {
@@ -864,7 +866,7 @@ minorTerm: minorTerm MUL majorTerm
             const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
             const char* name = assemblyGenerator.addTempVariable(name1 , "%" , name2);
             $$.nameRep = concatenateNames(name1 , "%", name2);
-            assemblyGenerator.addQuad("MOD", name1, name2, name);
+            assemblyGenerator.addQuadruple("MOD", name1, name2, name);
         }
         | majorTerm
         ;
@@ -914,7 +916,7 @@ majorTerm: majorTerm POW instance
             const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
             const char* name = assemblyGenerator.addTempVariable(name1 , "^" , name2);
             $$.nameRep = concatenateNames(name1 , "^", name2);
-            assemblyGenerator.addQuad("POW", name1, name2, name);
+            assemblyGenerator.addQuadruple("POW", name1, name2, name);
         }
         | instance {
         }
@@ -924,14 +926,14 @@ instance: INTEGER_VALUE
         { 
         string valueStr = to_string($1.ival);
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
-        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
         $$.nameRep = strdup(valueStr.c_str());
         } 
         | FLOATING  
         { 
         string valueStr = to_string($1.fval);
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
-        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
         $$.nameRep = strdup(valueStr.c_str());
         } 
         | TypedFunctionCall
@@ -1022,7 +1024,7 @@ assignment: IDENTIFIER ASSIGN dataValue ';'
 
             const char* name = assemblyGenerator.getRegisterAssignment(newEntry);
             const char* VarName = assemblyGenerator.getTempVariable($3.nameRep);
-            assemblyGenerator.addQuad("ASSIGN",VarName,"",name);
+            assemblyGenerator.addQuadruple("ASSIGN",VarName,"",name);
         }
         ;
 
@@ -1038,7 +1040,7 @@ variableDeclaration: dataType IDENTIFIER ';'
             SymbolTableEntry * entry = addEntryToCurrentTable($2, VAR, idTypeValue, false);
 
             const char* name = assemblyGenerator.assignRegister(entry);
-            assemblyGenerator.addQuad("ALLOC",$2,"",name);
+            assemblyGenerator.addQuadruple("ALLOC",$2,"",name);
 
 
         }
@@ -1089,9 +1091,9 @@ variableDeclarationWithAssignment: dataType IDENTIFIER ASSIGN dataValue ';'
 
 
             const char* name = assemblyGenerator.assignRegister(entry);
-            assemblyGenerator.addQuad("ALLOC",$2,"",name);
+            assemblyGenerator.addQuadruple("ALLOC",$2,"",name);
             const char* VarName = assemblyGenerator.getTempVariable($4.nameRep);
-            assemblyGenerator.addQuad("ASSIGN",VarName,"",name);
+            assemblyGenerator.addQuadruple("ASSIGN",VarName,"",name);
 
 
         }
@@ -1133,9 +1135,9 @@ constantDeclaration: CONSTANT dataType IDENTIFIER ASSIGN constantValue ';'
             SymbolTableEntry * entry = addEntryToCurrentTable($3, CONST, idTypeValue, true);
 
             const char* name = assemblyGenerator.assignRegister(entry);
-            assemblyGenerator.addQuad("ALLOC",$3,"",name);
+            assemblyGenerator.addQuadruple("ALLOC",$3,"",name);
             const char* VarName = assemblyGenerator.getTempVariable($5.nameRep);
-            assemblyGenerator.addQuad("ASSIGN",VarName,"",name);
+            assemblyGenerator.addQuadruple("ASSIGN",VarName,"",name);
         }
         | CONSTANT dataType IDENTIFIER ';'
         {
@@ -1208,15 +1210,20 @@ forLoopItter: ';' IDENTIFIER ASSIGN expression
 
 scopeBlock: '{' 
 {
+    printf(" ***** NEW SCOPE *****\n");
     createNewSymbolTable();
     assemblyGenerator.startScope();
-
 } codeBlock {
     scopeEnd();
 } '}'                                             
     ;
 
-loopsScopeBlock: '{' codeBlock {scopeEnd();} '}'                                                                  
+loopsScopeBlock: '{' {
+            assemblyGenerator.startScope();
+}codeBlock {
+    scopeEnd();
+printf("END FOR\n");
+} '}'                                                                  
     ;
 
 /////////////////////////////// Function ///////////////////////////////

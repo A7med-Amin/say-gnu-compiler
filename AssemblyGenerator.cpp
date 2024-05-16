@@ -33,12 +33,12 @@ void AssemblyGenerator::endScope(scopeType type)
     {
         string label = "L" + to_string(labels.size());
         string lastResult = previousScopeQuadruples->back()->getResult();
-        addQuad("JF", lastResult, "", label);
+        addQuadruple("JF", lastResult, "", label);
         for (auto *quad : *currentScopeQuadruples)
         {
             previousScopeQuadruples->push_back(quad);
         }
-        addQuad(label + ":", "", "", "");
+        addQuadruple(label + ":", "", "", "");
         labels.push_back(label);
 
     }
@@ -61,15 +61,41 @@ void AssemblyGenerator::endScope(scopeType type)
     {
         string label = "L" + to_string(labels.size());
         string lastResult = previousScopeQuadruples->back()->getResult();
-        addQuad("JF", lastResult, "", label);
+        addQuadruple("JF", lastResult, "", label);
 
         for (auto *quad : *currentScopeQuadruples)
         {
             previousScopeQuadruples->push_back(quad);
         }
 
-        addQuad(label + ":", "", "", "");
+        addQuadruple(label + ":", "", "", "");
         labels.push_back(label);
+    }
+    break;
+
+    case forScope:
+    {
+        cout << "FOR SCOPE" << endl;
+        string label = "L" + to_string(labels.size());
+        auto lastQuad = previousScopeQuadruples->end() - 1;
+        previousScopeQuadruples->insert(lastQuad, new Quadruple(label + ":", "", "", ""));
+        labels.push_back(label);  
+
+        string lastResult2 = previousScopeQuadruples->at(previousScopeQuadruples->size() - 3)->getResult();
+        label = "L" + to_string(labels.size());
+        lastQuad = previousScopeQuadruples->end() - 1;
+        previousScopeQuadruples->insert(lastQuad, new Quadruple("JF", lastResult2, "", label));
+
+        for (auto *quad : *currentScopeQuadruples)
+        {
+            previousScopeQuadruples->push_back(quad);
+        }
+
+        string previousLabel = labels.back();
+        addQuadruple("JMP", "", "", previousLabel);
+        addQuadruple(label + ":", "", "", "");
+        labels.push_back(label);         
+
     }
 
     default:
@@ -155,7 +181,7 @@ void AssemblyGenerator::clearTemps()
     temps.clear();
 }
 
-void AssemblyGenerator::addQuad(const string &operation, const string &operand1, const string &operand2, const string &destination)
+void AssemblyGenerator::addQuadruple(const string &operation, const string &operand1, const string &operand2, const string &destination)
 {
     scopes.top()->push_back(new Quadruple(operation, operand1, operand2, destination));
 }
