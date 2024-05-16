@@ -1000,7 +1000,10 @@ arg: dataType IDENTIFIER
         ;
 
 /* Print Statement */
-printStatement: dataValue ',' printStatement                        
+printStatement: dataValue ',' printStatement  
+        {
+            printf("========  PRINT Success ***********\n");
+        }                      
         | dataValue                                          
         ;  
 
