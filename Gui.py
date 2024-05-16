@@ -128,27 +128,42 @@ class TextEditor:
 
     def run_code(self):
         try:
-            # Run the make build command
-            build_result = subprocess.run(
+            # Save the content of the text editor to a temporary file
+            script_path = "temp_script.py"
+            with open(script_path, "w") as file:
+                file.write(self.text.get("1.0", tk.END).strip())
+
+            # Execute `make build` and `make run`
+            build_process = subprocess.run(
                 ["make", "build"], capture_output=True, text=True
             )
-            if build_result.returncode != 0:
-                # Display build errors in the text editor
-                self.text.insert(tk.END, "\nBuild failed:\n" + build_result.stderr)
-                return
+            self.text.insert(
+                tk.END,
+                f"\nBuild output:\n{build_process.stdout}\n{build_process.stderr}",
+            )
 
-            # Run the compiled program
-            run_result = subprocess.run(["make", "run"], capture_output=True, text=True)
-            if run_result.returncode != 0:
-                # Display runtime errors in the text editor
-                self.text.insert(tk.END, "\nRun failed:\n" + run_result.stderr)
-                return
+            run_process = subprocess.run(
+                ["make", "run"], capture_output=True, text=True
+            )
+            self.text.insert(
+                tk.END, f"\nRun output:\n{run_process.stdout}\n{run_process.stderr}"
+            )
 
-            # Display the output of the program
-            self.text.insert(tk.END, "\nProgram output:\n" + run_result.stdout)
+            # Execute the saved script
+            script_process = subprocess.run(
+                ["python", script_path], capture_output=True, text=True
+            )
+            self.text.insert(
+                tk.END,
+                f"\nScript output:\n{script_process.stdout}\n{script_process.stderr}",
+            )
+
+            # Optionally, remove the temporary file after execution
+            os.remove(script_path)
+
         except Exception as e:
             # Display any exceptions that occur
-            self.text.insert(tk.END, f"\nAn error occurred: {e}")
+            self.text.insert(tk.END, f"\nAn error occurred: {e}\n")
 
     def toggle_theme(self):
         if self.dark_theme:
