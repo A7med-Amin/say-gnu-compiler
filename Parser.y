@@ -8,7 +8,7 @@
     #include <stdlib.h>
     #include <cmath>  // Include the cmath header for pow function
     #include <string>
-
+    #include <cstring>  // For strdup
     #include "AssemblyGenerator.hpp"
 
     /* Header Files */
@@ -49,6 +49,11 @@
             break;                                                     \
         }
     #endif // TYPE_VALUE_MACROS_HPP
+
+    char* concatenateNames(const char* name1, const char* name2, const char* name3) {
+    std::string nameRepStr = std::string(name1) + std::string(name2) + std::string(name3);
+    return strdup(nameRepStr.c_str());  // Copy the result back to a char*
+    }
 %}
 
 %union{
@@ -179,7 +184,7 @@ program:                                                                        
                                                                                                 // printf("           |oo|           \\__.//___)\n");
                                                                                                 // printf("           |==|\n");
                                                                                                 // printf("           \\__/\n");
-                                                                                                printf("                       SALAMO ALEEKO! ")
+                                                                                                // printf("                       SALAMO ALEEKO! ")
                                                                                             }
         ;
 
@@ -248,14 +253,68 @@ dataType: INT_DATA_TYPE | FLOAT_DATA_TYPE| CHAR_DATA_TYPE | STRING_DATA_TYPE | B
 
 dataValue: expression | STRING_LITERAL | CHARACTER;
 
-constantValue: INTEGER_VALUE | FLOATING | CHARACTER | STRING_LITERAL | BOOLEAN_TRUE | BOOLEAN_FALSE ;
+constantValue: INTEGER_VALUE 
+{
+    string valueStr = to_string($1.ival);
+    const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
+    assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+    $$.nameRep = strdup(valueStr.c_str());
+}
+| FLOATING 
+{ 
+        string valueStr = to_string($1.fval);
+        const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
+        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        $$.nameRep = strdup(valueStr.c_str());
+} 
+| CHARACTER 
+{ 
+        string valueStr = to_string($1.cval);
+        const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
+        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        $$.nameRep = strdup(valueStr.c_str());
+} 
+| STRING_LITERAL 
+{ 
+        string valueStr = $1.sval;
+        const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
+        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        $$.nameRep = strdup(valueStr.c_str());
+} 
+| BOOLEAN_TRUE 
+{ 
+        string valueStr = "TRUE";
+        const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
+        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        $$.nameRep = strdup(valueStr.c_str());
+} 
+| BOOLEAN_FALSE
+{ 
+        string valueStr = "FALSE";
+        const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
+        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        $$.nameRep = strdup(valueStr.c_str());
+}  
+;
 
 /* Code Expressions */
 expression: arithmetic | boolean ;
 
-boolean: BOOLEAN_TRUE | BOOLEAN_FALSE 
+boolean: BOOLEAN_TRUE
+        {
+            const char* name = assemblyGenerator.addTempVariable("TRUE" , "" , "");
+            assemblyGenerator.addQuad("ASSIGN", "TRUE", "", name);
+            $$.nameRep = strdup("TRUE");
+        }
+        | BOOLEAN_FALSE 
+        {
+        const char* name = assemblyGenerator.addTempVariable("FALSE" , "" , "");
+        assemblyGenerator.addQuad("ASSIGN", "FALSE", "", name);
+        $$.nameRep = strdup("FALSE");
+        }
         | expression EQ arithmetic 
         {
+            printf("********** EQ ********\n");
             int lhsType = $1.type;
             int rhsType = $3.type;
             if (typeMismatch(lhsType, rhsType))
@@ -269,9 +328,18 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             EntryType compareDataType= static_cast<EntryType>(lhsType);
             GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
             $$.bval = checkEqualityEqual(lhs, rhs);
+
+            string varStr1NameRep = $1.nameRep;
+            string varStr2NameRep = $3.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
+            const char* name = assemblyGenerator.addTempVariable(name1 , "==" , name2);
+            $$.nameRep = concatenateNames(name1 , "==", name2);
+            assemblyGenerator.addQuad("EQU", name1, name2, name);
         }
         | expression NEQ arithmetic 
         {
+            printf("********** NEQ ********\n");
             int lhsType = $1.type;
             int rhsType = $3.type;
             if (typeMismatch(lhsType, rhsType))
@@ -285,6 +353,14 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             EntryType compareDataType= static_cast<EntryType>(lhsType);
             GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
             $$.bval = checkEqualityNot(lhs, rhs);
+
+            string varStr1NameRep = $1.nameRep;
+            string varStr2NameRep = $3.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
+            const char* name = assemblyGenerator.addTempVariable(name1 , "!=" , name2);
+            $$.nameRep = concatenateNames(name1 , "!=", name2);
+            assemblyGenerator.addQuad("NEQ", name1, name2, name);
         }
         | expression GT arithmetic 
         {
@@ -301,6 +377,14 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             EntryType compareDataType= static_cast<EntryType>(lhsType);
             GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
             $$.bval = checkEqualityGT(lhs, rhs);
+
+                        string varStr1NameRep = $1.nameRep;
+            string varStr2NameRep = $3.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
+            const char* name = assemblyGenerator.addTempVariable(name1 , ">" , name2);
+            $$.nameRep = concatenateNames(name1 , ">", name2);
+            assemblyGenerator.addQuad("GT", name1, name2, name);
         }
         | expression LT arithmetic 
         {
@@ -317,6 +401,14 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             EntryType compareDataType= static_cast<EntryType>(lhsType);
             GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
             $$.bval = checkEqualityLT(lhs, rhs);
+
+            string varStr1NameRep = $1.nameRep;
+            string varStr2NameRep = $3.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
+            const char* name = assemblyGenerator.addTempVariable(name1 , "<" , name2);
+            $$.nameRep = concatenateNames(name1 , "<", name2);
+            assemblyGenerator.addQuad("LT", name1, name2, name);
         }
         | expression GTE arithmetic 
         {
@@ -333,6 +425,14 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             EntryType compareDataType= static_cast<EntryType>(lhsType);
             GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
             $$.bval = checkEqualityGTE(lhs, rhs);
+
+            string varStr1NameRep = $1.nameRep;
+            string varStr2NameRep = $3.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
+            const char* name = assemblyGenerator.addTempVariable(name1 , ">=" , name2);
+            $$.nameRep = concatenateNames(name1 , ">=", name2);
+            assemblyGenerator.addQuad("GTE", name1, name2, name);
         }
         | expression LTE arithmetic 
         {
@@ -349,6 +449,14 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             EntryType compareDataType= static_cast<EntryType>(lhsType);
             GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
             $$.bval = checkEqualityLTE(lhs, rhs);
+
+            string varStr1NameRep = $1.nameRep;
+            string varStr2NameRep = $3.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
+            const char* name = assemblyGenerator.addTempVariable(name1 , "<=" , name2);
+            $$.nameRep = concatenateNames(name1 , "<=", name2);
+            assemblyGenerator.addQuad("LTE", name1, name2, name);
         }
         | NOT expression 
         {
@@ -360,6 +468,14 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             }
             $$.type = BOOL_TYPE;
             $$.bval = !$2.bval;
+
+            string varStr1NameRep = $2.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name = assemblyGenerator.addTempVariable("!", name1, "");
+            $$.nameRep = concatenateNames("!", name1, "");
+            assemblyGenerator.addQuad("NOT", name1, "", name);
+
+            
         }
         | expression AND expression
         {
@@ -372,6 +488,14 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             }
             $$.type = BOOL_TYPE;
             $$.bval = $1.bval && $3.bval;
+
+            string varStr1NameRep = $1.nameRep;
+            string varStr2NameRep = $3.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
+            const char* name = assemblyGenerator.addTempVariable(name1 , "&&" , name2);
+            $$.nameRep = concatenateNames(name1 , "&&", name2);
+            assemblyGenerator.addQuad("AND", name1, name2, name);
         }
         | expression OR expression
         {
@@ -384,6 +508,14 @@ boolean: BOOLEAN_TRUE | BOOLEAN_FALSE
             }
             $$.type = BOOL_TYPE;
             $$.bval = $1.bval || $3.bval;
+
+            string varStr1NameRep = $1.nameRep;
+            string varStr2NameRep = $3.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
+            const char* name = assemblyGenerator.addTempVariable(name1 , "&&" , name2);
+            $$.nameRep = concatenateNames(name1 , "||", name2);
+            assemblyGenerator.addQuad("OR", name1, name2, name);
         }
         ; 
 
@@ -409,7 +541,13 @@ arithmetic: IDENTIFIER INC
             }
             $$.type = INT_TYPE;
             $$.ival = newEntry->getTypeValue()->value.ival + 1;
-            newEntry->getTypeValue()->value.ival = $$.ival;
+            newEntry->getTypeValue()->value.ival = $$.ival;\
+
+            string varStr1NameRep = $$.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name = assemblyGenerator.addTempVariable(name1, "++" , "");
+            $$.nameRep = concatenateNames(name1, "++" , "");
+            assemblyGenerator.addQuad("INC", name1, "", name);
         }
         | IDENTIFIER DEC                                        
         {
@@ -434,6 +572,12 @@ arithmetic: IDENTIFIER INC
             $$.type = INT_TYPE;
             $$.ival = newEntry->getTypeValue()->value.ival - 1;
             newEntry->getTypeValue()->value.ival = $$.ival;
+
+            string varStr1NameRep = $$.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name = assemblyGenerator.addTempVariable(name1, "--" , "");
+            $$.nameRep = concatenateNames(name1, "--" , "");
+            assemblyGenerator.addQuad("DEC", name1, "", name);
         }
         | INC IDENTIFIER                                        
         {
@@ -458,6 +602,12 @@ arithmetic: IDENTIFIER INC
             $$.type = INT_TYPE;
             $$.ival = newEntry->getTypeValue()->value.ival + 1;
             newEntry->getTypeValue()->value.ival = $$.ival;
+
+            string varStr1NameRep = $$.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name = assemblyGenerator.addTempVariable("++", name1 , "");
+            $$.nameRep = concatenateNames("++", name1 , "");
+            assemblyGenerator.addQuad("INC", name1, "", name);
         }
         | DEC IDENTIFIER                                        
         {
@@ -482,6 +632,12 @@ arithmetic: IDENTIFIER INC
             $$.type = INT_TYPE;
             $$.ival = newEntry->getTypeValue()->value.ival - 1;
             newEntry->getTypeValue()->value.ival = $$.ival;
+
+            string varStr1NameRep = $$.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name = assemblyGenerator.addTempVariable("--", name1 , "");
+            $$.nameRep = concatenateNames("--", name1 , "");
+            assemblyGenerator.addQuad("DEC", name1, "", name);
         }
         | complexArithmetic
         ;
@@ -524,6 +680,13 @@ complexArithmetic: complexArithmetic ADD minorTerm
                     }
                     break;
             }
+            string varStr1NameRep = $1.nameRep;
+            string varStr2NameRep = $3.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
+            const char* name = assemblyGenerator.addTempVariable(name1 , "+" , name2);
+            $$.nameRep = concatenateNames(name1 , "+", name2);
+            assemblyGenerator.addQuad("ADD", name1, name2, name);
         }
         | complexArithmetic SUB minorTerm       
         {
@@ -563,6 +726,13 @@ complexArithmetic: complexArithmetic ADD minorTerm
                     }
                     break;
             }
+            string varStr1NameRep = $1.nameRep;
+            string varStr2NameRep = $3.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
+            const char* name = assemblyGenerator.addTempVariable(name1 , "-" , name2);
+            $$.nameRep = concatenateNames(name1 , "-", name2);
+            assemblyGenerator.addQuad("MINUS", name1, name2, name);
         }
         | minorTerm
         ;
@@ -605,6 +775,13 @@ minorTerm: minorTerm MUL majorTerm
                     }
                     break;
             }
+            string varStr1NameRep = $1.nameRep;
+            string varStr2NameRep = $3.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
+            const char* name = assemblyGenerator.addTempVariable(name1 , "*" , name2);
+            $$.nameRep = concatenateNames(name1 , "*", name2);
+            assemblyGenerator.addQuad("MUL", name1, name2, name);
         }
         | minorTerm DIV majorTerm       
         {
@@ -644,6 +821,13 @@ minorTerm: minorTerm MUL majorTerm
                     }
                     break;
             }
+            string varStr1NameRep = $1.nameRep;
+            string varStr2NameRep = $3.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
+            const char* name = assemblyGenerator.addTempVariable(name1 , "/" , name2);
+            $$.nameRep = concatenateNames(name1 , "/", name2);
+            assemblyGenerator.addQuad("DIV", name1, name2, name);
         }
         | minorTerm MOD majorTerm       
         {
@@ -656,6 +840,14 @@ minorTerm: minorTerm MUL majorTerm
             }
             $$.type = INT_TYPE;
             $$.ival = $1.ival % $3.ival;
+
+            string varStr1NameRep = $1.nameRep;
+            string varStr2NameRep = $3.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
+            const char* name = assemblyGenerator.addTempVariable(name1 , "%" , name2);
+            $$.nameRep = concatenateNames(name1 , "%", name2);
+            assemblyGenerator.addQuad("MOD", name1, name2, name);
         }
         | majorTerm
         ;
@@ -698,14 +890,33 @@ majorTerm: majorTerm POW instance
                     }
                     break;
             }
+
+            string varStr1NameRep = $1.nameRep;
+            string varStr2NameRep = $3.nameRep;
+            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
+            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
+            const char* name = assemblyGenerator.addTempVariable(name1 , "^" , name2);
+            $$.nameRep = concatenateNames(name1 , "^", name2);
+            assemblyGenerator.addQuad("POW", name1, name2, name);
         }
-        | instance
+        | instance {
+        }
         ;
 
 instance: INTEGER_VALUE 
-        { printf("========  INTEGER_VALUE ***********\n");} 
+        { 
+        string valueStr = to_string($1.ival);
+        const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
+        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        $$.nameRep = strdup(valueStr.c_str());
+        } 
         | FLOATING  
-        { printf("========  FLOATING ***********\n");} 
+        { 
+        string valueStr = to_string($1.fval);
+        const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
+        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        $$.nameRep = strdup(valueStr.c_str());
+        } 
         | functionCall
         | IDENTIFIER 
         {
@@ -721,21 +932,32 @@ instance: INTEGER_VALUE
             }
             newEntry->setused(true);
             $$.type = (int)newEntry->getTypeValue()->type;
+            string valueStr;
             switch($$.type){
                 case INT_TYPE:
                     $$.ival = newEntry->getTypeValue()->value.ival;
+                    valueStr = to_string($$.ival);
+                    $$.nameRep = strdup(valueStr.c_str());
                     break;
                 case FLOAT_TYPE:
                     $$.fval = newEntry->getTypeValue()->value.fval;
+                    valueStr = to_string($$.fval);
+                    $$.nameRep = strdup(valueStr.c_str());
                     break;
                 case STRING_TYPE:
                     $$.sval = newEntry->getTypeValue()->value.sval;
+                    valueStr = $$.sval;
+                    $$.nameRep = strdup(valueStr.c_str());
                     break;
                 case BOOL_TYPE:
                     $$.bval = newEntry->getTypeValue()->value.bval;
+                    valueStr = to_string($$.bval);
+                    $$.nameRep = strdup(valueStr.c_str());
                     break;
                 case CHAR_TYPE:
                     $$.cval = newEntry->getTypeValue()->value.cval;
+                    valueStr = to_string($$.cval);
+                    $$.nameRep = strdup(valueStr.c_str());
                     break;
             }
         }
@@ -745,19 +967,15 @@ instance: INTEGER_VALUE
 /* Declaration and Assignment */
 assignment: IDENTIFIER ASSIGN dataValue ';'
         {
-            // Check if the variable has been declared before
             SymbolTableEntry* newEntry = getIdentifierEntry($1);
-            // If the variable has not been declared before, throw an error
             if(newEntry == nullptr){
                 writeSemanticError("Using variable not declared", yylineno);
                 return 0;
             }
-            // Check if the variable is a constant
             if(newEntry->getKind() == CONST){
                 writeSemanticError("Cannot assign value to constant", yylineno);
                 return 0;
             }
-            // Check on type mismatch
             int idType = (int)newEntry->getTypeValue()->type;
             int valType = $3.type;
             if (typeMismatch(idType, valType))
@@ -765,7 +983,6 @@ assignment: IDENTIFIER ASSIGN dataValue ';'
                 writeSemanticError("Assignment type mismatch", yylineno);
                 return 0;
             }
-            // Assign the value to the variable (update the symbol table entry)
             switch(idType){
                 case INT_TYPE:
                     newEntry->getTypeValue()->value.ival = $3.ival;
@@ -784,24 +1001,25 @@ assignment: IDENTIFIER ASSIGN dataValue ';'
                     break;
             }
             newEntry->setinitialization(true);
+
+            const char* name = assemblyGenerator.getRegisterAssignment(newEntry);
+            const char* VarName = assemblyGenerator.getTempVariable($3.nameRep);
+            assemblyGenerator.addQuad("ASSIGN",VarName,"",name);
         }
         ;
 
 variableDeclaration: dataType IDENTIFIER ';' 
         {
-            // Check if the variable has been declared before
             SymbolTableEntry* newEntry = identifierScopeCheck($2);
-            // If the variable has been declared before, throw an error
             if(newEntry != nullptr){
                 writeSemanticError("Multiple variable declaration not allowed", yylineno);
                 return 0;
             }
-            // Create a new entry for the variable to symbol table
             TypeValue* idTypeValue = new TypeValue;
             idTypeValue->type = static_cast<EntryType>($1);
-            addEntryToCurrentTable($2, VAR, idTypeValue, false);
+            SymbolTableEntry * entry = addEntryToCurrentTable($2, VAR, idTypeValue, false);
 
-            const char* name = assemblyGenerator.addAssignment(newEntry);
+            const char* name = assemblyGenerator.assignRegister(entry);
             assemblyGenerator.addQuad("ALLOC",$2,"",name);
 
 
@@ -811,14 +1029,12 @@ variableDeclaration: dataType IDENTIFIER ';'
 
 variableDeclarationWithAssignment: dataType IDENTIFIER ASSIGN dataValue ';'
         {
-            // Check if the variable has been declared before
             SymbolTableEntry* newEntry = identifierScopeCheck($2);
-            // If the variable has been declared before, throw an error
+
             if(newEntry != nullptr){
                 writeSemanticError("Multiple variable declaration not allowed", yylineno);
                 return 0;
             }
-            // Check on type mismatch
             int idType = $1;
             int valType = $4.type;
             if (typeMismatch(idType, valType))
@@ -826,7 +1042,6 @@ variableDeclarationWithAssignment: dataType IDENTIFIER ASSIGN dataValue ';'
                 writeSemanticError("Declaration type mismatch", yylineno);
                 return 0;
             }
-            // Create a new entry for the variable to symbol table
             TypeValue* idTypeValue = new TypeValue;
             idTypeValue->type = static_cast<EntryType>(idType);
             string valueStr;
@@ -852,25 +1067,25 @@ variableDeclarationWithAssignment: dataType IDENTIFIER ASSIGN dataValue ';'
                     valueStr = to_string($4.cval);
                     break;
             }
-            addEntryToCurrentTable($2, VAR, idTypeValue, true);
+            SymbolTableEntry * entry = addEntryToCurrentTable($2, VAR, idTypeValue, true);
 
-            // const char* name = assemblyGenerator.addAssignment(newEntry);
-            // const char* name = generator.addTemp($1.value , "" , "");
-            // assemblyGenerator.addQuad("ALLOC",$2,"",name);
-            // assemblyGenerator.addQuad("ASSIGN",valueStr,"",name);
+
+            const char* name = assemblyGenerator.assignRegister(entry);
+            assemblyGenerator.addQuad("ALLOC",$2,"",name);
+            const char* VarName = assemblyGenerator.getTempVariable($4.nameRep);
+            assemblyGenerator.addQuad("ASSIGN",VarName,"",name);
+
+
         }
         ;
 
 constantDeclaration: CONSTANT dataType IDENTIFIER ASSIGN constantValue ';'
         {
-            // Check if the variable has been declared before
             SymbolTableEntry* newEntry = identifierScopeCheck($3);
-            // If the variable has been declared before, throw an error
             if(newEntry != nullptr){
                 writeSemanticError("Multiple variable declaration not allowed", yylineno);
                 return 0;
             }
-            // Check on type mismatch
             int idType = $2;
             int valType = $5.type;
             if (typeMismatch(idType, valType))
@@ -878,7 +1093,6 @@ constantDeclaration: CONSTANT dataType IDENTIFIER ASSIGN constantValue ';'
                 writeSemanticError("Declaration type mismatch", yylineno);
                 return 0;
             }
-            // Create a new entry for the variable to symbol table
             TypeValue* idTypeValue = new TypeValue;
             idTypeValue->type = static_cast<EntryType>(idType);
             switch(idTypeValue->type){
@@ -898,7 +1112,12 @@ constantDeclaration: CONSTANT dataType IDENTIFIER ASSIGN constantValue ';'
                     idTypeValue->value.cval = $5.cval;
                     break;
             }
-            addEntryToCurrentTable($3, CONST, idTypeValue, true);
+            SymbolTableEntry * entry = addEntryToCurrentTable($3, CONST, idTypeValue, true);
+
+            const char* name = assemblyGenerator.assignRegister(entry);
+            assemblyGenerator.addQuad("ALLOC",$3,"",name);
+            const char* VarName = assemblyGenerator.getTempVariable($5.nameRep);
+            assemblyGenerator.addQuad("ASSIGN",VarName,"",name);
         }
         ;   
 
