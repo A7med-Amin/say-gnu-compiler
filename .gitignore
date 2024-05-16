@@ -52,6 +52,10 @@ Mkfile.old
 dkms.conf
 
 # Local files
+*.yy.c
+*.tab.c
+*.tab.h
+
 quadruple.txt
 semantic_error.txt
 symbol_table.txt

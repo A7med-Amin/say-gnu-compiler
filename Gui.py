@@ -133,32 +133,41 @@ class TextEditor:
             with open(script_path, "w") as file:
                 file.write(self.text.get("1.0", tk.END).strip())
 
-            # Execute `make build` and `make run`
+            # Run your custom build commands
             build_process = subprocess.run(
-                ["make", "build"], capture_output=True, text=True
+                ["flex", "Lexer.l"], capture_output=True, text=True
             )
             self.text.insert(
                 tk.END,
-                f"\nBuild output:\n{build_process.stdout}\n{build_process.stderr}",
+                f"\nFlex output:\n{build_process.stdout}\n{build_process.stderr}",
             )
 
+            build_process = subprocess.run(
+                ["bison", "-d", "-t", "Parser.y"], capture_output=True, text=True
+            )
+            self.text.insert(
+                tk.END,
+                f"\nBison output:\n{build_process.stdout}\n{build_process.stderr}",
+            )
+
+            build_process = subprocess.run(
+                ["g++", "-std=c++17", "-o", "compiler", "lex.yy.c", "parser.tab.c", "semantic_analyzer.cpp", "AssemblyGenerator.cpp", "quadruple.cpp"], capture_output=True, text=True
+            )
+            self.text.insert(
+                tk.END,
+                f"\nCompiler build output:\n{build_process.stdout}\n{build_process.stderr}",
+            )
+
+            # Run the compiled program
             run_process = subprocess.run(
-                ["make", "run"], capture_output=True, text=True
+                ["./compiler"], capture_output=True, text=True
             )
             self.text.insert(
                 tk.END, f"\nRun output:\n{run_process.stdout}\n{run_process.stderr}"
             )
 
-            # Execute the saved script
-            script_process = subprocess.run(
-                ["python", script_path], capture_output=True, text=True
-            )
-            self.text.insert(
-                tk.END,
-                f"\nScript output:\n{script_process.stdout}\n{script_process.stderr}",
-            )
-
             # Optionally, remove the temporary file after execution
+            os.remove("compiler")
             os.remove(script_path)
 
         except Exception as e:
