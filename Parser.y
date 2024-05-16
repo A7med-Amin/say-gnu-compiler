@@ -251,7 +251,27 @@ codeStatement: variableDeclaration
 /* Data Types and Data Values */
 dataType: INT_DATA_TYPE | FLOAT_DATA_TYPE| CHAR_DATA_TYPE | STRING_DATA_TYPE | BOOLEAN_DATA_TYPE ;
 
-dataValue: expression | STRING_LITERAL | CHARACTER;
+dataValue: expression 
+| STRING_LITERAL 
+{
+    { 
+        string valueStr = $1.sval;
+        const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
+        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        $$.nameRep = strdup(valueStr.c_str());
+        } 
+}
+| CHARACTER {
+    { 
+        char charValue = static_cast<char>($1.cval);  
+        string valueStr(1, charValue);  
+        cout << valueStr << endl;
+        const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
+        assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
+        $$.nameRep = strdup(valueStr.c_str());
+        } 
+} 
+;
 
 constantValue: INTEGER_VALUE 
 {
