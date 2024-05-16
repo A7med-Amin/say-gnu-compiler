@@ -1,7 +1,3 @@
-const int x = 7;
-const int y = 8;
-const int z = 9;
+bool check = false;
+char coco = 'b';
 
-// const bool y = true;
-// const string str = "hello";
-// const char coco = 't';
