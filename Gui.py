@@ -145,19 +145,12 @@ class TextEditor:
         subprocess.run(["make", "build"])
         build_output = subprocess.run(["make", "gui"], capture_output=True, text=True)
 
-        if build_output.returncode == 0:
-            self.output_text.tag_config("success", foreground="green")
-            self.output_text.insert(tk.END, "\nCompilation successful\n", "success")
-        else:
-            self.output_text.tag_config("error", foreground="red")
-            self.output_text.insert(tk.END, "\nCompilation failed\n", "error")
-
         syntax_error_file = "syntax_error.txt"
         if os.path.exists(syntax_error_file):
             with open(syntax_error_file, "r") as err_file:
                 syntax_errors = err_file.readlines()
                 for line in syntax_errors:
-                    self.output_text.insert(tk.END, line, "syntax error")
+                    self.output_text.insert(tk.END, line, "error")
 
         semantic_error_file = "semantic_error.txt"
         if os.path.exists(semantic_error_file):
@@ -165,22 +158,28 @@ class TextEditor:
                 semantic_errors = err_file.readlines()
                 for line in semantic_errors:
                     if line.startswith("WARNING"):
-                        self.output_text.tag_config("warning", foreground="yellow")
+                        self.output_text.tag_config("warning")
                         self.output_text.insert(tk.END, line, "warning")
                     elif line.startswith("ERROR"):
-                        self.output_text.tag_config("semantic error", foreground="red")
-                        self.output_text.insert(tk.END, line, "semantic error")
+                        self.output_text.tag_config("error", foreground="red")
+                        self.output_text.insert(tk.END, line, "error")
+        self.output_text.tag_config("warning", foreground="#FFC107")
+        self.output_text.tag_config("error", foreground="red")
 
         os.remove(script_path)
 
     def toggle_theme(self):
         if self.dark_theme:
-            self.master.configure(background="#f0f0f0")
-            self.text.configure(bg="white", fg="#333", insertbackground="#333")
-        else:
             self.master.configure(background="#333")
             self.text.configure(bg="#111", fg="#fff", insertbackground="#fff")
+            self.output_text.configure(bg="#111", fg="#fff", insertbackground="#fff")
+        else:
+            self.master.configure(background="#f0f0f0")
+            self.text.configure(bg="white", fg="#333", insertbackground="#333")
+            self.output_text.configure(bg="white", fg="#333", insertbackground="#333")
         self.dark_theme = not self.dark_theme
+        self.output_text.tag_config("warning", foreground="#FFC107")
+        self.output_text.tag_config("error", foreground="red")
 
 
 if __name__ == "__main__":
