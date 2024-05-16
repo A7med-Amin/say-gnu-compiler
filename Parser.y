@@ -73,7 +73,7 @@
 }
 
 /* Program Grammer Types */
-%type <actualValue> functionCall
+%type <actualValue> TypedFunctionCall
 %type <actualValue> dataValue
 %type <actualValue> constantValue
 %type <actualValue> expression
@@ -84,8 +84,7 @@
 %type <actualValue> majorTerm
 %type <actualValue> instance
 %type <actualValue> printStatement
-%type <actualValue> callSingleParam
-%type <actualValue> callList
+%type <actualValue> CallList 
 %type <actualValue> switchValidValue
 
 
@@ -244,7 +243,8 @@ codeStatement: variableDeclaration
         | scopeBlock
         | PRINT '(' printStatement ')' ';'                                                 
         | function 
-        | voidFunctionCall ';'
+        | VoidFunctionCall ';'
+        | ReturnCase 
         | error               { yyerror("Unexpected statement"); }
         ;
 
@@ -915,7 +915,7 @@ instance: INTEGER_VALUE
         assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
         $$.nameRep = strdup(valueStr.c_str());
         } 
-        | functionCall
+        | TypedFunctionCall
         | IDENTIFIER 
         {
             SymbolTableEntry* newEntry = getIdentifierEntry($1);
@@ -999,6 +999,7 @@ assignment: IDENTIFIER ASSIGN dataValue ';'
                     break;
             }
             newEntry->setinitialization(true);
+            newEntry->setused(true);
 
             const char* name = assemblyGenerator.getRegisterAssignment(newEntry);
             const char* VarName = assemblyGenerator.getTempVariable($3.nameRep);
@@ -1117,6 +1118,11 @@ constantDeclaration: CONSTANT dataType IDENTIFIER ASSIGN constantValue ';'
             const char* VarName = assemblyGenerator.getTempVariable($5.nameRep);
             assemblyGenerator.addQuad("ASSIGN",VarName,"",name);
         }
+        | CONSTANT dataType IDENTIFIER ';'
+        {
+            writeSemanticError("Constant variable not initialized ", yylineno);
+            return 0;
+        }
         ;   
 
 /* Conditional statements */
@@ -1196,40 +1202,312 @@ loopsScopeBlock: '{' codeBlock {scopeEnd();} '}'
 
 /////////////////////////////// Function ///////////////////////////////
 
-function :  dataType IDENTIFIER '(' {createNewSymbolTable();} argList ')' '{' codeBlock RETURN  dataValue ';' {scopeEnd();} '}'  {}
-        |  dataType IDENTIFIER '(' {createNewSymbolTable();} ')' '{' codeBlock RETURN  dataValue ';' {scopeEnd();} '}'           {}
-        |   VOID_TYPE IDENTIFIER '(' {createNewSymbolTable();} argList ')' '{' codeBlock returnCase {scopeEnd();} '}'             {}
-        |   VOID_TYPE IDENTIFIER '(' {createNewSymbolTable();} ')' '{' codeBlock returnCase {scopeEnd();} '}'             {}
+function :  dataType IDENTIFIER '(' 
+        {
+            SymbolTableEntry *newEntry = identifierScopeCheck($2);
+            if(newEntry != nullptr){
+                writeSemanticError("Multiple function declaration not allowed", yylineno);
+                return 0;
+            }
+            TypeValue* idTypeValue = new TypeValue;
+            idTypeValue->type = static_cast<EntryType>($1);
+            EntryType funcOut = static_cast<EntryType>($1);
+            addEntryToCurrentTable($2, FUNC, idTypeValue, true, funcOut);
+            createNewSymbolTable();
+        } ArgList ')' '{' codeBlock ReturnCase '}'  {scopeEnd(); currentFunction = nullptr;}
+        |  dataType IDENTIFIER '(' 
+        {
+            SymbolTableEntry *newEntry = identifierScopeCheck($2);
+            if(newEntry != nullptr){
+                writeSemanticError("Multiple function declaration not allowed", yylineno);
+                return 0;
+            }
+            TypeValue* idTypeValue = new TypeValue;
+            idTypeValue->type = static_cast<EntryType>($1);
+            EntryType funcOut = static_cast<EntryType>($1);
+            addEntryToCurrentTable($2, FUNC, idTypeValue, true, funcOut);
+            createNewSymbolTable();
+        } ')' '{' codeBlock ReturnCase '}'         {scopeEnd(); currentFunction = nullptr;}
+        |  VOID_TYPE IDENTIFIER '(' 
+        {
+            SymbolTableEntry *newEntry = identifierScopeCheck($2);
+            if(newEntry != nullptr){
+                writeSemanticError("Multiple function declaration not allowed", yylineno);
+                return 0;
+            }
+            TypeValue* idTypeValue = new TypeValue;
+            idTypeValue->type = VOID_DTYPE;
+            addEntryToCurrentTable($2, FUNC, idTypeValue, true, VOID_DTYPE);
+            createNewSymbolTable();
+        } ArgList ')' '{' codeBlock ReturnCase '}' {scopeEnd(); currentFunction = nullptr;}
+        |  VOID_TYPE IDENTIFIER '(' 
+        {
+            SymbolTableEntry *newEntry = identifierScopeCheck($2);
+            if(newEntry != nullptr){
+                writeSemanticError("Multiple function declaration not allowed", yylineno);
+                return 0;
+            }
+            TypeValue* idTypeValue = new TypeValue;
+            idTypeValue->type = VOID_DTYPE;
+            addEntryToCurrentTable($2, FUNC, idTypeValue, true, VOID_DTYPE);
+            createNewSymbolTable();
+        } ')' '{' codeBlock ReturnCase '}'         {scopeEnd(); currentFunction = nullptr;}
         ;
 
-returnCase: RETURN ';'    		                                                                {}	 
-        |                                                                                       {}	 
-        ;
+ArgList:  Arg ',' ArgList | Arg ;
 
-functionCall: IDENTIFIER '(' callList ')'   		                                            {}
-        | IDENTIFIER '(' ')'   		                                                            {}
-        ;
-
-voidFunctionCall: IDENTIFIER '(' callList ')'   		                                        {}
-        | IDENTIFIER '(' ')'   		                                                            {}
-        ;
-
-callList:  callSingleParam ',' callList 
-	    |  callSingleParam  
-	    ;
-
-callSingleParam: dataValue
-        | functionCall              
-        ;
-
-argList:  arg ',' argList 
-	    | arg                           
-	    ;
-
-arg: dataType IDENTIFIER 		      
-        {}
+Arg: dataType IDENTIFIER 		      
+        {
+            SymbolTableEntry *newEntry = identifierScopeCheck($2);
+            if(newEntry != nullptr){
+                writeSemanticError("Already declared variable", yylineno);
+                return 0;
+            }
+            TypeValue* idTypeValue = new TypeValue;
+            EntryType paramType = static_cast<EntryType>($1);
+            idTypeValue->type = paramType;
+            currentFunction->pushFunctionInput(paramType);
+            addEntryToCurrentTable($2, PAR, idTypeValue, true);
+        }
         | dataType IDENTIFIER ASSIGN constantValue 
-        {}  
+        {
+            SymbolTableEntry *newEntry = identifierScopeCheck($2);
+            if(newEntry != nullptr){
+                writeSemanticError("Already declared variable", yylineno);
+                return 0;
+            }
+            int idType = $1;
+            int valType = $4.type;
+            if (typeMismatch(idType, valType))
+            {
+                writeSemanticError("Function parameter intialization type mismatch", yylineno);
+                return 0;
+            }
+            TypeValue* idTypeValue = new TypeValue;
+            EntryType paramType = static_cast<EntryType>(idType);
+            idTypeValue->type = paramType;
+            currentFunction->pushFunctionInput(paramType);
+            switch(idTypeValue->type){
+                case INT_TYPE:
+                    idTypeValue->value.ival = $4.ival;
+                    break;
+                case FLOAT_TYPE:
+                    idTypeValue->value.fval = $4.fval;
+                    break;
+                case STRING_TYPE:
+                    idTypeValue->value.sval = $4.sval;
+                    break;
+                case BOOL_TYPE:
+                    idTypeValue->value.bval = $4.bval;
+                    break;
+                case CHAR_TYPE:
+                    idTypeValue->value.cval = $4.cval;
+                    break;
+            }
+            addEntryToCurrentTable($2, PAR, idTypeValue, true);
+        }  
+        ;
+
+
+
+ReturnCase: RETURN ';'
+        {
+            if (currentFunction == nullptr)
+            {
+                writeSyntaxError("Return should be inside function block", yylineno);
+                return 0;
+            }
+            if(currentFunction->getFunctionOutput() != VOID_DTYPE){
+                writeSemanticError("Function must return a value", yylineno);
+                return 0;
+            }
+        }
+        | RETURN  dataValue ';'
+        {
+            if (currentFunction == nullptr)
+            {
+                writeSyntaxError("Return should be inside function block", yylineno);
+                return 0;
+            }
+            if(currentFunction->getFunctionOutput() != $2.type){
+                writeSemanticError("Return type mismatch", yylineno);
+                return 0;
+            }
+        }
+        |
+        {
+            if (currentFunction == nullptr)
+            {
+                writeSyntaxError("Return should be inside function block", yylineno);
+                return 0;
+            }
+            if(currentFunction->getFunctionOutput() != VOID_DTYPE){
+                writeSemanticError("Function must return a value", yylineno);
+                return 0;
+            }
+        }
+        ;
+
+TypedFunctionCall: IDENTIFIER '(' 
+        {
+            // Enter func args
+            SymbolTableEntry *entry = getIdentifierEntry($1);
+            if(entry == nullptr){
+                writeSemanticError("Undeclared function", yylineno);
+                return 0;
+            }
+            if(entry->getKind() != FUNC)
+            {
+                writeSemanticError("Call must be of a function", yylineno);
+                return 0;
+            }
+            entry->setused(true);
+            insertFuncParamsToStack(entry);
+        } CallList ')'   
+        {
+            // End of func call
+            if(functionParameters.size() != 0)
+            {
+                writeSemanticError("Invalid arguments size", yylineno);
+                return 0;
+            }
+            SymbolTableEntry *entry = getIdentifierEntry($1);
+            switch((int)entry->getFunctionOutput()){
+                case INT_TYPE:
+                    $$.type = INT_TYPE;
+                    $$.ival = entry->getTypeValue()->value.ival;
+                    break;
+                case FLOAT_TYPE:
+                    $$.type = FLOAT_TYPE;
+                    $$.fval = entry->getTypeValue()->value.fval;
+                    break;
+                case STRING_TYPE:
+                    $$.type = STRING_TYPE;
+                    $$.sval = entry->getTypeValue()->value.sval;
+                    break;
+                case BOOL_TYPE:
+                    $$.type = BOOL_TYPE;
+                    $$.bval = entry->getTypeValue()->value.bval;
+                    break;
+                case CHAR_TYPE:
+                    $$.type = CHAR_TYPE;
+                    $$.cval = entry->getTypeValue()->value.cval;
+                    break;
+                case VOID_DTYPE:
+                    $$.type = VOID_DTYPE;
+                    break;
+            }
+        }		                                 
+        | IDENTIFIER '(' ')'
+        {
+            SymbolTableEntry *entry = getIdentifierEntry($1);
+            if(entry == nullptr){
+                writeSemanticError("Undeclared function", yylineno);
+                return 0;
+            }
+            if(entry->getKind() != FUNC)
+            {
+                writeSemanticError("Call must be of a function", yylineno);
+                return 0;
+            }
+            entry->setused(true);
+            switch((int)entry->getFunctionOutput()){
+                case INT_TYPE:
+                    $$.type = INT_TYPE;
+                    $$.ival = entry->getTypeValue()->value.ival;
+                    break;
+                case FLOAT_TYPE:
+                    $$.type = FLOAT_TYPE;
+                    $$.fval = entry->getTypeValue()->value.fval;
+                    break;
+                case STRING_TYPE:
+                    $$.type = STRING_TYPE;
+                    $$.sval = entry->getTypeValue()->value.sval;
+                    break;
+                case BOOL_TYPE:
+                    $$.type = BOOL_TYPE;
+                    $$.bval = entry->getTypeValue()->value.bval;
+                    break;
+                case CHAR_TYPE:
+                    $$.type = CHAR_TYPE;
+                    $$.cval = entry->getTypeValue()->value.cval;
+                    break;
+                case VOID_DTYPE:
+                    $$.type = VOID_DTYPE;
+                    break;
+            }
+        }  		                                                         
+        ;
+
+VoidFunctionCall: IDENTIFIER '(' 
+        { 
+            // Enter func args
+            SymbolTableEntry *entry = getIdentifierEntry($1);
+            if(entry == nullptr){
+                writeSemanticError("Undeclared function", yylineno);
+                return 0;
+            }
+            if(entry->getKind() != FUNC)
+            {
+                writeSemanticError("Call must be of a function", yylineno);
+                return 0;
+            }
+            entry->setused(true);
+            insertFuncParamsToStack(entry);
+        }
+        CallList ')'   		 
+        {
+            // End of func call
+            if(functionParameters.size() != 0)
+            {
+                writeSemanticError("Invalid arguments size", yylineno);
+                return 0;
+            }
+        }                                     
+        | IDENTIFIER '(' ')' 
+        {
+            SymbolTableEntry *entry = getIdentifierEntry($1);
+            if(entry == nullptr){
+                writeSemanticError("Undeclared function", yylineno);
+                return 0;
+            }
+            if(entry->getKind() != FUNC)
+            {
+                writeSemanticError("Call must be of a function", yylineno);
+                return 0;
+            }
+            entry->setused(true);
+        }   		                                                        
+        ;
+
+CallList:  CallList ',' dataValue 
+        {
+            if(functionParameters.size() == 0)
+            {
+                writeSemanticError("Invalid arguments", yylineno);
+                return 0;
+            }
+            if((int)functionParameters.top() != (int)$3.type)
+            {
+                writeSemanticError("Invalid arguments", yylineno);
+                return 0;
+            }
+            functionParameters.pop();
+        }
+        |  dataValue  
+        {
+            if(functionParameters.size() == 0)
+            {
+                writeSemanticError("Invalid arguments", yylineno);
+                return 0;
+            }
+            if((int)functionParameters.top() != (int)$1.type)
+            {
+                writeSemanticError("Invalid arguments", yylineno);
+                return 0;
+            }
+            functionParameters.pop();
+        }
         ;
 
 /* Print Statement */

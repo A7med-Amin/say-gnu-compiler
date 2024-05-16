@@ -16,6 +16,12 @@
 // Define a variant that can hold any of the specified types
 using valueVariant = std::variant<int, float, bool, char*, char>;
 
+extern SymbolTable *currentSymbolTable;
+extern SymbolTable *rootSymbolTable;         // Root symbol table (Akbar parent fehom)
+extern SymbolTableEntry *currentFunction;
+extern stack<EntryType> functionParameters;
+
+
 /* Colorful Printing functions */
 void printRed(const char *text);
 void printYellow(const char *text);

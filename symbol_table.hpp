@@ -55,13 +55,14 @@ class SymbolTableEntry{
         void setModifiable(bool newModifiable) { modifiable = newModifiable; }
         void setFunctionOutput(EntryType newFunctionOutput) { functionOutput = newFunctionOutput; }
         void setFunctionInput(const vector<EntryType>& newFunctionInput) { functionInput = newFunctionInput; }
+        void pushFunctionInput(EntryType newFunctionInput) { functionInput.push_back(newFunctionInput); }
 
         // Getters
         string getName() const { return name; }
         Kind getKind() const { return kind; }
-        TypeValue* getTypeValue() const { return typeValue; }
+        TypeValue* getTypeValue() { return typeValue; }
         bool getinitialization() const { return initialization; }
-        bool getused() const { return used; }
+        bool getused() { return used; }
         bool getModifiable() const { return modifiable; }
         EntryType getFunctionOutput() const { return functionOutput; }
         const vector<EntryType>& getFunctionInput() const { return functionInput; }
@@ -89,7 +90,7 @@ class SymbolTable
 
         // Getters
         SymbolTable* getParent() const { return parent; }
-        SymbolTableEntry* getEntry(const string& key) const { // Find the entry with the given key
+        SymbolTableEntry* getEntry(const string& key) { // Find the entry with the given key
             auto it = entries.find(key);
             if (it != entries.end()) {
                 return it->second;
