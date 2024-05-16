@@ -131,7 +131,7 @@
 
 %left ADD SUB
 %left MUL DIV MOD
-%nonassoc AND OR
+%left AND OR
 %nonassoc EQ NEQ GT LT GTE LTE
 %nonassoc NOT
 %right POW
@@ -963,22 +963,22 @@ loopsScopeBlock: '{' codeBlock {scopeEnd();} '}'
 
 /////////////////////////////// Function ///////////////////////////////
 
-function :  dataType IDENTIFIER '(' {createNewSymbolTable();} argList ')' '{' codeBlock RETURN  dataValue ';' {scopeEnd();} '}'  {printf("========  FUNCTION ***********\n");}
-        |  dataType IDENTIFIER '(' {createNewSymbolTable();} ')' '{' codeBlock RETURN  dataValue ';' {scopeEnd();} '}'           {printf("========  FUNCTION ***********\n");}
-        |   VOID_TYPE IDENTIFIER '(' {createNewSymbolTable();} argList ')' '{' codeBlock returnCase {scopeEnd();} '}'             {printf("========  VOID FUNCTION ***********\n");}
-        |   VOID_TYPE IDENTIFIER '(' {createNewSymbolTable();} ')' '{' codeBlock returnCase {scopeEnd();} '}'             {printf("========  VOID FUNCTION ***********\n");}
+function :  dataType IDENTIFIER '(' {createNewSymbolTable();} argList ')' '{' codeBlock RETURN  dataValue ';' {scopeEnd();} '}'  {}
+        |  dataType IDENTIFIER '(' {createNewSymbolTable();} ')' '{' codeBlock RETURN  dataValue ';' {scopeEnd();} '}'           {}
+        |   VOID_TYPE IDENTIFIER '(' {createNewSymbolTable();} argList ')' '{' codeBlock returnCase {scopeEnd();} '}'             {}
+        |   VOID_TYPE IDENTIFIER '(' {createNewSymbolTable();} ')' '{' codeBlock returnCase {scopeEnd();} '}'             {}
         ;
 
-returnCase: RETURN ';'    		                                                                {printf("========  VOID FUNCTION RETURN ***********\n");}	 
-        |                                                                                       {printf("========  NO VOID FUNCTION RETURN ***********\n");}	 
+returnCase: RETURN ';'    		                                                                {}	 
+        |                                                                                       {}	 
         ;
 
-functionCall: IDENTIFIER '(' callList ')'   		                                            {printf("========  FUNCTION CALL ***********\n");}
-        | IDENTIFIER '(' ')'   		                                                            {printf("========  FUNCTION CALL ***********\n");}
+functionCall: IDENTIFIER '(' callList ')'   		                                            {}
+        | IDENTIFIER '(' ')'   		                                                            {}
         ;
 
-voidFunctionCall: IDENTIFIER '(' callList ')'   		                                            {printf("========  FUNCTION CALL ***********\n");}
-        | IDENTIFIER '(' ')'   		                                                            {printf("========  FUNCTION CALL ***********\n");}
+voidFunctionCall: IDENTIFIER '(' callList ')'   		                                        {}
+        | IDENTIFIER '(' ')'   		                                                            {}
         ;
 
 callList:  callSingleParam ',' callList 
@@ -1002,7 +1002,7 @@ arg: dataType IDENTIFIER
 /* Print Statement */
 printStatement: dataValue ',' printStatement  
         {
-            printf("========  PRINT Success ***********\n");
+            printf("========  PRINT SUCCESSFUL ***********\n");
         }                      
         | dataValue                                          
         ;  
