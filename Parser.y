@@ -265,7 +265,6 @@ dataValue: expression
     { 
         char charValue = static_cast<char>($1.cval);  
         string valueStr(1, charValue);  
-        cout << valueStr << endl;
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
         assemblyGenerator.addQuad("ASSIGN", valueStr, "", name);
         $$.nameRep = strdup(valueStr.c_str());
