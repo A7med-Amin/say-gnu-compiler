@@ -57,6 +57,8 @@ dkms.conf
 *.tab.h
 
 quadruple.txt
+quadruples.txt
 semantic_error.txt
 symbol_table.txt
 syntax_error.txt
+gui.txt

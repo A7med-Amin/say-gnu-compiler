@@ -923,8 +923,7 @@ majorTerm: majorTerm POW instance
             $$.nameRep = concatenateNames(name1 , "^", name2);
             assemblyGenerator.addQuadruple("POW", name1, name2, name);
         }
-        | instance {
-        }
+        | instance 
         ;
 
 instance: INTEGER_VALUE 
