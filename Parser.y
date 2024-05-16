@@ -193,7 +193,7 @@ codeBlock: codeStatement
 
 codeStatement: variableDeclaration                                                                  
         | constantDeclaration                                                                  
-        | assignment                                                                          
+        | assignment ';'                                                                         
         | WHILE '(' expression 
         {
             if ($3.type != BOOL_TYPE)
@@ -989,7 +989,7 @@ instance: INTEGER_VALUE
         ;
 
 /* Declaration and Assignment */
-assignment: IDENTIFIER ASSIGN dataValue ';'
+assignment: IDENTIFIER ASSIGN dataValue 
         {
             SymbolTableEntry* newEntry = getIdentifierEntry($1);
             if(newEntry == nullptr){
@@ -1202,12 +1202,12 @@ caseDefault:
     ;
 
 /* Loops and Scope */
-forLoopInitialization: assignment   
+forLoopInitialization: assignment ';'
         | variableDeclarationWithAssignment 
         | ';'                        
         ;
 
-forLoopItter: ';' IDENTIFIER ASSIGN expression
+forLoopItter: ';' assignment
         | ';' expression
         | ';'
         ;
