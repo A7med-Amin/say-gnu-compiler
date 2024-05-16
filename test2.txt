@@ -1,0 +1,72 @@
+int x = 123;
+int y = 111;
+// const int yy; err
+const int z = 5;
+// z = 5; err
+x = x + y;
+y = 5;
+int j;
+j = y;
+
+int myfunc(int a, int b) {
+  float z = 5.2;
+  z = z + 3;
+  string ahmed = "Ahmed";
+  return a + b;
+}
+
+int main() {
+  // myfunc = x; err
+  // 1=x; err
+  int abdo = ((1 - 99 + 2 * 3)/4) / (3 + 4 + 5 * 2 **(2));
+  int z;
+  z = myfunc(1, 2);
+  x = 1 + 2 - 3;
+  x = y;
+  int k = x;
+  // x(); err
+  repeat {
+    myfunc(1, 2);
+  } until (x > 5);
+
+  bool mybool = true;
+
+  while (mybool) {
+    myfunc(1, 2);
+    // myfunc(1,1,3); err
+    // myfunc(1,); err
+    // myfunc(); err
+    // mybool = 4; err
+  }
+
+  myfunc(3, 3);
+
+  if (x > 5 && y > 5) {
+    string ameen = "Ameen";
+  }
+
+  for (int looper = 66; looper < 10; looper++) {
+    if (looper > x) {
+      string MYSTRING = "MYSTRING";
+    }
+  }
+
+  if (x > 5 || y > 5) {
+    float yyyy = 8.200000;
+  } else if (x > 5 && y > 5) {
+    float zzzz = 8.200000;
+  } else {
+    float wwwww = 8.200000;
+  }
+  int xxxx = 10;
+  return 0;
+}
+
+int test = 0
+int foooo()
+{
+    if(test > 4)
+    {
+        returtn 90;
+    }
+}

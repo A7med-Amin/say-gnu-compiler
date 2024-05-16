@@ -71,9 +71,9 @@ SymbolTableEntry * addEntryToCurrentTable(char *identifier, Kind kind, TypeValue
     if (kind == FUNC)
         currentFunction = newEntry;
     if (kind == CONST)
-        entry->setModifiable(false); // Constants are not modifiable
-    currentSymbolTable->addEntry(id, entry);
-    return entry;
+        newEntry->setModifiable(false); // Constants are not modifiable
+    currentSymbolTable->addEntry(id, newEntry);
+    return newEntry;
 }
 
 SymbolTableEntry *getIdentifierEntry(const char *identifier)

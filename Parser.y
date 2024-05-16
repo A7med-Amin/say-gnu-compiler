@@ -244,6 +244,7 @@ codeStatement: variableDeclaration
         | PRINT '(' printStatement ')' ';'                                                 
         | function 
         | VoidFunctionCall ';'
+        | ReturnCase 
         | error               { yyerror("Unexpected statement"); }
         ;
 
