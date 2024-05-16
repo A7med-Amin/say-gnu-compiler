@@ -16,6 +16,7 @@ AssemblyGenerator::AssemblyGenerator()
 
 void AssemblyGenerator::startScope()
 {
+    cout << "Starting scope" << endl;
     vector<Quadruple *> *newQuadruples = new vector<Quadruple *>();
     scopes.push(newQuadruples);
 }
@@ -96,6 +97,55 @@ void AssemblyGenerator::endScope(scopeType type)
         addQuadruple(label + ":", "", "", "");
         labels.push_back(label);         
 
+    }
+    break;
+
+    case whileScope:
+    {
+        cout << "WHILE SCOPE" << endl;
+        string label = "L" + to_string(labels.size());
+        auto lastQuad = previousScopeQuadruples->end() - 1;
+        previousScopeQuadruples->insert(lastQuad, new Quadruple(label + ":", "", "", ""));
+        labels.push_back(label);  
+
+        string lastResult2 = previousScopeQuadruples->at(previousScopeQuadruples->size() - 1)->getResult();
+        label = "L" + to_string(labels.size());
+        addQuadruple("JF", lastResult2, "", label);
+
+        // lastQuad = previousScopeQuadruples->end() - 1;
+        // previousScopeQuadruples->insert(lastQuad, new Quadruple("JF", lastResult2, "", label));
+
+        for (auto *quad : *currentScopeQuadruples)
+        {
+            previousScopeQuadruples->push_back(quad);
+        }
+
+        string previousLabel = labels.back();
+        addQuadruple("JMP", "", "", previousLabel);
+        addQuadruple(label + ":", "", "", "");
+        labels.push_back(label);         
+    }
+    break;
+
+    case repeatScope:
+    {
+        cout << "REPEAT SCOPE" << endl;
+        string label = "L" + to_string(labels.size());
+        addQuadruple(label + ":", "", "", "");
+        labels.push_back(label);
+
+        for (auto *quad : *currentScopeQuadruples)
+        {
+            previousScopeQuadruples->push_back(quad);
+        }
+        string lastResult2 = previousScopeQuadruples->at(previousScopeQuadruples->size() - 1)->getResult();
+        label = "L" + to_string(labels.size());
+        addQuadruple("JF", lastResult2, "", label);
+
+        string previousLabel = labels.back();
+        addQuadruple("JMP", "", "", previousLabel);
+        addQuadruple(label + ":", "", "", "");
+        labels.push_back(label);  
     }
 
     default:

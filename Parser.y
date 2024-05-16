@@ -202,9 +202,13 @@ codeStatement: variableDeclaration
                 return 0;
             }
         }
-        ')' scopeBlock        
-        | REPEAT scopeBlock UNTIL '(' expression 
+        ')' scopeBlock { assemblyGenerator.endScope(whileScope);}     
+        | 
+        REPEAT 
+        scopeBlock 
+        UNTIL '(' expression 
         {
+            assemblyGenerator.endScope(repeatScope);
             if ($5.type != BOOL_TYPE)
             {
                 writeSemanticError("Condition of IF must be boolean", yylineno);
@@ -540,6 +544,7 @@ boolean: BOOLEAN_TRUE
 
 arithmetic: IDENTIFIER INC                                        
         {
+            printf("INC\n");
             SymbolTableEntry* newEntry = getIdentifierEntry($1);
             if(newEntry == nullptr){
                 writeSemanticError("Using variable not declared", yylineno);
@@ -1154,8 +1159,7 @@ ifCondition: IF '(' expression
                 return 0;
             }
         }
-        ')' scopeBlock { 
-            assemblyGenerator.endScope(ifScope);}
+        ')' scopeBlock { assemblyGenerator.endScope(ifScope);}
         elseIfCondition 
         elseStmnt 
         ;
@@ -1209,7 +1213,6 @@ forLoopItter: ';' assignment
 
 scopeBlock: '{' 
 {
-    printf(" ***** NEW SCOPE *****\n");
     createNewSymbolTable();
     assemblyGenerator.startScope();
 } codeBlock {
@@ -1219,10 +1222,7 @@ scopeBlock: '{'
 
 loopsScopeBlock: '{' {
             assemblyGenerator.startScope();
-}codeBlock {
-    scopeEnd();
-printf("END FOR\n");
-} '}'                                                                  
+}codeBlock {scopeEnd();} '}'                                                                  
     ;
 
 /////////////////////////////// Function ///////////////////////////////
@@ -1589,7 +1589,7 @@ int main(int argc, char **argv) {
     
 
     yyparse();
-	printf("\nParsing complete\n");
+	printGreen("PARSE SUCCESSFUL\n");
 
     if (argc > 1) {
         fclose(file);
