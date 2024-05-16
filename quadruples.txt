@@ -1,23 +1,12 @@
 START main
 
-ASSIGN    9           T0    
+ASSIGN    10          T0    
 ALLOC     x           R0    
 ASSIGN    T0          R0    
-ASSIGN    11          T1    
-L0:                         
-ASSIGN    8           T2    
+main:                       
+ASSIGN    9           T1    
 ALLOC     x           R1    
-ASSIGN    T2          R1    
-ASSIGN    12          T3    
-L1:                         
-ASSIGN    9999        T4    
-ALLOC     x           R2    
-ASSIGN    T4          R2    
-L2:                         
-ASSIGN    77777       T5    
-ALLOC     x           R3    
-ASSIGN    T5          R3    
-L3:                         
-ASSIGN    99          T6    
-ALLOC     y           R4    
-ASSIGN    T6          R4    
+ASSIGN    T1          R1    
+ENDFUNC                     
+ASSIGN    9           T2    
+ASSIGN    T2          R0    

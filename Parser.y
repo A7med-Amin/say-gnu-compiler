@@ -1264,6 +1264,9 @@ loopsScopeBlock: '{' {
 
 function :  dataType IDENTIFIER '(' 
         {
+            string functionName = string($2) + ":";
+            assemblyGenerator.addQuadruple(functionName, "", "", "");
+
             SymbolTableEntry *newEntry = identifierScopeCheck($2);
             if(newEntry != nullptr){
                 writeSemanticError("Multiple function declaration not allowed", yylineno);
@@ -1274,17 +1277,28 @@ function :  dataType IDENTIFIER '('
             EntryType funcOut = static_cast<EntryType>($1);
             addEntryToCurrentTable($2, FUNC, idTypeValue, true, funcOut);
             createNewSymbolTable();
+            assemblyGenerator.startScope();
+
+            
         } ArgList ')' '{' codeBlock '}'  
         {
+            printf("**************** Function1 ****************\n");
             if(functionHasReturn == false){
                 writeSemanticWarning("Function must return a value", yylineno);
             }
             scopeEnd(); 
             currentFunction = nullptr; 
             functionHasReturn = false;
+            assemblyGenerator.endScope(funcScope);
+            assemblyGenerator.addQuadruple("RET", "", "", "");
+
         }
         |  dataType IDENTIFIER '(' 
         {
+            string functionName = string($2) + ":";
+            assemblyGenerator.addQuadruple(functionName, "", "", "");
+
+            printf("**************** Function2 ****************\n");
             SymbolTableEntry *newEntry = identifierScopeCheck($2);
             if(newEntry != nullptr){
                 writeSemanticError("Multiple function declaration not allowed", yylineno);
@@ -1295,17 +1309,28 @@ function :  dataType IDENTIFIER '('
             EntryType funcOut = static_cast<EntryType>($1);
             addEntryToCurrentTable($2, FUNC, idTypeValue, true, funcOut);
             createNewSymbolTable();
+            assemblyGenerator.startScope();
+
+
         } ')' '{' codeBlock '}'         
         {
             if(functionHasReturn == false){
                 writeSemanticWarning("Function must return a value", yylineno);
             }
+
             scopeEnd(); 
             currentFunction = nullptr; 
             functionHasReturn = false;
+            assemblyGenerator.endScope(funcScope);
+            assemblyGenerator.addQuadruple("RET", "", "", "");
+
+
         }
         |  VOID_TYPE IDENTIFIER '(' 
         {
+            string functionName = string($2) + ":";
+            assemblyGenerator.addQuadruple(functionName, "", "", "");
+
             SymbolTableEntry *newEntry = identifierScopeCheck($2);
             if(newEntry != nullptr){
                 writeSemanticError("Multiple function declaration not allowed", yylineno);
@@ -1315,9 +1340,19 @@ function :  dataType IDENTIFIER '('
             idTypeValue->type = VOID_DTYPE;
             addEntryToCurrentTable($2, FUNC, idTypeValue, true, VOID_DTYPE);
             createNewSymbolTable();
-        } ArgList ')' '{' codeBlock '}' {scopeEnd(); currentFunction = nullptr;}
+            assemblyGenerator.startScope();
+
+        } ArgList ')' '{' codeBlock '}' {scopeEnd(); currentFunction = nullptr;
+                    assemblyGenerator.endScope(funcScope);
+                    assemblyGenerator.addQuadruple("ENDFUNC", "", "", "");
+
+
+        }
         |  VOID_TYPE IDENTIFIER '(' 
         {
+            string functionName = string($2) + ":";
+            assemblyGenerator.addQuadruple(functionName, "", "", "");
+
             SymbolTableEntry *newEntry = identifierScopeCheck($2);
             if(newEntry != nullptr){
                 writeSemanticError("Multiple function declaration not allowed", yylineno);
@@ -1327,7 +1362,13 @@ function :  dataType IDENTIFIER '('
             idTypeValue->type = VOID_DTYPE;
             addEntryToCurrentTable($2, FUNC, idTypeValue, true, VOID_DTYPE);
             createNewSymbolTable();
-        } ')' '{' codeBlock '}'         {scopeEnd(); currentFunction = nullptr;}
+            assemblyGenerator.startScope();
+
+        } ')' '{' codeBlock '}'         {scopeEnd(); currentFunction = nullptr;
+                    assemblyGenerator.endScope(funcScope);
+                    assemblyGenerator.addQuadruple("ENDFUNC", "", "", "");
+
+}
         ;
 
 ArgList:  Arg ',' ArgList | Arg ;
