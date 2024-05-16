@@ -128,24 +128,8 @@ class TextEditor:
 
     def run_code(self):
         try:
-            # Run the make build command
-            build_result = subprocess.run(
-                ["make", "build"], capture_output=True, text=True
-            )
-            if build_result.returncode != 0:
-                # Display build errors in the text editor
-                self.text.insert(tk.END, "\nBuild failed:\n" + build_result.stderr)
-                return
-
-            # Run the compiled program
-            run_result = subprocess.run(["make", "run"], capture_output=True, text=True)
-            if run_result.returncode != 0:
-                # Display runtime errors in the text editor
-                self.text.insert(tk.END, "\nRun failed:\n" + run_result.stderr)
-                return
-
-            # Display the output of the program
-            self.text.insert(tk.END, "\nProgram output:\n" + run_result.stdout)
+            subprocess.run(["make", "build"])
+            subprocess.run(["make", "run"])
         except Exception as e:
             # Display any exceptions that occur
             self.text.insert(tk.END, f"\nAn error occurred: {e}")
