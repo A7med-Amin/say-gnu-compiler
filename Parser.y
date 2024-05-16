@@ -1205,7 +1205,15 @@ function :  dataType IDENTIFIER '('
             EntryType funcOut = static_cast<EntryType>($1);
             addEntryToCurrentTable($2, FUNC, idTypeValue, true, funcOut);
             createNewSymbolTable();
-        } ArgList ')' '{' codeBlock ReturnCase '}'  {scopeEnd(); currentFunction = nullptr;}
+        } ArgList ')' '{' codeBlock '}'  
+        {
+            if(functionHasReturn == false){
+                writeSemanticWarning("Function must return a value", yylineno);
+            }
+            scopeEnd(); 
+            currentFunction = nullptr; 
+            functionHasReturn = false;
+        }
         |  dataType IDENTIFIER '(' 
         {
             SymbolTableEntry *newEntry = identifierScopeCheck($2);
@@ -1218,7 +1226,15 @@ function :  dataType IDENTIFIER '('
             EntryType funcOut = static_cast<EntryType>($1);
             addEntryToCurrentTable($2, FUNC, idTypeValue, true, funcOut);
             createNewSymbolTable();
-        } ')' '{' codeBlock ReturnCase '}'         {scopeEnd(); currentFunction = nullptr;}
+        } ')' '{' codeBlock '}'         
+        {
+            if(functionHasReturn == false){
+                writeSemanticWarning("Function must return a value", yylineno);
+            }
+            scopeEnd(); 
+            currentFunction = nullptr; 
+            functionHasReturn = false;
+        }
         |  VOID_TYPE IDENTIFIER '(' 
         {
             SymbolTableEntry *newEntry = identifierScopeCheck($2);
@@ -1230,7 +1246,7 @@ function :  dataType IDENTIFIER '('
             idTypeValue->type = VOID_DTYPE;
             addEntryToCurrentTable($2, FUNC, idTypeValue, true, VOID_DTYPE);
             createNewSymbolTable();
-        } ArgList ')' '{' codeBlock ReturnCase '}' {scopeEnd(); currentFunction = nullptr;}
+        } ArgList ')' '{' codeBlock '}' {scopeEnd(); currentFunction = nullptr;}
         |  VOID_TYPE IDENTIFIER '(' 
         {
             SymbolTableEntry *newEntry = identifierScopeCheck($2);
@@ -1242,7 +1258,7 @@ function :  dataType IDENTIFIER '('
             idTypeValue->type = VOID_DTYPE;
             addEntryToCurrentTable($2, FUNC, idTypeValue, true, VOID_DTYPE);
             createNewSymbolTable();
-        } ')' '{' codeBlock ReturnCase '}'         {scopeEnd(); currentFunction = nullptr;}
+        } ')' '{' codeBlock '}'         {scopeEnd(); currentFunction = nullptr;}
         ;
 
 ArgList:  Arg ',' ArgList | Arg ;
@@ -1305,7 +1321,7 @@ ReturnCase: RETURN ';'
         {
             if (currentFunction == nullptr)
             {
-                writeSyntaxError("Return should be inside function block", yylineno);
+                writeSemanticError("Return should be inside function block", yylineno);
                 return 0;
             }
             if(currentFunction->getFunctionOutput() != VOID_DTYPE){
@@ -1317,19 +1333,20 @@ ReturnCase: RETURN ';'
         {
             if (currentFunction == nullptr)
             {
-                writeSyntaxError("Return should be inside function block", yylineno);
+                writeSemanticError("Return should be inside function block", yylineno);
                 return 0;
             }
             if(currentFunction->getFunctionOutput() != $2.type){
                 writeSemanticError("Return type mismatch", yylineno);
                 return 0;
             }
+            functionHasReturn = true;
         }
         |
         {
             if (currentFunction == nullptr)
             {
-                writeSyntaxError("Return should be inside function block", yylineno);
+                writeSemanticError("Return should be inside function block", yylineno);
                 return 0;
             }
             if(currentFunction->getFunctionOutput() != VOID_DTYPE){

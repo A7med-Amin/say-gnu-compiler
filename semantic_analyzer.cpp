@@ -8,6 +8,7 @@ SymbolTable *currentSymbolTable;
 SymbolTable *rootSymbolTable;         // Root symbol table (Akbar parent fehom)
 SymbolTableEntry *currentFunction = nullptr;
 stack<EntryType> functionParameters;
+bool functionHasReturn = false;
 /* Colorful print functions */
 void printRed(const char *text) {
     printf("\033[31m%s\033[0m\n", text);

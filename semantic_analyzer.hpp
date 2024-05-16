@@ -20,6 +20,7 @@ extern SymbolTable *currentSymbolTable;
 extern SymbolTable *rootSymbolTable;         // Root symbol table (Akbar parent fehom)
 extern SymbolTableEntry *currentFunction;
 extern stack<EntryType> functionParameters;
+extern bool functionHasReturn;
 
 
 /* Colorful Printing functions */
