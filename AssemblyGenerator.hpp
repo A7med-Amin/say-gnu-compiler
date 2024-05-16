@@ -42,7 +42,7 @@ public:
     const char *addTempVariable( string expr1,  string op,  string expr2);
     const char *getTempVariable(string temp);
     void clearTemps();
-    void addQuad(const string& operation, const string& operand1, const string& operand2, const string& destination);
+    void addQuadruple(const string& operation, const string& operand1, const string& operand2, const string& destination);
     // void printQuads();
     void printQuadsToFile();
 };
