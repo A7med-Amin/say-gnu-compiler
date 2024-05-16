@@ -257,7 +257,7 @@ codeStatement: variableDeclaration
 /* Data Types and Data Values */
 dataType: INT_DATA_TYPE | FLOAT_DATA_TYPE| CHAR_DATA_TYPE | STRING_DATA_TYPE | BOOLEAN_DATA_TYPE ;
 
-dataValue: expression 
+dataValue: expression
 | STRING_LITERAL 
 {
     { 
@@ -985,6 +985,22 @@ instance: INTEGER_VALUE
             }
         }
         | '(' expression ')' {$$ = $2;}
+        | SUB expression     
+        {
+            TypeValue * lhs;
+            int lhsType = $2.type;
+            EntryType compareDataType= static_cast<EntryType>(lhsType);
+            GET_TYPE_VALUE(compareDataType, $2, $2, lhs, lhs);
+            switch(lhsType){
+                case INT_TYPE:
+                    $2.ival = -static_cast<int>(lhs->value.ival);
+                    break;
+                case FLOAT_TYPE:
+                    $2.fval = -static_cast<float>(lhs->value.fval);
+                    break;
+            }
+            $$ = $2;
+        }
         ;
 
 /* Declaration and Assignment */
