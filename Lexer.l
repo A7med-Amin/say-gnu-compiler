@@ -10,7 +10,9 @@
     /* communications with yacc */
     #include "symbol_table.hpp"
     #include "Parser.tab.h"
-    extern void yyerror(const char* s);
+
+    void yyerror(const char* s);
+    extern void writeSyntaxError(string error, int codeLine);
     extern int yylineno;
 	int yylex();
 
@@ -135,13 +137,20 @@
 (\n)                         {yylineno = yylineno+1;}
 
     /* Error */
-.                            {yyerror("Token not found");}
+.                            {yyerror("Cant resolve token");}
 
     /* Part 2 End */
 
 %%
 
 /* Part 3: Subroutines */
+
+void yyerror(const char* s) {
+    std::string str(s);
+    writeSyntaxError(s, yylineno);
+    exit(0);
+}
+
 
 int yywrap(){
     return 1;

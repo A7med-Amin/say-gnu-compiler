@@ -7,6 +7,7 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <cmath>  // Include the cmath header for pow function
+    #include <string>
 
     #include "AssemblyGenerator.hpp"
 
@@ -14,7 +15,7 @@
     #include "semantic_analyzer.hpp"
 
     /* Function prototypes */
-    void yyerror(const char* s);
+    extern void yyerror(const char *s);
     int yylex(void);
     int yylineno;     /* from lexer represents line numbers */
     extern FILE *yyin;
@@ -239,7 +240,7 @@ codeStatement: variableDeclaration
         | PRINT '(' printStatement ')' ';'                                                 
         | function 
         | voidFunctionCall ';'
-        | error               { yyerror("Unexpected statement."); }
+        | error               { yyerror("Unexpected statement"); }
         ;
 
 /* Data Types and Data Values */
@@ -1012,13 +1013,6 @@ printStatement: dataValue ',' printStatement
 %%
 
 /* Part 3: Subroutines */
-
-
-
-
-void yyerror(const char* s){
-    fprintf(stderr, "\nERROR MESS: %s\n", s);
-}
 
 int main(int argc, char **argv) {
     // Initialize the symbol table
