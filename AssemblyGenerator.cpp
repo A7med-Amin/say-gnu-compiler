@@ -190,7 +190,18 @@ void AssemblyGenerator::endScope(scopeType type)
         addQuadruple(label + ":", "", "", "");
         labels.push_back(label);  
 
-            for (auto *quad : *currentScopeQuadruples)
+        for (auto *quad : *currentScopeQuadruples)
+        {
+            previousScopeQuadruples->push_back(quad);
+        }
+    }
+    break;
+
+    case funcScope:
+    {
+        cout << "FUNC SCOPE" << endl;
+
+        for (auto *quad : *currentScopeQuadruples)
         {
             previousScopeQuadruples->push_back(quad);
         }
