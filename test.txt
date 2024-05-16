@@ -93,3 +93,20 @@ if((i==8)){
     var=2000000000;
 }
 
+void fun(){
+    int res;
+    if (x>7)
+    {
+        res = 7;
+    }
+    else if (x < 4) {
+        res = 8;
+    }
+    else{
+        res = 10;
+    }
+}
+
+fun();
+
+//int ddddd = fun("dff", 3.5,'d');

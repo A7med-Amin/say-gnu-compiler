@@ -1,14 +1,13 @@
 #include "semantic_analyzer.hpp"
 
-SymbolTable *currentSymbolTable;
-SymbolTable *rootSymbolTable;         // Root symbol table (Akbar parent fehom)
-SymbolTableEntry *currentFunction = NULL;
-stack<EntryType> functionParameters;
-
 FILE *semanticFile = fopen("semantic_error.txt", "w");
 FILE *syntaxFile = fopen("syntax_error.txt", "w");
 ofstream symbolTablesFile("symbol_table.txt");
 
+SymbolTable *currentSymbolTable;
+SymbolTable *rootSymbolTable;         // Root symbol table (Akbar parent fehom)
+SymbolTableEntry *currentFunction = nullptr;
+stack<EntryType> functionParameters;
 /* Colorful print functions */
 void printRed(const char *text) {
     printf("\033[31m%s\033[0m\n", text);
@@ -62,18 +61,18 @@ void scopeEnd()
 void addEntryToCurrentTable(char *identifier, Kind kind, TypeValue *typeValue, bool isInitialized,  EntryType functionOutput)
 {
     string id(identifier);              // convert char* to string
-    SymbolTableEntry *entry = new SymbolTableEntry();
-    entry->setName(id);
-    entry->setKind(kind);
-    entry->setTypeValue(typeValue);
-    entry->setinitialization(isInitialized);
-    entry->setFunctionOutput(functionOutput);
-    entry->setFunctionInput(vector<EntryType>());
+    SymbolTableEntry *newEntry = new SymbolTableEntry();
+    newEntry->setName(id);
+    newEntry->setKind(kind);
+    newEntry->setTypeValue(typeValue);
+    newEntry->setinitialization(isInitialized);
+    newEntry->setFunctionOutput(functionOutput);
+    newEntry->setFunctionInput(vector<EntryType>());
     if (kind == FUNC)
-        currentFunction = entry;
+        currentFunction = newEntry;
     if (kind == CONST)
-        entry->setModifiable(false); // Constants are not modifiable
-    currentSymbolTable->addEntry(id, entry);
+        newEntry->setModifiable(false); // Constants are not modifiable
+    currentSymbolTable->addEntry(id, newEntry);
 }
 
 SymbolTableEntry *getIdentifierEntry(const char *identifier)
@@ -297,7 +296,7 @@ void symbolTableWrite(SymbolTable *table, int level, ofstream &outputFile)
 {
     outputFile << setw(level * 4) << ""
             << "Identifier"
-            << setw(12) << "Level"
+            << setw(12) << "Block"
             << setw(12) << "Kind"
             << setw(12) << "Type"
             << setw(18) << "Value" << endl;
@@ -363,7 +362,7 @@ void symbolTableWrite(SymbolTable *table, int level, ofstream &outputFile)
         }
         outputFile << endl;
         if (entry.second->getused() == false)
-            fprintf(semanticFile, "Warning: %s is declared but not used\n", entry.first.c_str());
+            fprintf(semanticFile, "WARNING: %s is declared without being used\n", entry.first.c_str());
     }
 
     outputFile << endl;

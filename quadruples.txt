@@ -38,3 +38,4 @@ ASSIGN    209         R1
 ALLOC     into        R1    
 ASSIGN    7           R1    
 ALLOC     x           R1    
+ALLOC     res         R1    
