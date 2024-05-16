@@ -1,1 +1,7 @@
-int x = 99 + 9;
+const int x = 7;
+const int y = 8;
+const int z = 9;
+
+// const bool y = true;
+// const string str = "hello";
+// const char coco = 't';
