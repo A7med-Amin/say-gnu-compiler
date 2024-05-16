@@ -1,20 +1,17 @@
 START main
 
-ASSIGN    8           T0    
+ASSIGN    9           T0    
 ALLOC     x           R0    
 ASSIGN    T0          R0    
-ASSIGN    6           T1    
-ASSIGN    T1          R0    
-ASSIGN    0           T2    
-GT        T1    T2    T3    
 L0:                         
-JF        T3          L1    
-DEC       T2          T4    
-ASSIGN    10          T5    
+ASSIGN    9           T1    
 ALLOC     u           R1    
-ASSIGN    T5          R1    
+ASSIGN    T1          R1    
+ASSIGN    0           T2    
+GT        T0    T2    T3    
+JF        T3          L1    
 JMP                   L0    
 L1:                         
-ASSIGN    9           T6    
+ASSIGN    99          T4    
 ALLOC     y           R2    
-ASSIGN    T6          R2    
+ASSIGN    T4          R2    
