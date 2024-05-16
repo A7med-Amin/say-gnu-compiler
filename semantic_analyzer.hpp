@@ -35,7 +35,7 @@ void printMagenta(const char *text);
 void initSymbolTable();
 void createNewSymbolTable();
 void scopeEnd();
-void addEntryToCurrentTable(char *identifier, Kind kind, TypeValue *typeValue, bool isInitialized,  EntryType functionOutput = VOID_DTYPE);
+SymbolTableEntry * addEntryToCurrentTable(char *identifier, Kind kind, TypeValue *typeValue, bool isInitialized,  EntryType functionOutput = VOID_DTYPE);
 SymbolTableEntry *getIdentifierEntry(const char *identifier);
 EntryType checkIdientifierType(char *identifier);
 bool typeMismatch(int type1, int type2);
