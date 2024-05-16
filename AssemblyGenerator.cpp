@@ -14,6 +14,69 @@ AssemblyGenerator::AssemblyGenerator()
     scopes.push(quadruples);
 }
 
+void AssemblyGenerator::startScope()
+{
+    vector<Quadruple *> *newQuadruples = new vector<Quadruple *>();
+    scopes.push(newQuadruples);
+}
+
+void AssemblyGenerator::endScope(scopeType type)
+{
+    vector<Quadruple *> *currentScopeQuadruples = scopes.top();
+    scopes.pop();
+
+    vector<Quadruple *> *previousScopeQuadruples = scopes.top();
+
+    switch (type)
+    {
+    case ifScope:
+    {
+        string label = "L" + to_string(labels.size());
+        string lastResult = previousScopeQuadruples->back()->getResult();
+        addQuad("JF", lastResult, "", label);
+        for (auto *quad : *currentScopeQuadruples)
+        {
+            previousScopeQuadruples->push_back(quad);
+        }
+        addQuad(label + ":", "", "", "");
+        labels.push_back(label);
+
+    }
+    break;
+
+    case elseScope:
+    {
+        string label = "L" + to_string(labels.size());
+        auto lastQuad = previousScopeQuadruples->end() ;
+
+        for (auto *quad : *currentScopeQuadruples)
+        {
+            previousScopeQuadruples->push_back(quad);
+        }
+
+    }
+    break;
+
+    case elseIfScope:
+    {
+        string label = "L" + to_string(labels.size());
+        string lastResult = previousScopeQuadruples->back()->getResult();
+        addQuad("JF", lastResult, "", label);
+
+        for (auto *quad : *currentScopeQuadruples)
+        {
+            previousScopeQuadruples->push_back(quad);
+        }
+
+        addQuad(label + ":", "", "", "");
+        labels.push_back(label);
+    }
+
+    default:
+        break;
+    }
+}
+
 const char *AssemblyGenerator::assignRegister(SymbolTableEntry *sym)
 {
     if (!sym)
@@ -26,15 +89,15 @@ const char *AssemblyGenerator::assignRegister(SymbolTableEntry *sym)
         // cout << "Looking for: " << sym->getName() << endl;
         // cout << "Found: " << sym->getName() << endl;
     }
-    catch (const std::exception &e)
+    catch (const exception &e)
     {
         cout << "Exception occurred: " << e.what() << endl;
         return nullptr;
     }
-    
+
     assignments[sym] = "R" + to_string(assignments.size());
 
-    std::string str_value = assignments[sym];
+    string str_value = assignments[sym];
     char *cstr_value = new char[str_value.length() + 1];
     str_value.copy(cstr_value, str_value.length());
     cstr_value[str_value.length()] = '\0';

@@ -314,7 +314,6 @@ boolean: BOOLEAN_TRUE
         }
         | expression EQ arithmetic 
         {
-            printf("********** EQ ********\n");
             int lhsType = $1.type;
             int rhsType = $3.type;
             if (typeMismatch(lhsType, rhsType))
@@ -339,7 +338,6 @@ boolean: BOOLEAN_TRUE
         }
         | expression NEQ arithmetic 
         {
-            printf("********** NEQ ********\n");
             int lhsType = $1.type;
             int rhsType = $3.type;
             if (typeMismatch(lhsType, rhsType))
@@ -1130,8 +1128,10 @@ ifCondition: IF '(' expression
                 return 0;
             }
         }
-        ')' scopeBlock
-        elseIfCondition elseStmnt
+        ')' scopeBlock { 
+            assemblyGenerator.endScope(ifScope);}
+        elseIfCondition 
+        elseStmnt 
         ;
 
 elseIfCondition: elseIfCondition ELSE IF '(' expression
@@ -1142,11 +1142,13 @@ elseIfCondition: elseIfCondition ELSE IF '(' expression
                 return 0;
             }
         }
-        ')' scopeBlock
+        ')' scopeBlock { 
+            assemblyGenerator.endScope(elseIfScope); }
         |
         ;
 
-elseStmnt: ELSE scopeBlock
+elseStmnt: ELSE scopeBlock { 
+        assemblyGenerator.endScope(elseScope);}
         |
         ;
 
@@ -1179,7 +1181,14 @@ forLoopItter: ';' IDENTIFIER ASSIGN expression
         | ';'
         ;
 
-scopeBlock: '{' {createNewSymbolTable();} codeBlock {scopeEnd();} '}'                                             
+scopeBlock: '{' 
+{
+    createNewSymbolTable();
+    assemblyGenerator.startScope();
+
+} codeBlock {
+    scopeEnd();
+} '}'                                             
     ;
 
 loopsScopeBlock: '{' codeBlock {scopeEnd();} '}'                                                                  

@@ -1,7 +1,12 @@
-const int x = 7;
-const int y = 8;
-const int z = 9;
+int x =5;
+if(x==2){
+    int y  =8;
+}
+else if(x==99){
+    int u  =44;
+}
+else{
+    int i = 0;
+}
 
-// const bool y = true;
-// const string str = "hello";
-// const char coco = 't';
+int u = 99;
