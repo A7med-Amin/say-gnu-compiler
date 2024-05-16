@@ -9,7 +9,7 @@ run:
 	./compiler
 
 runwithtestfile:
-	./compiler	test2.txt
+	./compiler	test.txt
 
 runwithtest:
 	./compiler	singletest.txt
