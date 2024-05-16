@@ -147,6 +147,54 @@ void AssemblyGenerator::endScope(scopeType type)
         addQuadruple(label + ":", "", "", "");
         labels.push_back(label);  
     }
+    break;
+
+    case switchScope:
+    {
+        cout << "SWITCH SCOPE" << endl;
+        
+        for (auto *quad : *currentScopeQuadruples)
+        {
+            previousScopeQuadruples->push_back(quad);
+        }
+
+        string label = "L" + to_string(labels.size());
+        addQuadruple(label + ":", "", "", "");
+        labels.push_back(label);
+
+    }
+    break;
+
+    case caseScope:
+    {
+        cout<<"CASE SCOPE" << endl;
+
+          string label = "L" + to_string(labels.size());
+        addQuadruple(label + ":", "", "", "");
+        labels.push_back(label);  
+
+
+
+            for (auto *quad : *currentScopeQuadruples)
+        {
+            previousScopeQuadruples->push_back(quad);
+        }
+    }
+    break;
+
+    case defaultScope:
+    {
+        cout<<"DEFAULT SCOPE" << endl;
+
+          string label = "L" + to_string(labels.size());
+        addQuadruple(label + ":", "", "", "");
+        labels.push_back(label);  
+
+            for (auto *quad : *currentScopeQuadruples)
+        {
+            previousScopeQuadruples->push_back(quad);
+        }
+    }
 
     default:
         break;

@@ -1,7 +1,21 @@
 int x = 9;
-repeat{
-    int u = 9;
+
+switch(x){
+    case 11: {
+        int x = 8;
+    }
+    break;
+
+    case 12: {
+        int x = 9999;
+    }
+    break;
+    default: {
+        int x = 77777;
+    }
+
+
+
 }
-until(x>0);
 
 int y =99;

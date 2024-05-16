@@ -18,6 +18,7 @@ enum scopeType
     funcScope,
     switchScope,
     caseScope,
+    defaultScope,
     enumScope,
     repeatScope
 
@@ -31,6 +32,7 @@ private:
     std::unordered_map<SymbolTableEntry*, std::string> assignments;
     std::unordered_map<std::string, std::string> temps;
     std::vector<string> labels;
+    string usedSwitchVar = "";
 
 public:
     // static int labelCount;

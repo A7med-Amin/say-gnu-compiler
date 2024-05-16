@@ -245,7 +245,7 @@ codeStatement: variableDeclaration
                 return 0;
             }
         }
-        ')' switchBlock                                             
+        ')' switchBlock { assemblyGenerator.endScope(switchScope); }                                              
         | scopeBlock
         | PRINT '(' printStatement ')' ';'                                                 
         | function 
@@ -1184,20 +1184,38 @@ elseStmnt: ELSE scopeBlock {
         ;
 
 /* Switch Case */
-switchBlock: '{' {createNewSymbolTable();} caseExpression {scopeEnd();} '}'                     
+switchBlock: '{' {createNewSymbolTable();
+    assemblyGenerator.startScope();
+
+} caseExpression {scopeEnd();} '}'                     
     ;
 
 caseExpression:	
             caseDefault 	                   
-    |       CASE switchValidValue ':' codeBlock BREAK ';' caseExpression  
+    |       CASE switchValidValue ':' codeBlock {assemblyGenerator.endScope(caseScope);} BREAK ';' caseExpression  
 	;
 
-switchValidValue: INTEGER_VALUE | CHARACTER 
+switchValidValue: INTEGER_VALUE 
+{ 
+        string valueStr = to_string($1.ival);
+        const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
+        assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
+        $$.nameRep = strdup(valueStr.c_str());
+        }
+| CHARACTER 
+{ 
+        string valueStr = to_string($1.cval);
+        const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
+        assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
+        $$.nameRep = strdup(valueStr.c_str());
+        }
         ;
 
 caseDefault:
-            DEFAULT ':' codeBlock BREAK ';'    		            	 
-            | DEFAULT ':' codeBlock    		                    	 
+            DEFAULT ':' codeBlock {
+                assemblyGenerator.endScope(defaultScope);} BREAK ';'    		            	 
+            | DEFAULT ':' codeBlock {
+                assemblyGenerator.endScope(defaultScope);}    		                    	 
             |                                                       	 
     ;
 
@@ -1214,6 +1232,7 @@ forLoopItter: ';' assignment
 
 scopeBlock: '{' 
 {
+    printf("**************** Scope Block ****************\n");
     createNewSymbolTable();
     assemblyGenerator.startScope();
 } codeBlock {
