@@ -7,7 +7,7 @@ import os
 class TextEditor:
     def __init__(self, master):
         self.master = master
-        self.master.title("Compiler Moot")
+        self.master.title("SAY COMPILER")
         self.master.geometry("800x600")
         self.master.configure(background="#f0f0f0")
         self.dark_theme = False
@@ -127,52 +127,13 @@ class TextEditor:
         self.text.event_generate("<<Paste>>")
 
     def run_code(self):
-        try:
-            # Save the content of the text editor to a temporary file
-            script_path = "temp_script.txt"
-            with open(script_path, "w") as file:
-                file.write(self.text.get("1.0", tk.END).strip())
-
-            # Run your custom build commands
-            build_process = subprocess.run(
-                ["flex", "Lexer.l"], capture_output=True, text=True
-            )
-            self.text.insert(
-                tk.END,
-                f"\nFlex output:\n{build_process.stdout}\n{build_process.stderr}",
-            )
-
-            build_process = subprocess.run(
-                ["bison", "-d", "-t", "Parser.y"], capture_output=True, text=True
-            )
-            self.text.insert(
-                tk.END,
-                f"\nBison output:\n{build_process.stdout}\n{build_process.stderr}",
-            )
-
-            build_process = subprocess.run(
-                ["g++", "-std=c++17", "-o", "compiler", "lex.yy.c", "parser.tab.c", "semantic_analyzer.cpp", "AssemblyGenerator.cpp", "quadruple.cpp"], capture_output=True, text=True
-            )
-            self.text.insert(
-                tk.END,
-                f"\nCompiler build output:\n{build_process.stdout}\n{build_process.stderr}",
-            )
-
-            # Run the compiled program
-            run_process = subprocess.run(
-                ["./compiler"], capture_output=True, text=True
-            )
-            self.text.insert(
-                tk.END, f"\nRun output:\n{run_process.stdout}\n{run_process.stderr}"
-            )
-
-            # Optionally, remove the temporary file after execution
-            os.remove("compiler")
-            os.remove(script_path)
-
-        except Exception as e:
-            # Display any exceptions that occur
-            self.text.insert(tk.END, f"\nAn error occurred: {e}\n")
+        script_path = "gui.txt"
+        with open(script_path, "w") as file:
+            file.write(self.text.get("1.0", tk.END).strip())
+                
+        subprocess.run(["make", "build"])
+        subprocess.run(["make", "gui"])
+        os.remove(script_path)
 
     def toggle_theme(self):
         if self.dark_theme:

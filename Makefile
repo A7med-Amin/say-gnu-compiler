@@ -13,3 +13,6 @@ runwithtestfile:
 
 runwithtest:
 	./compiler	singletest.txt
+
+gui:
+	./compiler gui.txt
