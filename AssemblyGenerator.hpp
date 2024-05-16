@@ -21,10 +21,10 @@ public:
     AssemblyGenerator();
     // void startScope();
     // void endScope(std::string type);
-    const char *addAssignment(SymbolTableEntry* sym);
-    const char *getAssignment(SymbolTableEntry* sym);
-    const char *addTemp(const string& expr1, const string& op, const string& expr2);
-    const char *getTemp(const string& temp);
+    const char *assignRegister(SymbolTableEntry* sym);
+    const char *getRegisterAssignment(SymbolTableEntry* sym);
+    const char *addTempVariable( string expr1,  string op,  string expr2);
+    const char *getTempVariable(string temp);
     void clearTemps();
     void addQuad(const string& operation, const string& operand1, const string& operand2, const string& destination);
     // void printQuads();
