@@ -198,7 +198,7 @@ codeStatement: variableDeclaration
         {
             if ($3.type != BOOL_TYPE)
             {
-                writeSemanticError("Condition of IF must be boolean", yylineno);
+                writeSemanticError("Condition of WHILE must be boolean", yylineno);
                 return 0;
             }
         }
@@ -211,7 +211,7 @@ codeStatement: variableDeclaration
             assemblyGenerator.endScope(repeatScope);
             if ($5.type != BOOL_TYPE)
             {
-                writeSemanticError("Condition of IF must be boolean", yylineno);
+                writeSemanticError("Condition of REPEAT must be boolean", yylineno);
                 return 0;
             }
         }
