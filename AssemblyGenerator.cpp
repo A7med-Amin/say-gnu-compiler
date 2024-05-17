@@ -16,13 +16,14 @@ AssemblyGenerator::AssemblyGenerator()
 
 void AssemblyGenerator::startScope()
 {
-    cout << "Starting scope" << endl;
+    // cout << "Starting scope" << endl;
     vector<Quadruple *> *newQuadruples = new vector<Quadruple *>();
     scopes.push(newQuadruples);
 }
 
 void AssemblyGenerator::endScope(scopeType type)
 {
+    // cout << "Ending scope" << endl;
     vector<Quadruple *> *currentScopeQuadruples = scopes.top();
     scopes.pop();
 
@@ -76,7 +77,7 @@ void AssemblyGenerator::endScope(scopeType type)
 
     case forScope:
     {
-        cout << "FOR SCOPE" << endl;
+        // cout << "FOR SCOPE" << endl;
         string label = "L" + to_string(labels.size());
         auto lastQuad = previousScopeQuadruples->end() - 1;
         previousScopeQuadruples->insert(lastQuad, new Quadruple(label + ":", "", "", ""));
@@ -102,7 +103,7 @@ void AssemblyGenerator::endScope(scopeType type)
 
     case whileScope:
     {
-        cout << "WHILE SCOPE" << endl;
+        // cout << "WHILE SCOPE" << endl;
         string label = "L" + to_string(labels.size());
         auto lastQuad = previousScopeQuadruples->end() - 1;
         previousScopeQuadruples->insert(lastQuad, new Quadruple(label + ":", "", "", ""));
@@ -129,7 +130,7 @@ void AssemblyGenerator::endScope(scopeType type)
 
     case repeatScope:
     {
-        cout << "REPEAT SCOPE" << endl;
+        // cout << "REPEAT SCOPE" << endl;
         string label = "L" + to_string(labels.size());
         addQuadruple(label + ":", "", "", "");
         labels.push_back(label);
@@ -151,7 +152,7 @@ void AssemblyGenerator::endScope(scopeType type)
 
     case switchScope:
     {
-        cout << "SWITCH SCOPE" << endl;
+        // cout << "SWITCH SCOPE" << endl;
         
         for (auto *quad : *currentScopeQuadruples)
         {
@@ -167,7 +168,7 @@ void AssemblyGenerator::endScope(scopeType type)
 
     case caseScope:
     {
-        cout<<"CASE SCOPE" << endl;
+        // cout<<"CASE SCOPE" << endl;
 
           string label = "L" + to_string(labels.size());
         addQuadruple(label + ":", "", "", "");
@@ -184,7 +185,7 @@ void AssemblyGenerator::endScope(scopeType type)
 
     case defaultScope:
     {
-        cout<<"DEFAULT SCOPE" << endl;
+        // cout<<"DEFAULT SCOPE" << endl;
 
           string label = "L" + to_string(labels.size());
         addQuadruple(label + ":", "", "", "");
@@ -199,7 +200,7 @@ void AssemblyGenerator::endScope(scopeType type)
 
     case funcScope:
     {
-        cout << "FUNC SCOPE" << endl;
+        // cout << "FUNC SCOPE" << endl;
 
         for (auto *quad : *currentScopeQuadruples)
         {
@@ -216,7 +217,7 @@ const char *AssemblyGenerator::assignRegister(SymbolTableEntry *sym)
 {
     if (!sym)
     {
-        cout << "SymbolTableEntry is null" << endl;
+        // cout << "SymbolTableEntry is null" << endl;
         return nullptr;
     }
     try
@@ -274,11 +275,11 @@ const char *AssemblyGenerator::addTempVariable(string expr1, string op, string e
     string tempName = "T" + to_string(temps.size());
     temps[tempName] = expr1 + op + expr2;
 
-    cout << "Temps size: " << temps.size() << endl;
-    cout << "Temps: " << endl;
-    for (auto it = temps.begin(); it != temps.end(); it++) {
-        cout << it->first << " = " << it->second << endl;
-    }
+    // cout << "Temps size: " << temps.size() << endl;
+    // cout << "Temps: " << endl;
+    // for (auto it = temps.begin(); it != temps.end(); it++) {
+    //     cout << it->first << " = " << it->second << endl;
+    // }
 
     return strdup(tempName.c_str());
 }

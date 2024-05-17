@@ -225,7 +225,7 @@ codeStatement: variableDeclaration
             }
             
         }
-        forLoopItter ')' loopsScopeBlock { printf("for loop itter\n");
+        forLoopItter ')' loopsScopeBlock { 
             assemblyGenerator.endScope(forScope);}           
         | ifCondition                                                                       
         | SWITCH '(' IDENTIFIER 
@@ -245,7 +245,9 @@ codeStatement: variableDeclaration
                 return 0;
             }
         }
-        ')' switchBlock { assemblyGenerator.endScope(switchScope); }                                              
+        ')' switchBlock { 
+            // printf("*********** switch block ***********\n");
+            assemblyGenerator.endScope(switchScope); }                                              
         | scopeBlock
         | PRINT '(' printStatement ')' ';'                                                 
         | function 
@@ -327,7 +329,7 @@ expression: arithmetic | boolean ;
 
 boolean: BOOLEAN_TRUE
         {
-            cout << "BOOLEAN_TRUE\n";
+            // cout << "BOOLEAN_TRUE\n";
             const char* name = assemblyGenerator.addTempVariable("true" , "" , "");
             assemblyGenerator.addQuadruple("ASSIGN", "TRUE", "", name);
             $$.nameRep = strdup("true");
@@ -356,11 +358,11 @@ boolean: BOOLEAN_TRUE
             string valueStr = $$.bval ? "true" : "false";
 
            // Print debugging information
-            printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+            // printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
             const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
             const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
             const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
-            printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+            // printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
 
             // Allocate memory for the final value string and assign it to nameRep
             $$.nameRep = strdup(valueStr.c_str());
@@ -395,11 +397,11 @@ boolean: BOOLEAN_TRUE
     string valueStr = $$.bval ? "true" : "false";
 
     // Print debugging information
-    printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+    // printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
     const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
     const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
     const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
-    printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+    // printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
 
     // Allocate memory for the final value string and assign it to nameRep
     $$.nameRep = strdup(valueStr.c_str());
@@ -430,11 +432,11 @@ boolean: BOOLEAN_TRUE
 
             string valueStr = $$.bval ? "true" : "false";
 
-            printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+            // printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
             const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
             const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
             const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
-            printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+            // printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
 
             $$.nameRep = strdup(valueStr.c_str());
 
@@ -463,11 +465,11 @@ boolean: BOOLEAN_TRUE
 
             string valueStr = $$.bval ? "true" : "false";
 
-           printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+        //    printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
             const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
             const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
             const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
-            printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+            // printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
 
             $$.nameRep = strdup(valueStr.c_str());
 
@@ -496,11 +498,11 @@ boolean: BOOLEAN_TRUE
 
             string valueStr = $$.bval ? "true" : "false";
 
-            printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+            // printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
             const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
             const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
             const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
-            printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+            // printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
 
             $$.nameRep = strdup(valueStr.c_str());
 
@@ -529,11 +531,11 @@ boolean: BOOLEAN_TRUE
 
             string valueStr = $$.bval ? "true" : "false";
 
-           printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+        //    printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
             const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
             const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
             const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
-            printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+            // printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
 
             $$.nameRep = strdup(valueStr.c_str());
 
@@ -554,10 +556,10 @@ boolean: BOOLEAN_TRUE
 
    string valueStr = $$.bval ? "true" : "false";
 
-            printf("varStr1NameRep: %s \n", $2.nameRep);
+            // printf("varStr1NameRep: %s \n", $2.nameRep);
             const char* name1 = assemblyGenerator.getTempVariable($2.nameRep);
             const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
-            printf("name1: %s, name: %s\n", name1, name);
+            // printf("name1: %s, name: %s\n", name1, name);
 
             $$.nameRep = strdup(valueStr.c_str());
 
@@ -581,11 +583,11 @@ boolean: BOOLEAN_TRUE
 
             string valueStr = $$.bval ? "true" : "false";
 
-            printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+            // printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
             const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
             const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
             const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
-            printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+            // printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
 
             $$.nameRep = strdup(valueStr.c_str());
 
@@ -605,11 +607,11 @@ boolean: BOOLEAN_TRUE
 
             string valueStr = $$.bval ? "true" : "false";
 
-            printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+            // printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
             const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
             const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
             const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
-            printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+            // printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
 
             $$.nameRep = strdup(valueStr.c_str());
 
@@ -619,7 +621,7 @@ boolean: BOOLEAN_TRUE
 
 arithmetic: IDENTIFIER INC                                        
         {
-            printf("INC\n");
+            // printf("INC\n");
             SymbolTableEntry* newEntry = getIdentifierEntry($1);
             if(newEntry == nullptr){
                 writeSemanticError("Using variable not declared", yylineno);
@@ -743,7 +745,7 @@ arithmetic: IDENTIFIER INC
 
 complexArithmetic: complexArithmetic ADD minorTerm       
         {
-            cout << " ------------- ADD -------------" << endl;
+            // cout << " ------------- ADD -------------" << endl;
         int lhsType = $1.type;
         int rhsType = $3.type;
 
@@ -763,13 +765,13 @@ complexArithmetic: complexArithmetic ADD minorTerm
             $$.type = FLOAT_TYPE;
             $$.fval = (lhsType == INT_TYPE ? lhs->value.ival : lhs->value.fval) + 
                     (rhsType == INT_TYPE ? rhs->value.ival : rhs->value.fval);
-            cout << "value: " << $$.fval << endl;
+            // cout << "value: " << $$.fval << endl;
         }
         else
         {
             $$.type = INT_TYPE;
             $$.ival = lhs->value.ival + rhs->value.ival;
-            cout << "value: " << $$.ival << endl;
+            // cout << "value: " << $$.ival << endl;
         }
 
         stringstream valueStream;
@@ -783,11 +785,11 @@ complexArithmetic: complexArithmetic ADD minorTerm
         }
         string valueStr = valueStream.str();
 
-        printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+        // printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
         const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
         const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
         const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
-        printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+        // printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
 
         $$.nameRep = strdup(valueStr.c_str());
 
@@ -814,13 +816,13 @@ complexArithmetic: complexArithmetic ADD minorTerm
             $$.type = FLOAT_TYPE;
             $$.fval = (lhsType == INT_TYPE ? lhs->value.ival : lhs->value.fval) - 
                     (rhsType == INT_TYPE ? rhs->value.ival : rhs->value.fval);
-            cout << "value: " << $$.fval << endl;
+            // cout << "value: " << $$.fval << endl;
         }
         else
         {
             $$.type = INT_TYPE;
             $$.ival = lhs->value.ival - rhs->value.ival;
-            cout << "value: " << $$.ival << endl;
+            // cout << "value: " << $$.ival << endl;
         }
 
         stringstream valueStream;
@@ -834,11 +836,11 @@ complexArithmetic: complexArithmetic ADD minorTerm
         }
         string valueStr = valueStream.str();
 
-        printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+        // printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
         const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
         const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
         const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
-        printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+        // printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
 
         $$.nameRep = strdup(valueStr.c_str());
 
@@ -870,13 +872,13 @@ int lhsType = $1.type;
         $$.type = FLOAT_TYPE;
         $$.fval = (lhsType == INT_TYPE ? lhs->value.ival : lhs->value.fval) * 
                   (rhsType == INT_TYPE ? rhs->value.ival : rhs->value.fval);
-        cout << "value: " << $$.fval << endl;
+        // cout << "value: " << $$.fval << endl;
     }
     else
     {
         $$.type = INT_TYPE;
         $$.ival = lhs->value.ival * rhs->value.ival;
-        cout << "value: " << $$.ival << endl;
+        // cout << "value: " << $$.ival << endl;
     }
 
     // Convert the final value to a string
@@ -892,11 +894,11 @@ int lhsType = $1.type;
     string valueStr = valueStream.str();
 
     // Print debugging information
-    printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+    // printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
     const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
     const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
     const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
-    printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+    // printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
 
     // Allocate memory for the final value string and assign it to nameRep
     $$.nameRep = strdup(valueStr.c_str());
@@ -924,13 +926,13 @@ int lhsType = $1.type;
         $$.type = FLOAT_TYPE;
         $$.fval = (lhsType == INT_TYPE ? lhs->value.ival : lhs->value.fval) / 
                   (rhsType == INT_TYPE ? rhs->value.ival : rhs->value.fval);
-        cout << "value: " << $$.fval << endl;
+        // cout << "value: " << $$.fval << endl;
     }
     else
     {
         $$.type = INT_TYPE;
         $$.ival = lhs->value.ival / rhs->value.ival;
-        cout << "value: " << $$.ival << endl;
+        // cout << "value: " << $$.ival << endl;
     }
 
     stringstream valueStream;
@@ -944,11 +946,11 @@ int lhsType = $1.type;
     }
     string valueStr = valueStream.str();
 
-    printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+    // printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
     const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
     const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
     const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
-    printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+    // printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
 
     $$.nameRep = strdup(valueStr.c_str());
 
@@ -967,17 +969,17 @@ int lhsType = $1.type;
 
     $$.type = INT_TYPE;
     $$.ival = $1.ival % $3.ival;
-    cout << "value: " << $$.ival << endl;
+    // cout << "value: " << $$.ival << endl;
 
     stringstream valueStream;
     valueStream << $$.ival;
     string valueStr = valueStream.str();
 
-    printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+    // printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
     const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
     const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
     const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
-    printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+    // printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
 
     $$.nameRep = strdup(valueStr.c_str());
 
@@ -1006,13 +1008,13 @@ majorTerm: majorTerm POW instance
     {
         $$.type = FLOAT_TYPE;
         $$.fval = (lhsType == INT_TYPE ? pow(lhs->value.ival, rhs->value.fval) : pow(lhs->value.fval, (rhsType == INT_TYPE ? rhs->value.ival : rhs->value.fval)));
-        cout << "value: " << $$.fval << endl;
+        // cout << "value: " << $$.fval << endl;
     }
     else
     {
         $$.type = INT_TYPE;
         $$.ival = pow(lhs->value.ival, rhs->value.ival);
-        cout << "value: " << $$.ival << endl;
+        // cout << "value: " << $$.ival << endl;
     }
 
     stringstream valueStream;
@@ -1026,11 +1028,11 @@ majorTerm: majorTerm POW instance
     }
     string valueStr = valueStream.str();
 
-    printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+    // printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
     const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
     const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
     const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
-    printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+    // printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
 
     $$.nameRep = strdup(valueStr.c_str());
 
@@ -1057,7 +1059,7 @@ instance: INTEGER_VALUE
         | TypedFunctionCall
         | IDENTIFIER 
         {
-            cout << "Identifier: " << $1 << endl;
+            // cout << "Identifier: " << $1 << endl;
             SymbolTableEntry* newEntry = getIdentifierEntry($1);
             const char* nameeReg = assemblyGenerator.getRegisterAssignment(newEntry);
             if(newEntry == nullptr){
@@ -1076,7 +1078,7 @@ instance: INTEGER_VALUE
                 case INT_TYPE:
                     $$.ival = newEntry->getTypeValue()->value.ival;
                     valueStr = to_string($$.ival);
-                    cout << "Value string: " << valueStr << endl;
+                    // cout << "Value string: " << valueStr << endl;
                     $$.nameRep = strdup(valueStr.c_str());
                     break;
                 case FLOAT_TYPE:
@@ -1100,7 +1102,7 @@ instance: INTEGER_VALUE
                     {
                         valueStr = "false";
                     }
-                    cout << "Value string: " << valueStr << endl;
+                    // cout << "Value string: " << valueStr << endl;
                     $$.nameRep = strdup(valueStr.c_str());
               
 
@@ -1336,7 +1338,9 @@ switchBlock: '{' {createNewSymbolTable();
 
 caseExpression:	
             caseDefault 	                   
-    |       CASE switchValidValue ':' codeBlock {assemblyGenerator.endScope(caseScope);} BREAK ';' caseExpression  
+    |       CASE switchValidValue ':' codeBlock {
+        // printf("******************* caseExpression *******************\n"); 
+        assemblyGenerator.endScope(caseScope);} BREAK ';' caseExpression  
 	;
 
 switchValidValue: INTEGER_VALUE 
@@ -1344,7 +1348,7 @@ switchValidValue: INTEGER_VALUE
         string valueStr = to_string($1.ival);
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
         assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
-        // $$.nameRep = strdup(valueStr.c_str());
+        $$.nameRep = strdup(valueStr.c_str());
         }
 | CHARACTER 
 { 
@@ -1357,9 +1361,11 @@ switchValidValue: INTEGER_VALUE
 
 caseDefault:
             DEFAULT ':' codeBlock {
+                // printf("******************* caseDefault *******************\n");
                 assemblyGenerator.endScope(defaultScope);} BREAK ';'    		            	 
             | DEFAULT ':' codeBlock {
-                assemblyGenerator.endScope(defaultScope);}    		                    	 
+                // printf("******************* caseDefault *******************\n");
+                assemblyGenerator.endScope(defaultScope); }    		                    	 
             |                                                       	 
     ;
 
@@ -1376,7 +1382,7 @@ forLoopItter: ';' assignment
 
 scopeBlock: '{' 
 {
-    printf("**************** Scope Block ****************\n");
+    // printf("**************** Scope Block ****************\n");
     createNewSymbolTable();
     assemblyGenerator.startScope();
 } codeBlock {
@@ -1411,7 +1417,7 @@ function :  dataType IDENTIFIER '('
             
         } ArgList ')' '{' codeBlock '}'  
         {
-            printf("**************** Function1 ****************\n");
+            // printf("**************** Function1 ****************\n");
             if(functionHasReturn == false){
                 writeSemanticWarning("Function must return a value", yylineno);
             }
@@ -1427,7 +1433,7 @@ function :  dataType IDENTIFIER '('
             string functionName = string($2) + ":";
             assemblyGenerator.addQuadruple(functionName, "", "", "");
 
-            printf("**************** Function2 ****************\n");
+            // printf("**************** Function2 ****************\n");
             SymbolTableEntry *newEntry = identifierScopeCheck($2);
             if(newEntry != nullptr){
                 writeSemanticError("Multiple function declaration not allowed", yylineno);
@@ -1767,7 +1773,7 @@ CallList:  CallList ',' dataValue
 /* Print Statement */
 printStatement: dataValue ',' printStatement  
         {
-            printf("========  PRINT SUCCESSFUL ***********\n");
+            // printf("========  PRINT SUCCESSFUL ***********\n");
         }                      
         | dataValue                                          
         ;  

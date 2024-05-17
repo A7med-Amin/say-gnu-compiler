@@ -1,16 +1,16 @@
 START main
 
-ASSIGN    9           T0    
-ALLOC     y           R0    
-ASSIGN    T0          R0    
-ASSIGN    3           T1    
-ADD       T1    T0    T2    
-ALLOC     x           R1    
-ASSIGN    T2          R1    
-paramChecker:                  
-ASSIGN    4           T3    
-ALLOC     y           R2    
-ALLOC     x           R3    
-ASSIGN    T3          R3    
-ASSIGN    0           T4    
-RET                         
+ASSIGN    3           T0    
+ASSIGN    2           T1    
+ADD       T0    T1    T2    
+ALLOC     x           R0    
+ASSIGN    T2          R0    
+ASSIGN    2           T3    
+SUB       T2    T3    T4    
+ALLOC     y           R1    
+ASSIGN    T4          R1    
+ASSIGN    12.000000      T5    
+ASSIGN    2           T6    
+DIV       T5    T1    T7    
+ALLOC     z           R2    
+ASSIGN    T7          R2    
