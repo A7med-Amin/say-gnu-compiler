@@ -16,3 +16,7 @@ runwithtest:
 
 gui:
 	./compiler gui.txt
+
+runinputcode:
+	./compiler test/input_code.cpp
+

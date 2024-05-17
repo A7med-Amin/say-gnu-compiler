@@ -48,6 +48,7 @@
         "xmemory0": "cpp",
         "xstddef": "cpp",
         "xutility": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "atomic": "cpp"
     }
 }

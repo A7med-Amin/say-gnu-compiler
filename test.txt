@@ -9,14 +9,16 @@ comment
 int declaration;
 float decWith_Assign=5.2;
 bool a = true && false;
-bool b = ! false;
-bool n= !a||b;
+bool b = ! false;   // err
+
 int c=5*5;
 char harf='f';
 string str="compilers";
 const int SABET=100;
 int i = 9;
 int var;
+
+
 // Conditional EXpressions
 if(i==6){
     var=10;
@@ -34,64 +36,41 @@ while(true){int x=6;}
 
 for(int i=0; i<5;i++){int x = i+1;}
 
+
 // Operatores
 int z;
 int d = 50;
 z = 5+6;
 z = 5-6;
 z = 5*6;
-z = d/c;
-z = d%c;
 z = i++;
 z = i--;
 z = i**2;
 
 bool bolo;
 bolo = a && b;
-bolo = a || b;
 bolo = !a;
-
-// Multiple Printing
-//print(i,"hello",'y'); ---------------------------------------------------------
-
-// Errors
-// int = 6; ---------------------------------------------------------
-// x = 8 ---------------------------------------------------------
-// y * 6; ---------------------------------------------------------
 
 {
     int ahmed = 209;
 }
 
+
 // Advanced Testing
 char coco = 'h';
 float j;
-switch(coco){ 
-    case 'c': j = 9.0; 
-    break; 
-    case 'h': j = 6.33; 
-    break; 
-    default: j =7.56;
-}
-
 {
     int ameen = 209;
 }
 
 int into = 7;
-int x;
-switch(into){
-    case 1: x=1;
-            break;
-    case 2: x=2;
-            break;
-    default:x=0;
-            break;                
-}
+int x = 6;
+
 
 if((i==8)){
     var=2000000000;
 }
+
 
 void fun(){
     int res;
@@ -109,4 +88,21 @@ void fun(){
 
 fun();
 
-//int ddddd = fun("dff", 3.5,'d');
+int fund(string str, float ff, char c){
+    if (x>7)
+    {
+        return 8;
+    }
+    else if (x < 4) {
+        return 0;
+    }
+    else{
+        return 10;
+    }
+}
+
+int ddddd = fund("seif", 3.5,'d');
+
+bool boolval = !a&&b;
+
+
