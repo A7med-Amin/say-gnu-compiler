@@ -257,6 +257,18 @@ const char *AssemblyGenerator::getRegisterAssignment(SymbolTableEntry *sym)
     return nullptr;
 }
 
+// make a function to find in assignments by value
+SymbolTableEntry *AssemblyGenerator::getRegisterAssignmentValue(string value){
+    for (auto it = assignments.begin(); it != assignments.end(); it++)
+    {
+        if (it->second == value)
+        {
+            return it->first;
+        }
+    }
+    return nullptr;
+}
+
 const char *AssemblyGenerator::addTempVariable(string expr1, string op, string expr2)
 {
     string tempName = "T" + to_string(temps.size());

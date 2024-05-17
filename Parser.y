@@ -283,7 +283,7 @@ constantValue: INTEGER_VALUE
     string valueStr = to_string($1.ival);
     const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
     assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
-    $$.nameRep = strdup(valueStr.c_str());
+    // $$.nameRep = strdup(valueStr.c_str());
 }
 | FLOATING 
 { 
@@ -352,151 +352,215 @@ boolean: BOOLEAN_TRUE
             EntryType compareDataType= static_cast<EntryType>(lhsType);
             GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
             $$.bval = checkEqualityEqual(lhs, rhs);
+            string valueStr = $$.bval ? "true" : "false";
 
-            string varStr1NameRep = $1.nameRep;
-            string varStr2NameRep = $3.nameRep;
-            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
-            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
-            const char* name = assemblyGenerator.addTempVariable(name1 , "==" , name2);
-            $$.nameRep = concatenateNames(name1 , "==", name2);
+           // Print debugging information
+            printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+            const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
+            const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
+            const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
+            printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+
+            // Allocate memory for the final value string and assign it to nameRep
+            $$.nameRep = strdup(valueStr.c_str());
+
+            // Add the quadruple for the EQ operation
             assemblyGenerator.addQuadruple("EQU", name1, name2, name);
         }
         | expression NEQ arithmetic 
         {
-            int lhsType = $1.type;
-            int rhsType = $3.type;
-            if (typeMismatch(lhsType, rhsType))
-            {
-                writeSemanticError("Type mismatch", yylineno);
-                return 0;
-            }
-            $$.type = BOOL_TYPE;
-            TypeValue * lhs;
-            TypeValue * rhs;
-            EntryType compareDataType= static_cast<EntryType>(lhsType);
-            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
-            $$.bval = checkEqualityNot(lhs, rhs);
+          int lhsType = $1.type;
+    int rhsType = $3.type;
 
-            string varStr1NameRep = $1.nameRep;
-            string varStr2NameRep = $3.nameRep;
-            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
-            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
-            const char* name = assemblyGenerator.addTempVariable(name1 , "!=" , name2);
-            $$.nameRep = concatenateNames(name1 , "!=", name2);
-            assemblyGenerator.addQuadruple("NEQ", name1, name2, name);
+    // Check for type mismatch
+    if (typeMismatch(lhsType, rhsType))
+    {
+        writeSemanticError("Type mismatch", yylineno);
+        return 0;
+    }
+
+    // Set the result type to BOOL_TYPE
+    $$.type = BOOL_TYPE;
+
+    TypeValue *lhs;
+    TypeValue *rhs;
+    EntryType compareDataType = static_cast<EntryType>(lhsType);
+    GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+
+    // Check for inequality
+    $$.bval = checkEqualityNot(lhs, rhs);
+
+    // Convert the boolean result to a string
+    string valueStr = $$.bval ? "true" : "false";
+
+    // Print debugging information
+    printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+    const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
+    const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
+    const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
+    printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+
+    // Allocate memory for the final value string and assign it to nameRep
+    $$.nameRep = strdup(valueStr.c_str());
+
+    // Add the quadruple for the NEQ operation
+    assemblyGenerator.addQuadruple("NEQ", name1, name2, name);
         }
         | expression GT arithmetic 
         {
             int lhsType = $1.type;
             int rhsType = $3.type;
+
             if (typeMismatch(lhsType, rhsType))
             {
                 writeSemanticError("Type mismatch", yylineno);
                 return 0;
             }
+
             $$.type = BOOL_TYPE;
-            TypeValue * lhs;
-            TypeValue * rhs;
-            EntryType compareDataType= static_cast<EntryType>(lhsType);
+
+            TypeValue *lhs;
+            TypeValue *rhs;
+
+            EntryType compareDataType = static_cast<EntryType>(lhsType);
             GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+
             $$.bval = checkEqualityGT(lhs, rhs);
 
-                        string varStr1NameRep = $1.nameRep;
-            string varStr2NameRep = $3.nameRep;
-            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
-            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
-            const char* name = assemblyGenerator.addTempVariable(name1 , ">" , name2);
-            $$.nameRep = concatenateNames(name1 , ">", name2);
+            string valueStr = $$.bval ? "true" : "false";
+
+            printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+            const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
+            const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
+            const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
+            printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+
+            $$.nameRep = strdup(valueStr.c_str());
+
             assemblyGenerator.addQuadruple("GT", name1, name2, name);
         }
         | expression LT arithmetic 
         {
             int lhsType = $1.type;
             int rhsType = $3.type;
+
             if (typeMismatch(lhsType, rhsType))
             {
                 writeSemanticError("Type mismatch", yylineno);
                 return 0;
             }
+
             $$.type = BOOL_TYPE;
+
             TypeValue * lhs;
             TypeValue * rhs;
+
             EntryType compareDataType= static_cast<EntryType>(lhsType);
             GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+
             $$.bval = checkEqualityLT(lhs, rhs);
 
-            string varStr1NameRep = $1.nameRep;
-            string varStr2NameRep = $3.nameRep;
-            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
-            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
-            const char* name = assemblyGenerator.addTempVariable(name1 , "<" , name2);
-            $$.nameRep = concatenateNames(name1 , "<", name2);
+            string valueStr = $$.bval ? "true" : "false";
+
+           printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+            const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
+            const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
+            const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
+            printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+
+            $$.nameRep = strdup(valueStr.c_str());
+
             assemblyGenerator.addQuadruple("LT", name1, name2, name);
         }
         | expression GTE arithmetic 
         {
-            int lhsType = $1.type;
+             int lhsType = $1.type;
             int rhsType = $3.type;
+
             if (typeMismatch(lhsType, rhsType))
             {
                 writeSemanticError("Type mismatch", yylineno);
                 return 0;
             }
+
             $$.type = BOOL_TYPE;
-            TypeValue * lhs;
-            TypeValue * rhs;
-            EntryType compareDataType= static_cast<EntryType>(lhsType);
+
+            TypeValue *lhs;
+            TypeValue *rhs;
+
+            EntryType compareDataType = static_cast<EntryType>(lhsType);
             GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+
             $$.bval = checkEqualityGTE(lhs, rhs);
 
-            string varStr1NameRep = $1.nameRep;
-            string varStr2NameRep = $3.nameRep;
-            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
-            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
-            const char* name = assemblyGenerator.addTempVariable(name1 , ">=" , name2);
-            $$.nameRep = concatenateNames(name1 , ">=", name2);
+            string valueStr = $$.bval ? "true" : "false";
+
+            printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+            const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
+            const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
+            const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
+            printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+
+            $$.nameRep = strdup(valueStr.c_str());
+
             assemblyGenerator.addQuadruple("GTE", name1, name2, name);
         }
         | expression LTE arithmetic 
         {
             int lhsType = $1.type;
             int rhsType = $3.type;
+
             if (typeMismatch(lhsType, rhsType))
             {
                 writeSemanticError("Type mismatch", yylineno);
                 return 0;
             }
+
             $$.type = BOOL_TYPE;
+
             TypeValue * lhs;
             TypeValue * rhs;
+
             EntryType compareDataType= static_cast<EntryType>(lhsType);
             GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+
             $$.bval = checkEqualityLTE(lhs, rhs);
 
-            string varStr1NameRep = $1.nameRep;
-            string varStr2NameRep = $3.nameRep;
-            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
-            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
-            const char* name = assemblyGenerator.addTempVariable(name1 , "<=" , name2);
-            $$.nameRep = concatenateNames(name1 , "<=", name2);
+            string valueStr = $$.bval ? "true" : "false";
+
+           printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+            const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
+            const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
+            const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
+            printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+
+            $$.nameRep = strdup(valueStr.c_str());
+
             assemblyGenerator.addQuadruple("LTE", name1, name2, name);
         }
         | NOT expression 
         {
-            int varType = $2.type;
-            if (varType != BOOL_TYPE)
-            {
-                writeSemanticError("Type mismatch with NOT operation", yylineno);
-                return 0;
-            }
-            $$.type = BOOL_TYPE;
-            $$.bval = !$2.bval;
+           int varType = $2.type;
 
-            string varStr1NameRep = $2.nameRep;
-            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
-            const char* name = assemblyGenerator.addTempVariable("!", name1, "");
-            $$.nameRep = concatenateNames("!", name1, "");
-            assemblyGenerator.addQuadruple("NOT", name1, "", name);
+    if (varType != BOOL_TYPE)
+    {
+        writeSemanticError("Type mismatch with NOT operation", yylineno);
+        return 0;
+    }
+
+    $$.type = BOOL_TYPE;
+    $$.bval = !$2.bval;
+
+    string valueStr = $$.bval ? "true" : "false";
+
+    printf("varStr1NameRep: %s\n", $2.nameRep);
+    const char* name1 = assemblyGenerator.getTempVariable($2.nameRep);
+    const char* name = assemblyGenerator.addTempVariable("!", name1, "");
+    printf("name1: %s, name: %s\n", name1, name);
+
+    $$.nameRep = strdup(valueStr.c_str());
+
+    assemblyGenerator.addQuadruple("NOT", name1, "", name);
 
             
         }
@@ -668,266 +732,304 @@ arithmetic: IDENTIFIER INC
 
 complexArithmetic: complexArithmetic ADD minorTerm       
         {
-            int lhsType = $1.type;
-            int rhsType = $3.type;
-            if ((lhsType != INT_TYPE && lhsType != FLOAT_TYPE) || (rhsType != INT_TYPE && rhsType != FLOAT_TYPE))
-            {
-                writeSemanticError("Type mismatch with ADD operation, must be integers or float", yylineno);
-                return 0;
-            }
-            TypeValue * lhs;
-            TypeValue * rhs;
-            EntryType compareDataType= static_cast<EntryType>(lhsType);
-            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
-            switch(lhsType){
-                case INT_TYPE:
-                    if (rhsType == FLOAT_TYPE)
-                    {
-                        $$.type = FLOAT_TYPE;
-                        $$.fval = lhs->value.ival + rhs->value.fval;
-                    }
-                    else
-                    {
-                        $$.type = INT_TYPE;
-                        $$.ival = lhs->value.ival + rhs->value.ival;
-                    }
-                    break;
-                case FLOAT_TYPE:
-                    $$.type = FLOAT_TYPE;
-                    if (rhsType == INT_TYPE)
-                    {
-                        $$.fval = lhs->value.fval + rhs->value.ival;
-                    }
-                    else
-                    {
-                        $$.fval = lhs->value.fval + rhs->value.fval;
-                    }
-                    break;
-            }
-            string varStr1NameRep = $1.nameRep;
-            string varStr2NameRep = $3.nameRep;
-            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
-            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
-            const char* name = assemblyGenerator.addTempVariable(name1 , "+" , name2);
-            $$.nameRep = concatenateNames(name1 , "+", name2);
-            assemblyGenerator.addQuadruple("ADD", name1, name2, name);
+        int lhsType = $1.type;
+        int rhsType = $3.type;
+
+        if ((lhsType != INT_TYPE && lhsType != FLOAT_TYPE) || (rhsType != INT_TYPE && rhsType != FLOAT_TYPE))
+        {
+            writeSemanticError("Type mismatch with ADD operation, must be integers or float", yylineno);
+            return 0;
+        }
+
+        TypeValue *lhs;
+        TypeValue *rhs;
+        EntryType compareDataType = static_cast<EntryType>(lhsType);
+        GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+
+        if (lhsType == FLOAT_TYPE || rhsType == FLOAT_TYPE)
+        {
+            $$.type = FLOAT_TYPE;
+            $$.fval = (lhsType == INT_TYPE ? lhs->value.ival : lhs->value.fval) + 
+                    (rhsType == INT_TYPE ? rhs->value.ival : rhs->value.fval);
+            cout << "value: " << $$.fval << endl;
+        }
+        else
+        {
+            $$.type = INT_TYPE;
+            $$.ival = lhs->value.ival + rhs->value.ival;
+            cout << "value: " << $$.ival << endl;
+        }
+
+        stringstream valueStream;
+        if ($$.type == FLOAT_TYPE)
+        {
+            valueStream << $$.fval;
+        }
+        else
+        {
+            valueStream << $$.ival;
+        }
+        string valueStr = valueStream.str();
+
+        printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+        const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
+        const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
+        const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
+        printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+
+        $$.nameRep = strdup(valueStr.c_str());
+
+        assemblyGenerator.addQuadruple("ADD", name1, name2, name);
         }
         | complexArithmetic SUB minorTerm       
         {
-            int lhsType = $1.type;
-            int rhsType = $3.type;
-            if ((lhsType != INT_TYPE && lhsType != FLOAT_TYPE) || (rhsType != INT_TYPE && rhsType != FLOAT_TYPE))
-            {
-                writeSemanticError("Type mismatch with SUB operation, must be integers or float", yylineno);
-                return 0;
-            }
-            TypeValue * lhs;
-            TypeValue * rhs;
-            EntryType compareDataType= static_cast<EntryType>(lhsType);
-            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
-            switch(lhsType){
-                case INT_TYPE:
-                    if (rhsType == FLOAT_TYPE)
-                    {
-                        $$.type = FLOAT_TYPE;
-                        $$.fval = lhs->value.ival - rhs->value.fval;
-                    }
-                    else
-                    {
-                        $$.type = INT_TYPE;
-                        $$.ival = lhs->value.ival - rhs->value.ival;
-                    }
-                    break;
-                case FLOAT_TYPE:
-                    $$.type = FLOAT_TYPE;
-                    if (rhsType == INT_TYPE)
-                    {
-                        $$.fval = lhs->value.fval - rhs->value.ival;
-                    }
-                    else
-                    {
-                        $$.fval = lhs->value.fval - rhs->value.fval;
-                    }
-                    break;
-            }
-            string varStr1NameRep = $1.nameRep;
-            string varStr2NameRep = $3.nameRep;
-            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
-            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
-            const char* name = assemblyGenerator.addTempVariable(name1 , "-" , name2);
-            $$.nameRep = concatenateNames(name1 , "-", name2);
-            assemblyGenerator.addQuadruple("MINUS", name1, name2, name);
+        int lhsType = $1.type;
+        int rhsType = $3.type;
+
+        if ((lhsType != INT_TYPE && lhsType != FLOAT_TYPE) || (rhsType != INT_TYPE && rhsType != FLOAT_TYPE))
+        {
+            writeSemanticError("Type mismatch with SUB operation, must be integers or float", yylineno);
+            return 0;
+        }
+
+        TypeValue *lhs;
+        TypeValue *rhs;
+        EntryType compareDataType = static_cast<EntryType>(lhsType);
+        GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+
+        if (lhsType == FLOAT_TYPE || rhsType == FLOAT_TYPE)
+        {
+            $$.type = FLOAT_TYPE;
+            $$.fval = (lhsType == INT_TYPE ? lhs->value.ival : lhs->value.fval) - 
+                    (rhsType == INT_TYPE ? rhs->value.ival : rhs->value.fval);
+            cout << "value: " << $$.fval << endl;
+        }
+        else
+        {
+            $$.type = INT_TYPE;
+            $$.ival = lhs->value.ival - rhs->value.ival;
+            cout << "value: " << $$.ival << endl;
+        }
+
+        stringstream valueStream;
+        if ($$.type == FLOAT_TYPE)
+        {
+            valueStream << $$.fval;
+        }
+        else
+        {
+            valueStream << $$.ival;
+        }
+        string valueStr = valueStream.str();
+
+        printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+        const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
+        const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
+        const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
+        printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+
+        $$.nameRep = strdup(valueStr.c_str());
+
+        assemblyGenerator.addQuadruple("SUB", name1, name2, name);
         }
         | minorTerm
         ;
 
 minorTerm: minorTerm MUL majorTerm       
         {
-            int lhsType = $1.type;
-            int rhsType = $3.type;
-            if ((lhsType != INT_TYPE && lhsType != FLOAT_TYPE) || (rhsType != INT_TYPE && rhsType != FLOAT_TYPE))
-            {
-                writeSemanticError("Type mismatch with MUL operation, must be integers or float", yylineno);
-                return 0;
-            }
-            TypeValue * lhs;
-            TypeValue * rhs;
-            EntryType compareDataType= static_cast<EntryType>(lhsType);
-            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
-            switch(lhsType){
-                case INT_TYPE:
-                    if (rhsType == FLOAT_TYPE)
-                    {
-                        $$.type = FLOAT_TYPE;
-                        $$.fval = lhs->value.ival * rhs->value.fval;
-                    }
-                    else
-                    {
-                        $$.type = INT_TYPE;
-                        $$.ival = lhs->value.ival * rhs->value.ival;
-                    }
-                    break;
-                case FLOAT_TYPE:
-                    $$.type = FLOAT_TYPE;
-                    if (rhsType == INT_TYPE)
-                    {
-                        $$.fval = lhs->value.fval * rhs->value.ival;
-                    }
-                    else
-                    {
-                        $$.fval = lhs->value.fval * rhs->value.fval;
-                    }
-                    break;
-            }
-            string varStr1NameRep = $1.nameRep;
-            string varStr2NameRep = $3.nameRep;
-            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
-            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
-            const char* name = assemblyGenerator.addTempVariable(name1 , "*" , name2);
-            $$.nameRep = concatenateNames(name1 , "*", name2);
-            assemblyGenerator.addQuadruple("MUL", name1, name2, name);
+int lhsType = $1.type;
+    int rhsType = $3.type;
+
+    // Ensure types are either INT_TYPE or FLOAT_TYPE
+    if ((lhsType != INT_TYPE && lhsType != FLOAT_TYPE) || (rhsType != INT_TYPE && rhsType != FLOAT_TYPE))
+    {
+        writeSemanticError("Type mismatch with MUL operation, must be integers or float", yylineno);
+        return 0;
+    }
+
+    TypeValue *lhs;
+    TypeValue *rhs;
+    EntryType compareDataType = static_cast<EntryType>(lhsType);
+    GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+
+    // Calculate the final value based on the types
+    if (lhsType == FLOAT_TYPE || rhsType == FLOAT_TYPE)
+    {
+        $$.type = FLOAT_TYPE;
+        $$.fval = (lhsType == INT_TYPE ? lhs->value.ival : lhs->value.fval) * 
+                  (rhsType == INT_TYPE ? rhs->value.ival : rhs->value.fval);
+        cout << "value: " << $$.fval << endl;
+    }
+    else
+    {
+        $$.type = INT_TYPE;
+        $$.ival = lhs->value.ival * rhs->value.ival;
+        cout << "value: " << $$.ival << endl;
+    }
+
+    // Convert the final value to a string
+    stringstream valueStream;
+    if ($$.type == FLOAT_TYPE)
+    {
+        valueStream << $$.fval;
+    }
+    else
+    {
+        valueStream << $$.ival;
+    }
+    string valueStr = valueStream.str();
+
+    // Print debugging information
+    printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+    const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
+    const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
+    const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
+    printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+
+    // Allocate memory for the final value string and assign it to nameRep
+    $$.nameRep = strdup(valueStr.c_str());
+
+    assemblyGenerator.addQuadruple("MUL", name1, name2, name);
         }
         | minorTerm DIV majorTerm       
         {
             int lhsType = $1.type;
-            int rhsType = $3.type;
-            if ((lhsType != INT_TYPE && lhsType != FLOAT_TYPE) || (rhsType != INT_TYPE && rhsType != FLOAT_TYPE))
-            {
-                writeSemanticError("Type mismatch with DIV operation, must be integers or float", yylineno);
-                return 0;
-            }
-            TypeValue * lhs;
-            TypeValue * rhs;
-            EntryType compareDataType= static_cast<EntryType>(lhsType);
-            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
-            switch(lhsType){
-                case INT_TYPE:
-                    if (rhsType == FLOAT_TYPE)
-                    {
-                        $$.type = FLOAT_TYPE;
-                        $$.fval = lhs->value.ival / rhs->value.fval;
-                    }
-                    else
-                    {
-                        $$.type = INT_TYPE;
-                        $$.ival = lhs->value.ival / rhs->value.ival;
-                    }
-                    break;
-                case FLOAT_TYPE:
-                    $$.type = FLOAT_TYPE;
-                    if (rhsType == INT_TYPE)
-                    {
-                        $$.fval = lhs->value.fval / rhs->value.ival;
-                    }
-                    else
-                    {
-                        $$.fval = lhs->value.fval / rhs->value.fval;
-                    }
-                    break;
-            }
-            string varStr1NameRep = $1.nameRep;
-            string varStr2NameRep = $3.nameRep;
-            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
-            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
-            const char* name = assemblyGenerator.addTempVariable(name1 , "/" , name2);
-            $$.nameRep = concatenateNames(name1 , "/", name2);
-            assemblyGenerator.addQuadruple("DIV", name1, name2, name);
+    int rhsType = $3.type;
+
+    if ((lhsType != INT_TYPE && lhsType != FLOAT_TYPE) || (rhsType != INT_TYPE && rhsType != FLOAT_TYPE))
+    {
+        writeSemanticError("Type mismatch with DIV operation, must be integers or float", yylineno);
+        return 0;
+    }
+
+    TypeValue *lhs;
+    TypeValue *rhs;
+    EntryType compareDataType = static_cast<EntryType>(lhsType);
+    GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+
+    if (lhsType == FLOAT_TYPE || rhsType == FLOAT_TYPE)
+    {
+        $$.type = FLOAT_TYPE;
+        $$.fval = (lhsType == INT_TYPE ? lhs->value.ival : lhs->value.fval) / 
+                  (rhsType == INT_TYPE ? rhs->value.ival : rhs->value.fval);
+        cout << "value: " << $$.fval << endl;
+    }
+    else
+    {
+        $$.type = INT_TYPE;
+        $$.ival = lhs->value.ival / rhs->value.ival;
+        cout << "value: " << $$.ival << endl;
+    }
+
+    stringstream valueStream;
+    if ($$.type == FLOAT_TYPE)
+    {
+        valueStream << $$.fval;
+    }
+    else
+    {
+        valueStream << $$.ival;
+    }
+    string valueStr = valueStream.str();
+
+    printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+    const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
+    const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
+    const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
+    printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+
+    $$.nameRep = strdup(valueStr.c_str());
+
+    assemblyGenerator.addQuadruple("DIV", name1, name2, name);
         }
         | minorTerm MOD majorTerm       
         {
             int lhsType = $1.type;
-            int rhsType = $3.type;
-            if (lhsType != INT_TYPE || rhsType != INT_TYPE)
-            {
-                writeSemanticError("Type mismatch with MOD operation, must be integers", yylineno);
-                return 0;
-            }
-            $$.type = INT_TYPE;
-            $$.ival = $1.ival % $3.ival;
+    int rhsType = $3.type;
 
-            string varStr1NameRep = $1.nameRep;
-            string varStr2NameRep = $3.nameRep;
-            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
-            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
-            const char* name = assemblyGenerator.addTempVariable(name1 , "%" , name2);
-            $$.nameRep = concatenateNames(name1 , "%", name2);
-            assemblyGenerator.addQuadruple("MOD", name1, name2, name);
+    if (lhsType != INT_TYPE || rhsType != INT_TYPE)
+    {
+        writeSemanticError("Type mismatch with MOD operation, must be integers", yylineno);
+        return 0;
+    }
+
+    $$.type = INT_TYPE;
+    $$.ival = $1.ival % $3.ival;
+    cout << "value: " << $$.ival << endl;
+
+    stringstream valueStream;
+    valueStream << $$.ival;
+    string valueStr = valueStream.str();
+
+    printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+    const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
+    const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
+    const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
+    printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+
+    $$.nameRep = strdup(valueStr.c_str());
+
+    assemblyGenerator.addQuadruple("MOD", name1, name2, name);
         }
         | majorTerm
         ;
 
 majorTerm: majorTerm POW instance       
         {
-            int lhsType = $1.type;
-            int rhsType = $3.type;
-            if ((lhsType != INT_TYPE && lhsType != FLOAT_TYPE) || (rhsType != INT_TYPE && rhsType != FLOAT_TYPE))
-            {
-                writeSemanticError("Type mismatch with POW operation, must be integers or float", yylineno);
-                return 0;
-            }
-            TypeValue * lhs;
-            TypeValue * rhs;
-            EntryType compareDataType= static_cast<EntryType>(lhsType);
-            GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
-            switch(lhsType){
-                case INT_TYPE:
-                    if (rhsType == FLOAT_TYPE)
-                    {
-                        $$.type = FLOAT_TYPE;
-                        $$.fval = pow(lhs->value.ival, rhs->value.fval);
-                    }
-                    else
-                    {
-                        $$.type = INT_TYPE;
-                        $$.ival = pow(lhs->value.ival, rhs->value.ival);
-                    }
-                    break;
-                case FLOAT_TYPE:
-                    $$.type = FLOAT_TYPE;
-                    if (rhsType == INT_TYPE)
-                    {
-                        $$.fval = pow(lhs->value.fval, rhs->value.ival);
-                    }
-                    else
-                    {
-                        $$.fval = pow(lhs->value.fval, rhs->value.fval);
-                    }
-                    break;
-            }
+           int lhsType = $1.type;
+    int rhsType = $3.type;
 
-            string varStr1NameRep = $1.nameRep;
-            string varStr2NameRep = $3.nameRep;
-            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
-            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
-            const char* name = assemblyGenerator.addTempVariable(name1 , "^" , name2);
-            $$.nameRep = concatenateNames(name1 , "^", name2);
-            assemblyGenerator.addQuadruple("POW", name1, name2, name);
+    if ((lhsType != INT_TYPE && lhsType != FLOAT_TYPE) || (rhsType != INT_TYPE && rhsType != FLOAT_TYPE))
+    {
+        writeSemanticError("Type mismatch with POW operation, must be integers or float", yylineno);
+        return 0;
+    }
+
+    TypeValue *lhs;
+    TypeValue *rhs;
+    EntryType compareDataType = static_cast<EntryType>(lhsType);
+    GET_TYPE_VALUE(compareDataType, $1, $3, lhs, rhs);
+
+    if (lhsType == FLOAT_TYPE || rhsType == FLOAT_TYPE)
+    {
+        $$.type = FLOAT_TYPE;
+        $$.fval = (lhsType == INT_TYPE ? pow(lhs->value.ival, rhs->value.fval) : pow(lhs->value.fval, (rhsType == INT_TYPE ? rhs->value.ival : rhs->value.fval)));
+        cout << "value: " << $$.fval << endl;
+    }
+    else
+    {
+        $$.type = INT_TYPE;
+        $$.ival = pow(lhs->value.ival, rhs->value.ival);
+        cout << "value: " << $$.ival << endl;
+    }
+
+    stringstream valueStream;
+    if ($$.type == FLOAT_TYPE)
+    {
+        valueStream << $$.fval;
+    }
+    else
+    {
+        valueStream << $$.ival;
+    }
+    string valueStr = valueStream.str();
+
+    printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+    const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
+    const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
+    const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
+    printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+
+    $$.nameRep = strdup(valueStr.c_str());
+
+    assemblyGenerator.addQuadruple("POW", name1, name2, name);
         }
         | instance 
         ;
 
 instance: INTEGER_VALUE 
         { 
+        // printf("Integer: %d\n", $1.ival);
         string valueStr = to_string($1.ival);
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
         assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
@@ -944,6 +1046,7 @@ instance: INTEGER_VALUE
         | IDENTIFIER 
         {
             SymbolTableEntry* newEntry = getIdentifierEntry($1);
+            const char* nameeReg = assemblyGenerator.getRegisterAssignment(newEntry);
             if(newEntry == nullptr){
                 writeSemanticError("Using variable not declared", yylineno);
                 return 0;
@@ -960,6 +1063,7 @@ instance: INTEGER_VALUE
                 case INT_TYPE:
                     $$.ival = newEntry->getTypeValue()->value.ival;
                     valueStr = to_string($$.ival);
+                    // cout << "Value string: " << valueStr << endl;
                     $$.nameRep = strdup(valueStr.c_str());
                     break;
                 case FLOAT_TYPE:
@@ -1215,7 +1319,7 @@ switchValidValue: INTEGER_VALUE
         string valueStr = to_string($1.ival);
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
         assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
-        $$.nameRep = strdup(valueStr.c_str());
+        // $$.nameRep = strdup(valueStr.c_str());
         }
 | CHARACTER 
 { 
