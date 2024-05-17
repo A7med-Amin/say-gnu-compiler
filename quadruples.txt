@@ -1,124 +1,73 @@
 START main
 
-ASSIGN    0           T0    
-ALLOC     k           R0    
+ASSIGN    100         T0    
+ALLOC     SABET       R0    
 ASSIGN    T0          R0    
-ASSIGN    100         T1    
-ALLOC     SABET       R1    
-ASSIGN    T1          R1    
-ALLOC     declaration      R2    
-ASSIGN    5.200000      T2    
-ALLOC     decWith_Assign      R3    
-ASSIGN    T2          R3    
-ASSIGN    0           T3    
-ALLOC     x           R4    
-ASSIGN    T3          R4    
-ASSIGN    10          T4    
-ALLOC     y           R5    
-ASSIGN    T4          R5    
-DIV       T3    T4    T5    
-SUB       T5    T5    T6    
-ALLOC     z           R6    
-ASSIGN    T6          R6    
-ASSIGN    ""          T7    
-ALLOC     str         R7    
-ASSIGN    T7          R7    
-ASSIGN    "Hello World!"      T8    
-ALLOC     ya_welcome      R8    
-ASSIGN    T8          R8    
-ASSIGN    TRUE        T9    
-ALLOC     a           R9    
-ASSIGN    T9          R9    
-ASSIGN    FALSE       T10   
+ALLOC     iresult      R1    
+ASSIGN    15          T1    
+ALLOC     op          R2    
+ASSIGN    T1          R2    
+ASSIGN    10          T2    
+ASSIGN    1           T3    
+ASSIGN    2           T4    
+MUL       T3    T4    T5    
+ADD       T2    T5    T6    
+ASSIGN    5           T7    
+DIV       T1    T7    T8    
+ASSIGN    3           T9    
+ASSIGN    2           T10   
+POW       T8    T10   T11   
+MOD       T8    T11   T12   
+SUB       T6    T12   T13   
+ASSIGN    T11         R1    
+ALLOC     bresult      R3    
+ASSIGN    TRUE        T14   
+ALLOC     bop1        R4    
+ASSIGN    T14         R4    
+ASSIGN    FALSE       T15   
+ALLOC     bop2        R5    
+ASSIGN    T15         R5    
+NOT       T14         T16   
+OR        T14   T15   T17   
+AND       T17   T17   T18   
+LT        T18   T15   T19   
+NEQ       T19   T19   T20   
+OR        T18   T20   T21   
+NOT       T21         T22   
+ASSIGN    T20         R3    
+paramChecker:                  
+ASSIGN    "Gilany"      T23   
+ALLOC     str         R6    
+ASSIGN    4.700000      T24   
+ALLOC     ff          R7    
+ASSIGN    116         T25   
+ALLOC     c           R8    
+ASSIGN    7.500000      T26   
+GT        T24   T26   T27   
+JF        T27         L2    
+ASSIGN    0           T28   
+ALLOC     i           R9    
+ASSIGN    T28         R9    
+ASSIGN    10          T29   
+LT        T28   T2    T30   
+ASSIGN    1           T31   
+ADD       T28   T31   T32   
+L0:                         
+JF        T32         L1    
+ASSIGN    T32         R9    
+ASSIGN    "Teftker hadrab"      T33   
+ASSIGN    3.500000      T34   
+ASSIGN    d           T35   
 ALLOC     b           R10   
-ASSIGN    T10         R10   
-ALLOC     iresult      R11   
-ALLOC     fresult      R12   
-ASSIGN    15          T11   
-ALLOC     op1         R13   
-ASSIGN    T11         R13   
-ASSIGN    6           T12   
-ALLOC     op2         R14   
-ASSIGN    T12         R14   
-ASSIGN    6.800000      T13   
-ADD       T11   T13   T14   
-ASSIGN    T14         R12   
-ADD       T11   T12   T15   
-ASSIGN    T15         R11   
-ASSIGN    6.800000      T16   
-SUB       T11   T13   T17   
-ASSIGN    T17         R12   
-SUB       T11   T12   T18   
-ASSIGN    T18         R11   
-ASSIGN    6.800000      T19   
-MUL       T11   T19   T20   
-ASSIGN    T20         R12   
-MUL       T11   T12   T21   
-ASSIGN    T21         R11   
-ASSIGN    6.800000      T22   
-DIV       T11   T19   T23   
-ASSIGN    T23         R12   
-DIV       T11   T12   T24   
-ASSIGN    T24         R11   
-MOD       T11   T12   T25   
-ASSIGN    T25         R11   
-ASSIGN    6.800000      T26   
-POW       T11   T26   T27   
-ASSIGN    T27         R12   
-POW       T11   T12   T28   
-ASSIGN    T28         R11   
-ASSIGN    T11         R11   
-ASSIGN    6           T29   
-ALLOC     Gilany      R15   
-ASSIGN    T12         R15   
-INC       T12         T30   
-ALLOC     Amin        R16   
-ASSIGN    T30         R16   
-DEC       T12         T31   
-ALLOC     seif        R17   
-ASSIGN    T31         R17   
-ASSIGN    10          T32   
-ASSIGN    1           T33   
-ASSIGN    2           T34   
-MUL       T33   T34   T35   
-ADD       T32   T35   T36   
-ASSIGN    10          T37   
-ASSIGN    5           T38   
-DIV       T37   T38   T39   
-ASSIGN    3           T40   
-ASSIGN    2           T41   
-POW       T40   T41   T42   
-MOD       T41   T42   T43   
-SUB       T36   T41   T44   
-ASSIGN    T44         R11   
-ALLOC     bresult      R18   
-ASSIGN    TRUE        T45   
-ALLOC     bolo1       R19   
-ASSIGN    T45         R19   
-ASSIGN    FALSE       T46   
-ALLOC     bolo2       R20   
-ASSIGN    T46         R20   
-AND       T45   T45   T47   
-ASSIGN    T45         R18   
-NOT       T45         T48   
-ASSIGN    T46         R18   
-EQU       T11   T12   T49   
-ASSIGN    T46         R18   
-NEQ       T11   T12   T50   
-ASSIGN    T50         R18   
-GT        T11   T12   T51   
-LT        T11   T12   T52   
-AND       T50   T46   T53   
-ASSIGN    T46         R18   
-GTE       T11   T12   T54   
-ASSIGN    T50         R18   
-LTE       T11   T12   T55   
-ASSIGN    T46         R18   
-NOT       T50         T56   
-OR        T50   T46   T57   
-AND       T50   T50   T58   
-LT        T58   T46   T59   
-NEQ       T59   T59   T60   
-OR        T47   T60   T61   
-NOT       T61         T62   
-ASSIGN    T60         R18   
+ASSIGN    T32         R10   
+JMP                   L0    
+L1:                         
+ASSIGN    8           T36   
+L2:                         
+ASSIGN    4.120000      T37   
+LT        T24   T37   T38   
+JF        T38         L3    
+ASSIGN    0           T39   
+L3:                         
+ASSIGN    10          T40   
+RET                         
