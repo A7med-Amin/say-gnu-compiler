@@ -209,6 +209,7 @@ if((i>8 && i < 9) || (i!=8 && i <= 9) && i == 9){
 
 char coco = 'a';
 float j;
+
 switch(coco){ 
     case 'b':{ 
         j = 9.0; 
@@ -222,6 +223,28 @@ switch(coco){
         j = 9.0; 
     }
     break;
+}
+
+//MAGNONA:   COMBO EXPRESSION TEST
+for (int k = 0; k < 20; k++)
+{
+    for (int i = 0; i < 20; i++)
+    {
+        switch(coco){ 
+        case 'b':{ 
+            j = 9.0; 
+        }
+        break; 
+        case 'p':{ 
+            j = 9.0; 
+        }
+        break; 
+        default:{ 
+            j = 9.0; 
+        }
+        break;
+        }
+    }
 }
 
 
