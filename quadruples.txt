@@ -1,11 +1,16 @@
 START main
 
-ASSIGN    TRUE        T0    
-ALLOC     x           R0    
+ASSIGN    9           T0    
+ALLOC     y           R0    
 ASSIGN    T0          R0    
-ASSIGN    FALSE       T1    
-ALLOC     y           R1    
-ASSIGN    T1          R1    
-OR        T0    T1    T2    
-ALLOC     z           R2    
-ASSIGN    T2          R2    
+ASSIGN    3           T1    
+ADD       T1    T0    T2    
+ALLOC     x           R1    
+ASSIGN    T2          R1    
+paramChecker:                  
+ASSIGN    4           T3    
+ALLOC     y           R2    
+ALLOC     x           R3    
+ASSIGN    T3          R3    
+ASSIGN    0           T4    
+RET                         

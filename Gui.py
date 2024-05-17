@@ -8,24 +8,41 @@ class TextEditor:
     def __init__(self, master):
         self.master = master
         self.master.title("SAY COMPILER")
-        self.master.geometry("800x600")
+        self.master.geometry("1920x1080")
         self.master.configure(background="#f0f0f0")
-        self.dark_theme = False
+        self.dark_theme = True
+        self.first_build = True 
 
         self.create_widgets()
         self.create_menu()
         self.create_shortcuts()
 
+        self.build_project()
+
+
     def create_widgets(self):
+          # Add title label
+        title_label = tk.Label(
+            self.master,
+            text="كومبايل و عالنبي صلي",
+            bg="#333",
+            fg="white",
+            font=("Raleway", 24, "bold"),
+            pady=10
+        )
+        title_label.pack(side=tk.TOP, anchor="n")
+
         self.text = scrolledtext.ScrolledText(
             self.master,
             wrap=tk.WORD,
             bg="white",
             fg="#333",
-            font=("Arial", 12),
+            font=("Raleway", 12, "bold"),
             insertbackground="#333",
         )
         self.text.pack(expand=True, fill="both", padx=20, pady=(10, 0))
+        self.text.configure(yscrollcommand=self.scroll_both)
+
 
         save_button = tk.Button(
             self.master,
@@ -33,7 +50,7 @@ class TextEditor:
             command=self.save_file,
             bg="#4CAF50",
             fg="white",
-            font=("Arial", 12),
+            font=("Raleway", 12, "bold"),
             padx=10,
             pady=5,
             bd=0,
@@ -48,7 +65,7 @@ class TextEditor:
             command=self.run_code,
             bg="#2196F3",
             fg="white",
-            font=("Arial", 12),
+            font=("Raleway", 12, "bold"),
             padx=10,
             pady=5,
             bd=0,
@@ -62,7 +79,7 @@ class TextEditor:
             wrap=tk.WORD,
             bg="white",
             fg="#333",
-            font=("Arial", 12),
+            font=("Raleway", 12, "bold"),
             insertbackground="#333",
         )
         self.output_text.pack(expand=True, fill="both", padx=20, pady=(10, 0))
@@ -86,7 +103,7 @@ class TextEditor:
         menubar.add_cascade(label="Edit", menu=edit_menu)
         edit_menu.add_command(label="Cut", accelerator="Ctrl+X", command=self.cut)
         edit_menu.add_command(label="Copy", accelerator="Ctrl+C", command=self.copy)
-        edit_menu.add_command(label="Paste", accelerator="Ctrl+V", command=self.paste)
+        # edit_menu.add_command(label="Paste", accelerator="Ctrl+V", command=self.paste)
 
         view_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="View", menu=view_menu)
@@ -134,15 +151,19 @@ class TextEditor:
     def copy(self):
         self.text.event_generate("<<Copy>>")
 
-    def paste(self):
-        self.text.event_generate("<<Paste>>")
+    # def paste(self):
+    #     self.text.event_generate("<<Paste>>")
+
+    def build_project(self):
+        subprocess.run(["make", "build"])
 
     def run_code(self):
+        self.output_text.delete("1.0", tk.END)
+
         script_path = "gui.txt"
         with open(script_path, "w") as file:
             file.write(self.text.get("1.0", tk.END).strip())
 
-        subprocess.run(["make", "build"])
         build_output = subprocess.run(["make", "gui"], capture_output=True, text=True)
 
         syntax_error_file = "syntax_error.txt"
@@ -181,6 +202,20 @@ class TextEditor:
         self.output_text.tag_config("warning", foreground="#FFC107")
         self.output_text.tag_config("error", foreground="red")
 
+    # def update_line_numbers(self, event=None):
+    #     self.line_numbers.config(state="normal")
+    #     self.line_numbers.delete("1.0", "end")
+
+    #     line_count = int(self.text.index("end-1c").split(".")[0])
+    #     line_numbers_string = "\n".join(str(i) for i in range(1, line_count + 1))
+        
+    #     self.line_numbers.insert("1.0", "\n" + line_numbers_string)  # Add newline at the beginning
+    #     self.line_numbers.config(state="disabled")
+
+    def scroll_both(self, *args):
+        self.text.yview(*args)
+        self.line_numbers.yview(*args)
+        self.update_line_numbers()
 
 if __name__ == "__main__":
     root = tk.Tk()

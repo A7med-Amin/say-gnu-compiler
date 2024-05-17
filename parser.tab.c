@@ -584,15 +584,15 @@ static const yytype_uint16 yyrline[] =
      250,   251,   252,   253,   254,   258,   258,   258,   258,   258,
      260,   261,   270,   281,   288,   295,   302,   309,   316,   326,
      326,   328,   335,   341,   371,   410,   443,   476,   509,   542,
-     568,   594,   620,   651,   681,   711,   741,   744,   795,   846,
-     849,   905,   956,   985,   988,  1038,  1041,  1049,  1056,  1057,
-    1115,  1116,  1135,  1179,  1195,  1198,  1250,  1290,  1299,  1306,
-    1298,  1312,  1311,  1321,  1324,  1326,  1330,  1333,  1330,  1337,
-    1338,  1338,  1341,  1348,  1358,  1358,  1360,  1362,  1366,  1367,
-    1368,  1371,  1372,  1373,  1377,  1381,  1376,  1386,  1388,  1386,
-    1394,  1393,  1425,  1424,  1458,  1457,  1480,  1479,  1502,  1502,
-    1504,  1517,  1558,  1570,  1584,  1598,  1597,  1647,  1689,  1688,
-    1713,  1729,  1743,  1760,  1764
+     568,   594,   620,   651,   681,   711,   741,   744,   796,   847,
+     850,   906,   957,   986,   989,  1039,  1042,  1050,  1057,  1058,
+    1116,  1117,  1136,  1180,  1196,  1199,  1251,  1291,  1300,  1307,
+    1299,  1313,  1312,  1322,  1325,  1327,  1331,  1334,  1331,  1338,
+    1339,  1339,  1342,  1349,  1359,  1359,  1361,  1363,  1367,  1368,
+    1369,  1372,  1373,  1374,  1378,  1382,  1377,  1387,  1389,  1387,
+    1395,  1394,  1426,  1425,  1459,  1458,  1481,  1480,  1503,  1503,
+    1505,  1522,  1566,  1578,  1592,  1606,  1605,  1655,  1697,  1696,
+    1721,  1737,  1751,  1768,  1772
 };
 #endif
 
@@ -2471,6 +2471,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 745 "Parser.y"
     {
+            cout << " ------------- ADD -------------" << endl;
         int lhsType = (yyvsp[(1) - (3)].actualValue).type;
         int rhsType = (yyvsp[(3) - (3)].actualValue).type;
 
@@ -2525,7 +2526,7 @@ yyreduce:
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 796 "Parser.y"
+#line 797 "Parser.y"
     {
         int lhsType = (yyvsp[(1) - (3)].actualValue).type;
         int rhsType = (yyvsp[(3) - (3)].actualValue).type;
@@ -2581,7 +2582,7 @@ yyreduce:
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 850 "Parser.y"
+#line 851 "Parser.y"
     {
 int lhsType = (yyvsp[(1) - (3)].actualValue).type;
     int rhsType = (yyvsp[(3) - (3)].actualValue).type;
@@ -2642,7 +2643,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 906 "Parser.y"
+#line 907 "Parser.y"
     {
             int lhsType = (yyvsp[(1) - (3)].actualValue).type;
     int rhsType = (yyvsp[(3) - (3)].actualValue).type;
@@ -2698,7 +2699,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 957 "Parser.y"
+#line 958 "Parser.y"
     {
             int lhsType = (yyvsp[(1) - (3)].actualValue).type;
     int rhsType = (yyvsp[(3) - (3)].actualValue).type;
@@ -2732,7 +2733,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 64:
 
 /* Line 1455 of yacc.c  */
-#line 989 "Parser.y"
+#line 990 "Parser.y"
     {
            int lhsType = (yyvsp[(1) - (3)].actualValue).type;
     int rhsType = (yyvsp[(3) - (3)].actualValue).type;
@@ -2787,7 +2788,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 66:
 
 /* Line 1455 of yacc.c  */
-#line 1042 "Parser.y"
+#line 1043 "Parser.y"
     { 
         // printf("Integer: %d\n", $1.ival);
         string valueStr = to_string((yyvsp[(1) - (1)].actualValue).ival);
@@ -2800,7 +2801,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 67:
 
 /* Line 1455 of yacc.c  */
-#line 1050 "Parser.y"
+#line 1051 "Parser.y"
     { 
         string valueStr = to_string((yyvsp[(1) - (1)].actualValue).fval);
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
@@ -2812,7 +2813,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 69:
 
 /* Line 1455 of yacc.c  */
-#line 1058 "Parser.y"
+#line 1059 "Parser.y"
     {
             cout << "Identifier: " << (yyvsp[(1) - (1)].stringVal) << endl;
             SymbolTableEntry* newEntry = getIdentifierEntry((yyvsp[(1) - (1)].stringVal));
@@ -2875,14 +2876,14 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 1115 "Parser.y"
+#line 1116 "Parser.y"
     {(yyval.actualValue) = (yyvsp[(2) - (3)].actualValue);;}
     break;
 
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 1117 "Parser.y"
+#line 1118 "Parser.y"
     {
             TypeValue * lhs;
             int lhsType = (yyvsp[(2) - (2)].actualValue).type;
@@ -2903,7 +2904,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 1136 "Parser.y"
+#line 1137 "Parser.y"
     {
             SymbolTableEntry* newEntry = getIdentifierEntry((yyvsp[(1) - (3)].stringVal));
             if(newEntry == nullptr){
@@ -2950,7 +2951,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 1180 "Parser.y"
+#line 1181 "Parser.y"
     {
             SymbolTableEntry* newEntry = identifierScopeCheck((yyvsp[(2) - (3)].stringVal));
             if(newEntry != nullptr){
@@ -2971,7 +2972,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 1199 "Parser.y"
+#line 1200 "Parser.y"
     {
             SymbolTableEntry* newEntry = identifierScopeCheck((yyvsp[(2) - (5)].stringVal));
 
@@ -3026,7 +3027,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 1251 "Parser.y"
+#line 1252 "Parser.y"
     {
             SymbolTableEntry* newEntry = identifierScopeCheck((yyvsp[(3) - (6)].stringVal));
             if(newEntry != nullptr){
@@ -3071,7 +3072,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 1291 "Parser.y"
+#line 1292 "Parser.y"
     {
             writeSemanticError("Constant variable not initialized ", yylineno);
             return 0;
@@ -3081,7 +3082,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 1299 "Parser.y"
+#line 1300 "Parser.y"
     {
             if ((yyvsp[(3) - (3)].actualValue).type != BOOL_TYPE)
             {
@@ -3094,14 +3095,14 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 1306 "Parser.y"
+#line 1307 "Parser.y"
     { assemblyGenerator.endScope(ifScope);;}
     break;
 
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 1312 "Parser.y"
+#line 1313 "Parser.y"
     {
             if ((yyvsp[(5) - (5)].actualValue).type != BOOL_TYPE)
             {
@@ -3114,7 +3115,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 1319 "Parser.y"
+#line 1320 "Parser.y"
     { 
             assemblyGenerator.endScope(elseIfScope); ;}
     break;
@@ -3122,7 +3123,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 84:
 
 /* Line 1455 of yacc.c  */
-#line 1324 "Parser.y"
+#line 1325 "Parser.y"
     { 
         assemblyGenerator.endScope(elseScope);;}
     break;
@@ -3130,7 +3131,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 86:
 
 /* Line 1455 of yacc.c  */
-#line 1330 "Parser.y"
+#line 1331 "Parser.y"
     {createNewSymbolTable();
     assemblyGenerator.startScope();
 
@@ -3140,21 +3141,21 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 87:
 
 /* Line 1455 of yacc.c  */
-#line 1333 "Parser.y"
+#line 1334 "Parser.y"
     {scopeEnd();;}
     break;
 
   case 90:
 
 /* Line 1455 of yacc.c  */
-#line 1338 "Parser.y"
+#line 1339 "Parser.y"
     {assemblyGenerator.endScope(caseScope);;}
     break;
 
   case 92:
 
 /* Line 1455 of yacc.c  */
-#line 1342 "Parser.y"
+#line 1343 "Parser.y"
     { 
         string valueStr = to_string((yyvsp[(1) - (1)].actualValue).ival);
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
@@ -3166,7 +3167,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 93:
 
 /* Line 1455 of yacc.c  */
-#line 1349 "Parser.y"
+#line 1350 "Parser.y"
     { 
         string valueStr = to_string((yyvsp[(1) - (1)].actualValue).cval);
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
@@ -3178,7 +3179,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 94:
 
 /* Line 1455 of yacc.c  */
-#line 1358 "Parser.y"
+#line 1359 "Parser.y"
     {
                 assemblyGenerator.endScope(defaultScope);;}
     break;
@@ -3186,7 +3187,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 96:
 
 /* Line 1455 of yacc.c  */
-#line 1360 "Parser.y"
+#line 1361 "Parser.y"
     {
                 assemblyGenerator.endScope(defaultScope);;}
     break;
@@ -3194,7 +3195,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 104:
 
 /* Line 1455 of yacc.c  */
-#line 1377 "Parser.y"
+#line 1378 "Parser.y"
     {
     printf("**************** Scope Block ****************\n");
     createNewSymbolTable();
@@ -3205,7 +3206,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 105:
 
 /* Line 1455 of yacc.c  */
-#line 1381 "Parser.y"
+#line 1382 "Parser.y"
     {
     scopeEnd();
 ;}
@@ -3214,7 +3215,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 107:
 
 /* Line 1455 of yacc.c  */
-#line 1386 "Parser.y"
+#line 1387 "Parser.y"
     {
             assemblyGenerator.startScope();
 ;}
@@ -3223,14 +3224,14 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 108:
 
 /* Line 1455 of yacc.c  */
-#line 1388 "Parser.y"
+#line 1389 "Parser.y"
     {scopeEnd();;}
     break;
 
   case 110:
 
 /* Line 1455 of yacc.c  */
-#line 1394 "Parser.y"
+#line 1395 "Parser.y"
     {
             string functionName = string((yyvsp[(2) - (3)].stringVal)) + ":";
             assemblyGenerator.addQuadruple(functionName, "", "", "");
@@ -3254,7 +3255,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 111:
 
 /* Line 1455 of yacc.c  */
-#line 1412 "Parser.y"
+#line 1413 "Parser.y"
     {
             printf("**************** Function1 ****************\n");
             if(functionHasReturn == false){
@@ -3272,7 +3273,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 112:
 
 /* Line 1455 of yacc.c  */
-#line 1425 "Parser.y"
+#line 1426 "Parser.y"
     {
             string functionName = string((yyvsp[(2) - (3)].stringVal)) + ":";
             assemblyGenerator.addQuadruple(functionName, "", "", "");
@@ -3297,7 +3298,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 113:
 
 /* Line 1455 of yacc.c  */
-#line 1444 "Parser.y"
+#line 1445 "Parser.y"
     {
             if(functionHasReturn == false){
                 writeSemanticWarning("Function must return a value", yylineno);
@@ -3316,7 +3317,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 114:
 
 /* Line 1455 of yacc.c  */
-#line 1458 "Parser.y"
+#line 1459 "Parser.y"
     {
             string functionName = string((yyvsp[(2) - (3)].stringVal)) + ":";
             assemblyGenerator.addQuadruple(functionName, "", "", "");
@@ -3338,7 +3339,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 115:
 
 /* Line 1455 of yacc.c  */
-#line 1473 "Parser.y"
+#line 1474 "Parser.y"
     {scopeEnd(); currentFunction = nullptr;
                     assemblyGenerator.endScope(funcScope);
                     assemblyGenerator.addQuadruple("ENDFUNC", "", "", "");
@@ -3350,7 +3351,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 116:
 
 /* Line 1455 of yacc.c  */
-#line 1480 "Parser.y"
+#line 1481 "Parser.y"
     {
             string functionName = string((yyvsp[(2) - (3)].stringVal)) + ":";
             assemblyGenerator.addQuadruple(functionName, "", "", "");
@@ -3372,7 +3373,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 117:
 
 /* Line 1455 of yacc.c  */
-#line 1495 "Parser.y"
+#line 1496 "Parser.y"
     {scopeEnd(); currentFunction = nullptr;
                     assemblyGenerator.endScope(funcScope);
                     assemblyGenerator.addQuadruple("ENDFUNC", "", "", "");
@@ -3383,7 +3384,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 120:
 
 /* Line 1455 of yacc.c  */
-#line 1505 "Parser.y"
+#line 1506 "Parser.y"
     {
             SymbolTableEntry *newEntry = identifierScopeCheck((yyvsp[(2) - (2)].stringVal));
             if(newEntry != nullptr){
@@ -3394,14 +3395,18 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
             EntryType paramType = static_cast<EntryType>((yyvsp[(1) - (2)].lexType));
             idTypeValue->type = paramType;
             currentFunction->pushFunctionInput(paramType);
-            addEntryToCurrentTable((yyvsp[(2) - (2)].stringVal), PAR, idTypeValue, true);
+            SymbolTableEntry * entry = addEntryToCurrentTable((yyvsp[(2) - (2)].stringVal), PAR, idTypeValue, true);
+
+             const char* name = assemblyGenerator.assignRegister(entry);
+            assemblyGenerator.addQuadruple("ALLOC",(yyvsp[(2) - (2)].stringVal),"",name);
+            
         ;}
     break;
 
   case 121:
 
 /* Line 1455 of yacc.c  */
-#line 1518 "Parser.y"
+#line 1523 "Parser.y"
     {
             SymbolTableEntry *newEntry = identifierScopeCheck((yyvsp[(2) - (4)].stringVal));
             if(newEntry != nullptr){
@@ -3436,14 +3441,17 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
                     idTypeValue->value.cval = (yyvsp[(4) - (4)].actualValue).cval;
                     break;
             }
-            addEntryToCurrentTable((yyvsp[(2) - (4)].stringVal), PAR, idTypeValue, true);
+            SymbolTableEntry * entry = addEntryToCurrentTable((yyvsp[(2) - (4)].stringVal), PAR, idTypeValue, true);
+             const char* name = assemblyGenerator.assignRegister(entry);
+            assemblyGenerator.addQuadruple("ALLOC",(yyvsp[(2) - (4)].stringVal),"",name);
+            
         ;}
     break;
 
   case 122:
 
 /* Line 1455 of yacc.c  */
-#line 1559 "Parser.y"
+#line 1567 "Parser.y"
     {
             if (currentFunction == nullptr)
             {
@@ -3460,7 +3468,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 123:
 
 /* Line 1455 of yacc.c  */
-#line 1571 "Parser.y"
+#line 1579 "Parser.y"
     {
             if (currentFunction == nullptr)
             {
@@ -3478,7 +3486,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 124:
 
 /* Line 1455 of yacc.c  */
-#line 1584 "Parser.y"
+#line 1592 "Parser.y"
     {
             if (currentFunction == nullptr)
             {
@@ -3495,7 +3503,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 125:
 
 /* Line 1455 of yacc.c  */
-#line 1598 "Parser.y"
+#line 1606 "Parser.y"
     {
             // Enter func args
             SymbolTableEntry *entry = getIdentifierEntry((yyvsp[(1) - (2)].stringVal));
@@ -3516,7 +3524,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 126:
 
 /* Line 1455 of yacc.c  */
-#line 1613 "Parser.y"
+#line 1621 "Parser.y"
     {
             // End of func call
             if(functionParameters.size() != 0)
@@ -3556,7 +3564,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 127:
 
 /* Line 1455 of yacc.c  */
-#line 1648 "Parser.y"
+#line 1656 "Parser.y"
     {
             SymbolTableEntry *entry = getIdentifierEntry((yyvsp[(1) - (3)].stringVal));
             if(entry == nullptr){
@@ -3600,7 +3608,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 128:
 
 /* Line 1455 of yacc.c  */
-#line 1689 "Parser.y"
+#line 1697 "Parser.y"
     { 
             // Enter func args
             SymbolTableEntry *entry = getIdentifierEntry((yyvsp[(1) - (2)].stringVal));
@@ -3621,7 +3629,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 129:
 
 /* Line 1455 of yacc.c  */
-#line 1705 "Parser.y"
+#line 1713 "Parser.y"
     {
             // End of func call
             if(functionParameters.size() != 0)
@@ -3635,7 +3643,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 130:
 
 /* Line 1455 of yacc.c  */
-#line 1714 "Parser.y"
+#line 1722 "Parser.y"
     {
             SymbolTableEntry *entry = getIdentifierEntry((yyvsp[(1) - (3)].stringVal));
             if(entry == nullptr){
@@ -3654,7 +3662,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 131:
 
 /* Line 1455 of yacc.c  */
-#line 1730 "Parser.y"
+#line 1738 "Parser.y"
     {
             if(functionParameters.size() == 0)
             {
@@ -3673,7 +3681,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 132:
 
 /* Line 1455 of yacc.c  */
-#line 1744 "Parser.y"
+#line 1752 "Parser.y"
     {
             if(functionParameters.size() == 0)
             {
@@ -3692,7 +3700,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
   case 133:
 
 /* Line 1455 of yacc.c  */
-#line 1761 "Parser.y"
+#line 1769 "Parser.y"
     {
             printf("========  PRINT SUCCESSFUL ***********\n");
         ;}
@@ -3701,7 +3709,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
 
 
 /* Line 1455 of yacc.c  */
-#line 3705 "Parser.tab.c"
+#line 3713 "Parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -3913,7 +3921,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 1769 "Parser.y"
+#line 1777 "Parser.y"
 
 
 /* Part 3: Subroutines */

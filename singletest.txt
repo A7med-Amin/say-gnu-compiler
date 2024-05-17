@@ -1,5 +1,8 @@
-bool x = true;
-bool y = false;
 
-bool z  = x || y;
+int y = 9;
+int x = 3 + y;
 
+int paramChecker(int y = 4){
+    int x  = y;
+    return 0;
+}

@@ -743,6 +743,7 @@ arithmetic: IDENTIFIER INC
 
 complexArithmetic: complexArithmetic ADD minorTerm       
         {
+            cout << " ------------- ADD -------------" << endl;
         int lhsType = $1.type;
         int rhsType = $3.type;
 
@@ -1512,7 +1513,11 @@ Arg: dataType IDENTIFIER
             EntryType paramType = static_cast<EntryType>($1);
             idTypeValue->type = paramType;
             currentFunction->pushFunctionInput(paramType);
-            addEntryToCurrentTable($2, PAR, idTypeValue, true);
+            SymbolTableEntry * entry = addEntryToCurrentTable($2, PAR, idTypeValue, true);
+
+             const char* name = assemblyGenerator.assignRegister(entry);
+            assemblyGenerator.addQuadruple("ALLOC",$2,"",name);
+            
         }
         | dataType IDENTIFIER ASSIGN constantValue 
         {
@@ -1549,7 +1554,10 @@ Arg: dataType IDENTIFIER
                     idTypeValue->value.cval = $4.cval;
                     break;
             }
-            addEntryToCurrentTable($2, PAR, idTypeValue, true);
+            SymbolTableEntry * entry = addEntryToCurrentTable($2, PAR, idTypeValue, true);
+             const char* name = assemblyGenerator.assignRegister(entry);
+            assemblyGenerator.addQuadruple("ALLOC",$2,"",name);
+            
         }  
         ;
 
