@@ -134,9 +134,9 @@ The provided YACC file is part of a project that includes a parser for a program
 
 ## Authors
 
-- **Yousef Mahmoud Gilany** - 4200342
-- **Seif Mohamed Al Baghdady** - 1190119
-- **Ahmed Ameen Sayed** - 1190071
+- **Yousef Mahmoud Gilany** 
+- **Seif Mohamed Al Baghdady** 
+- **Ahmed Ameen Sayed** 
 
 ## University
 
