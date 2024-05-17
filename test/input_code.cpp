@@ -9,23 +9,36 @@ comment
 /*
     ======================================== DECLARATIONS AND ASSIGNMENTS ================================================
 */
+const int SABET = 100;
 int declaration;
 float decWith_Assign=5.2;
 int x = 0;
 int y = 10;
 int z = x / y - x;
+string ya_welcome = "Hello World!";
 bool a = true;
 bool b = false;
 // bool c = a && b;
 
 /*
+    ======================================== ARITHMETIC ================================================
+*/
+int result;
+int op1 = 5;
+int op2 = 6;
+result = op1 + op2;
+
+
+/*
     ======================================== BLOCK SCOPES ================================================
 */
 {
+    int x = 5;
     {
         int x = 10;
         int y = 20;
     }
+    y = 30;
 }
 x = y;
 
@@ -33,10 +46,10 @@ x = y;
     ======================================== FUNCTIONS ================================================
 */
 
-// int sum(int x, int y)
-// {
-//   return x + y;
-// }
+int sum(int x, int y)
+{
+  return x + y;
+}
 
 void fun(){
     int res;
@@ -81,7 +94,7 @@ void fun(){
 
 void main()
 {
-//   int a = sum(10, 20);
+  int a = sum(10, 20);
   fun();
 //   a = paramChecker("seif", 3.5,'d');
 // a = returnChecker("seif", 3.5,'d');
@@ -157,6 +170,9 @@ repeat
 
 // int x = 10;                                  // ERROR: REDECLARATION OF x   
 // float fof = fun();                          // ERROR: FUNCTION RETURN TYPE MISMATCH OF TYPE VOID
+// const int CONSO;                           // ERROR: CONSTANT DECLARATION WITHOUT INITIALIZATION
+// SABET = 10;                               // ERROR: CONSTANT CAN NOT BE CHANGED
+// undeclared = 4.6;                        // ERROR: UNDECLARED VARIABLE
 
 // ********** SYNTAX ERRORS **********
 
