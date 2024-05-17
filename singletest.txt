@@ -1,7 +1,4 @@
 int x = 8;
+int y = 2;
 
-for(x = 10; x>0; x--){
-    int u = 9;
-}
-
-int y = 00;
+bool i = !true || false;

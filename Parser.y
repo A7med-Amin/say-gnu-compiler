@@ -551,16 +551,16 @@ boolean: BOOLEAN_TRUE
     $$.type = BOOL_TYPE;
     $$.bval = !$2.bval;
 
-    string valueStr = $$.bval ? "true" : "false";
+   string valueStr = $$.bval ? "true" : "false";
 
-    printf("varStr1NameRep: %s\n", $2.nameRep);
-    const char* name1 = assemblyGenerator.getTempVariable($2.nameRep);
-    const char* name = assemblyGenerator.addTempVariable("!", name1, "");
-    printf("name1: %s, name: %s\n", name1, name);
+            printf("varStr1NameRep: %s \n", $2.nameRep);
+            const char* name1 = assemblyGenerator.getTempVariable($2.nameRep);
+            const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
+            printf("name1: %s, name: %s\n", name1, name);
 
-    $$.nameRep = strdup(valueStr.c_str());
+            $$.nameRep = strdup(valueStr.c_str());
 
-    assemblyGenerator.addQuadruple("NOT", name1, "", name);
+            assemblyGenerator.addQuadruple("NOT", name1, "", name);
 
             
         }
@@ -568,20 +568,26 @@ boolean: BOOLEAN_TRUE
         {
             int lhsType = $1.type;
             int rhsType = $3.type;
+
             if (lhsType != BOOL_TYPE || rhsType != BOOL_TYPE)
             {
                 writeSemanticError("Type mismatch with AND operation, types must be boolean", yylineno);
                 return 0;
             }
+
             $$.type = BOOL_TYPE;
             $$.bval = $1.bval && $3.bval;
 
-            string varStr1NameRep = $1.nameRep;
-            string varStr2NameRep = $3.nameRep;
-            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
-            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
-            const char* name = assemblyGenerator.addTempVariable(name1 , "&&" , name2);
-            $$.nameRep = concatenateNames(name1 , "&&", name2);
+            string valueStr = $$.bval ? "true" : "false";
+
+            printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+            const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
+            const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
+            const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
+            printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+
+            $$.nameRep = strdup(valueStr.c_str());
+
             assemblyGenerator.addQuadruple("AND", name1, name2, name);
         }
         | expression OR expression
@@ -596,12 +602,16 @@ boolean: BOOLEAN_TRUE
             $$.type = BOOL_TYPE;
             $$.bval = $1.bval || $3.bval;
 
-            string varStr1NameRep = $1.nameRep;
-            string varStr2NameRep = $3.nameRep;
-            const char* name1 = assemblyGenerator.getTempVariable(varStr1NameRep);
-            const char* name2 = assemblyGenerator.getTempVariable(varStr2NameRep);
-            const char* name = assemblyGenerator.addTempVariable(name1 , "&&" , name2);
-            $$.nameRep = concatenateNames(name1 , "||", name2);
+            string valueStr = $$.bval ? "true" : "false";
+
+            printf("varStr1NameRep: %s, varStr2NameRep: %s \n", $1.nameRep, $3.nameRep);
+            const char* name1 = assemblyGenerator.getTempVariable($1.nameRep);
+            const char* name2 = assemblyGenerator.getTempVariable($3.nameRep);
+            const char* name = assemblyGenerator.addTempVariable(valueStr, "", "");
+            printf("name1: %s, name2: %s, name: %s\n", name1, name2, name);
+
+            $$.nameRep = strdup(valueStr.c_str());
+
             assemblyGenerator.addQuadruple("OR", name1, name2, name);
         }
         ; 
