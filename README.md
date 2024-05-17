@@ -8,7 +8,7 @@
 ## How to run
 #### make all   (Run compiler with terminal)
 #### make runinputcode   (Run compiler on test file)
-#### you can use GUI that makes the following commands for you and allows you to use text editor to write you code
+#### you can use GUI that makes the following commands for you and allows you to use text editor to write your code
 
 
 The SAY Compiler Project involves the development of a YACC (Yet Another Compiler Compiler) parser for a custom programming language. YACC is utilized to generate syntax analyzers for compilers. The parser defined in this project includes rules and actions for handling various constructs such as:
