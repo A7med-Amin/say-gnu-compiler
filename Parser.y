@@ -308,14 +308,14 @@ constantValue: INTEGER_VALUE
 } 
 | BOOLEAN_TRUE 
 { 
-        string valueStr = "TRUE";
+        string valueStr = "true";
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
         assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
         $$.nameRep = strdup(valueStr.c_str());
 } 
 | BOOLEAN_FALSE
 { 
-        string valueStr = "FALSE";
+        string valueStr = "false";
         const char* name = assemblyGenerator.addTempVariable(valueStr , "" , "");
         assemblyGenerator.addQuadruple("ASSIGN", valueStr, "", name);
         $$.nameRep = strdup(valueStr.c_str());
@@ -327,15 +327,16 @@ expression: arithmetic | boolean ;
 
 boolean: BOOLEAN_TRUE
         {
-            const char* name = assemblyGenerator.addTempVariable("TRUE" , "" , "");
+            cout << "BOOLEAN_TRUE\n";
+            const char* name = assemblyGenerator.addTempVariable("true" , "" , "");
             assemblyGenerator.addQuadruple("ASSIGN", "TRUE", "", name);
-            $$.nameRep = strdup("TRUE");
+            $$.nameRep = strdup("true");
         }
         | BOOLEAN_FALSE 
         {
-        const char* name = assemblyGenerator.addTempVariable("FALSE" , "" , "");
+        const char* name = assemblyGenerator.addTempVariable("false" , "" , "");
         assemblyGenerator.addQuadruple("ASSIGN", "FALSE", "", name);
-        $$.nameRep = strdup("FALSE");
+        $$.nameRep = strdup("false");
         }
         | expression EQ arithmetic 
         {
@@ -1055,6 +1056,7 @@ instance: INTEGER_VALUE
         | TypedFunctionCall
         | IDENTIFIER 
         {
+            cout << "Identifier: " << $1 << endl;
             SymbolTableEntry* newEntry = getIdentifierEntry($1);
             const char* nameeReg = assemblyGenerator.getRegisterAssignment(newEntry);
             if(newEntry == nullptr){
@@ -1073,7 +1075,7 @@ instance: INTEGER_VALUE
                 case INT_TYPE:
                     $$.ival = newEntry->getTypeValue()->value.ival;
                     valueStr = to_string($$.ival);
-                    // cout << "Value string: " << valueStr << endl;
+                    cout << "Value string: " << valueStr << endl;
                     $$.nameRep = strdup(valueStr.c_str());
                     break;
                 case FLOAT_TYPE:
@@ -1089,7 +1091,19 @@ instance: INTEGER_VALUE
                 case BOOL_TYPE:
                     $$.bval = newEntry->getTypeValue()->value.bval;
                     valueStr = to_string($$.bval);
+                    if($$.bval)
+                    {
+                        valueStr = "true";
+                    }
+                    else
+                    {
+                        valueStr = "false";
+                    }
+                    cout << "Value string: " << valueStr << endl;
                     $$.nameRep = strdup(valueStr.c_str());
+              
+
+                    
                     break;
                 case CHAR_TYPE:
                     $$.cval = newEntry->getTypeValue()->value.cval;

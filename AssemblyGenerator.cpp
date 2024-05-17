@@ -274,11 +274,11 @@ const char *AssemblyGenerator::addTempVariable(string expr1, string op, string e
     string tempName = "T" + to_string(temps.size());
     temps[tempName] = expr1 + op + expr2;
 
-    // cout << "Temps size: " << temps.size() << endl;
-    // cout << "Temps: " << endl;
-    // for (auto it = temps.begin(); it != temps.end(); it++) {
-    //     cout << it->first << " = " << it->second << endl;
-    // }
+    cout << "Temps size: " << temps.size() << endl;
+    cout << "Temps: " << endl;
+    for (auto it = temps.begin(); it != temps.end(); it++) {
+        cout << it->first << " = " << it->second << endl;
+    }
 
     return strdup(tempName.c_str());
 }
