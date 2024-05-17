@@ -3395,7 +3395,7 @@ int lhsType = (yyvsp[(1) - (3)].actualValue).type;
             EntryType paramType = static_cast<EntryType>((yyvsp[(1) - (2)].lexType));
             idTypeValue->type = paramType;
             currentFunction->pushFunctionInput(paramType);
-            SymbolTableEntry * entry = addEntryToCurrentTable((yyvsp[(2) - (2)].stringVal), PAR, 2, true);
+            SymbolTableEntry * entry = addEntryToCurrentTable((yyvsp[(2) - (2)].stringVal), PAR, idTypeValue, true);
 
              const char* name = assemblyGenerator.assignRegister(entry);
             assemblyGenerator.addQuadruple("ALLOC",(yyvsp[(2) - (2)].stringVal),"",name);

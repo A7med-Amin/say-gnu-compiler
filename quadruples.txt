@@ -3,10 +3,14 @@ START main
 ASSIGN    9           T0    
 ALLOC     y           R0    
 ASSIGN    T0          R0    
+ASSIGN    3           T1    
+ADD       T1    T0    T2    
+ALLOC     x           R1    
+ASSIGN    T2          R1    
 paramChecker:                  
-ASSIGN    4           T1    
-ALLOC     y           R1    
-ALLOC     x           R2    
-ASSIGN    T1          R2    
-ASSIGN    0           T2    
+ASSIGN    4           T3    
+ALLOC     y           R2    
+ALLOC     x           R3    
+ASSIGN    T3          R3    
+ASSIGN    0           T4    
 RET                         
