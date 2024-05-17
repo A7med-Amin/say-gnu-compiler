@@ -41,6 +41,8 @@ public:
     void endScope(scopeType type);
     const char *assignRegister(SymbolTableEntry* sym);
     const char *getRegisterAssignment(SymbolTableEntry* sym);
+    SymbolTableEntry *getRegisterAssignmentValue(string value);
+
     const char *addTempVariable( string expr1,  string op,  string expr2);
     const char *getTempVariable(string temp);
     void clearTemps();

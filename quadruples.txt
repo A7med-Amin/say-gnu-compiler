@@ -1,12 +1,14 @@
 START main
 
-ASSIGN    10          T0    
+ASSIGN    8           T0    
 ALLOC     x           R0    
 ASSIGN    T0          R0    
-main:                       
-ASSIGN    9           T1    
-ALLOC     x           R1    
+ASSIGN    2           T1    
+ALLOC     y           R1    
 ASSIGN    T1          R1    
-ENDFUNC                     
-ASSIGN    9           T2    
-ASSIGN    T2          R0    
+ASSIGN    TRUE        T2    
+NOT       T2          T3    
+ASSIGN    FALSE       T4    
+OR        T3    T4    T5    
+ALLOC     i           R2    
+ASSIGN    T5          R2    

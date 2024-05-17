@@ -1,4 +1,100 @@
-typedef union{
+
+/* A Bison parser, made by GNU Bison 2.4.1.  */
+
+/* Skeleton interface for Bison's Yacc-like parsers in C
+   
+      Copyright (C) 1984, 1989, 1990, 2000, 2001, 2002, 2003, 2004, 2005, 2006
+   Free Software Foundation, Inc.
+   
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+   
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+   
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+
+/* As a special exception, you may create a larger work that contains
+   part or all of the Bison parser skeleton and distribute that work
+   under terms of your choice, so long as that work isn't itself a
+   parser generator using the skeleton or a modified version thereof
+   as a parser skeleton.  Alternatively, if you modify or redistribute
+   the parser skeleton itself, you may (at your option) remove this
+   special exception, which will cause the skeleton and the resulting
+   Bison output files to be licensed under the GNU General Public
+   License without this special exception.
+   
+   This special exception was added by the Free Software Foundation in
+   version 2.2 of Bison.  */
+
+
+/* Tokens.  */
+#ifndef YYTOKENTYPE
+# define YYTOKENTYPE
+   /* Put the tokens into the symbol table, so that GDB and other debuggers
+      know about them.  */
+   enum yytokentype {
+     INT_DATA_TYPE = 258,
+     FLOAT_DATA_TYPE = 259,
+     CHAR_DATA_TYPE = 260,
+     STRING_DATA_TYPE = 261,
+     BOOLEAN_DATA_TYPE = 262,
+     CONSTANT = 263,
+     VOID_TYPE = 264,
+     IF = 265,
+     ELSE = 266,
+     SWITCH = 267,
+     CASE = 268,
+     DEFAULT = 269,
+     WHILE = 270,
+     FOR = 271,
+     REPEAT = 272,
+     UNTIL = 273,
+     BREAK = 274,
+     RETURN = 275,
+     IDENTIFIER = 276,
+     BOOLEAN_TRUE = 277,
+     BOOLEAN_FALSE = 278,
+     INTEGER_VALUE = 279,
+     FLOATING = 280,
+     CHARACTER = 281,
+     STRING_LITERAL = 282,
+     ADD = 283,
+     SUB = 284,
+     MUL = 285,
+     DIV = 286,
+     MOD = 287,
+     INC = 288,
+     DEC = 289,
+     POW = 290,
+     ASSIGN = 291,
+     AND = 292,
+     OR = 293,
+     NOT = 294,
+     EQ = 295,
+     NEQ = 296,
+     GT = 297,
+     LT = 298,
+     GTE = 299,
+     LTE = 300,
+     PRINT = 301
+   };
+#endif
+
+
+
+#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+typedef union YYSTYPE
+{
+
+/* Line 1676 of yacc.c  */
+#line 59 "Parser.y"
+
     int lexType;
     char * stringVal;
     struct ActualValue{
@@ -12,51 +108,17 @@ typedef union{
             bool bval;
         };
     }actualValue;
-} YYSTYPE;
-#define	INT_DATA_TYPE	257
-#define	FLOAT_DATA_TYPE	258
-#define	CHAR_DATA_TYPE	259
-#define	STRING_DATA_TYPE	260
-#define	BOOLEAN_DATA_TYPE	261
-#define	CONSTANT	262
-#define	VOID_TYPE	263
-#define	IF	264
-#define	ELSE	265
-#define	SWITCH	266
-#define	CASE	267
-#define	DEFAULT	268
-#define	WHILE	269
-#define	FOR	270
-#define	REPEAT	271
-#define	UNTIL	272
-#define	BREAK	273
-#define	RETURN	274
-#define	IDENTIFIER	275
-#define	BOOLEAN_TRUE	276
-#define	BOOLEAN_FALSE	277
-#define	INTEGER_VALUE	278
-#define	FLOATING	279
-#define	CHARACTER	280
-#define	STRING_LITERAL	281
-#define	ADD	282
-#define	SUB	283
-#define	MUL	284
-#define	DIV	285
-#define	MOD	286
-#define	INC	287
-#define	DEC	288
-#define	POW	289
-#define	ASSIGN	290
-#define	AND	291
-#define	OR	292
-#define	NOT	293
-#define	EQ	294
-#define	NEQ	295
-#define	GT	296
-#define	LT	297
-#define	GTE	298
-#define	LTE	299
-#define	PRINT	300
 
+
+
+/* Line 1676 of yacc.c  */
+#line 116 "Parser.tab.h"
+} YYSTYPE;
+# define YYSTYPE_IS_TRIVIAL 1
+# define yystype YYSTYPE /* obsolescent; will be withdrawn */
+# define YYSTYPE_IS_DECLARED 1
+#endif
 
 extern YYSTYPE yylval;
+
+

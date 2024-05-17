@@ -1,7 +1,4 @@
-int x = 10;
+int x = 8;
+int y = 2;
 
-void main(){
-    int x = 9;
-}
-
-x = 9;
+bool i = !true || false;
