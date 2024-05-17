@@ -41,6 +41,9 @@ iresult = op1 % op2;
 fresult = op1 ** 6.8;
 iresult = op1 ** op2;
 iresult = -op1;
+int Gilany =6;
+int Amin = Gilany++;
+int seif = --Amin;
 
 //MAGNONA:   COMBO EXPRESSION TEST
 iresult =  10 + 1 * 2 - 10 / 5 % 3 ** 2;
@@ -98,6 +101,29 @@ void fun(){
     }
     else{
         res = 10;
+    }
+}
+
+void elkebeerAwyGdn(){
+    int res;
+    void elkebeerAwy(){
+        string kalam ;
+        for (int i = 0; i < 10; i = i+1)
+        {
+            kalam = "Teftker hadrab";
+        }
+        void elkebeer(){
+            if (x>7)
+            {
+                res = 7;
+            }
+            else if (x < 4) {
+                res = 8;
+            }
+            else{
+                res = 10;
+            }
+        }
     }
 }
 
